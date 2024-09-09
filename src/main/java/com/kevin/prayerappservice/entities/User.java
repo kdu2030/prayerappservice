@@ -16,8 +16,16 @@ public class User {
     @Id
     @GeneratedValue
     private Integer userId;
+
+    @Column(length = 255)
     private String firstName;
+
+    @Column(length = 255)
     private String lastName;
+
+    @Column(length=255, unique=true)
     private String email;
+
+    @Column(length=255)
     private String passwordHash;
 }
