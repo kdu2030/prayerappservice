@@ -17,11 +17,11 @@ public class User {
     @GeneratedValue
     private Integer userId;
 
-    @Column(length = 255)
-    private String firstName;
+    @Column (length = 255)
+    private String fullName;
 
-    @Column(length = 255)
-    private String lastName;
+    @Column(length = 255, unique=true)
+    private String username;
 
     @Column(length=255, unique=true)
     private String email;

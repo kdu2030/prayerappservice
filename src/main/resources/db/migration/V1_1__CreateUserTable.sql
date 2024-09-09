@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS "_user"(
     "userId" SERIAL PRIMARY KEY,
-    "firstName" VARCHAR(255),
-    "lastName" VARCHAR(255),
+    "fullName" VARCHAR(255),
+    "username" VARCHAR(255) UNIQUE,
     "email" VARCHAR(255) UNIQUE,
     "passwordHash" VARCHAR(255)
 );
