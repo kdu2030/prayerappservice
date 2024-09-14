@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
-import java.security.PrivateKey;
-import java.util.Base64;
+import java.util.function.Function;
 
 @Service
 public class JwtService {
@@ -20,9 +18,13 @@ public class JwtService {
     @Value("${jwt.signing-key}")
     private String signingKey;
 
-    private SecretKey getSigningKey(){
-        byte[] keyBytes = Decoders.BASE64.decode(signingKey);
-        return Keys.hmacShaKeyFor(keyBytes);
+    public String extractUsername(String token) {
+        return null;
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
+        Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String token){
@@ -33,7 +35,8 @@ public class JwtService {
         return parser.parseSignedClaims(token).getPayload();
     }
 
-    public String extractUsername(String token) {
-        return null;
+    private SecretKey getSigningKey(){
+        byte[] keyBytes = Decoders.BASE64.decode(signingKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
