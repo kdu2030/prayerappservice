@@ -27,11 +27,11 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public String generateToken (UserDetails userDetails){
+    public String generateToken(UserDetails userDetails) {
         return generateToken(userDetails, new HashMap<>());
     }
 
-    public String generateToken (UserDetails userDetails, Map<String, Object> extraClaims){
+    public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims) {
         long currentSystemTime = System.currentTimeMillis();
         return Jwts.builder()
                 .claims(extraClaims)
@@ -42,12 +42,27 @@ public class JwtService {
                 .compact();
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    private boolean isTokenExpired(String token) {
+        Date tokenExpirationDate = extractExpiration(token);
+        Date currentDate = new Date();
+        return tokenExpirationDate.before(currentDate);
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token){
+    private Claims extractAllClaims(String token) {
         JwtParser parser = Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build();
@@ -55,7 +70,7 @@ public class JwtService {
         return parser.parseSignedClaims(token).getPayload();
     }
 
-    private SecretKey getSigningKey(){
+    private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(signingKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
