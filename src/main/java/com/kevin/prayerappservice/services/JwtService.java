@@ -19,7 +19,7 @@ public class JwtService {
     private String signingKey;
 
     public String extractUsername(String token) {
-        return null;
+        return extractClaim(token, Claims::getSubject);
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
