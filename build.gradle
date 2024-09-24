@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.3'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'org.hidetake.swagger.generator' version '2.18.2'
 }
 
 group = 'com.kevin'
@@ -37,6 +38,13 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+	// Swagger
+	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.15'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+	swaggerCodegen 'org.openapitools:openapi-generator-cli:7.8.0'
+
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
