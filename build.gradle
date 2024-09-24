@@ -8,6 +8,27 @@ plugins {
 group = 'com.kevin'
 version = '0.0.1-SNAPSHOT'
 
+swaggerSources {
+	prayerAppService {
+		def apiYamlPath = "${rootDir}/src/main/resources/api/openapi.yml"
+		def configJsonPath = "${rootDir}/src/main/resources/api/config.json"
+		inputFile = file(apiYamlPath)
+		def ignoreFilePath = "${rootDir}/src/main/resources/api/.openapi-generator-ignore"
+
+		code {
+			language = "spring"
+			configFile = file(configJsonPath)
+			rawOptions = ["--ignore-file-override", ignoreFilePath] as List<String>
+			components = [models: true, apis: true, supportingFiles: "ApiUtil.java"]
+		}
+	}
+}
+
+compileJava.dependsOn swaggerSources.prayerAppService.code
+processResources.dependsOn swaggerSources.prayerAppService.code
+sourceSets.main.java.srcDir "${swaggerSources.prayerAppService.code.outputDir}/src/main/java"
+sourceSets.main.resources.srcDir "${swaggerSources.prayerAppService.code.outputDir}/src/main/resources"
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
@@ -44,7 +65,6 @@ dependencies {
 	implementation 'io.swagger.core.v3:swagger-annotations:2.2.15'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 	swaggerCodegen 'org.openapitools:openapi-generator-cli:7.8.0'
-
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
