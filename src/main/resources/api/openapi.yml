@@ -34,6 +34,8 @@ paths:
       tags:
         - User
       summary: Generates a user token pair based on a refresh token in the header
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: User Token Pair generated successfully
@@ -59,6 +61,11 @@ paths:
                 $ref: "#/components/schemas/UserTokenPair"
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     CreateUserRequest:
       description: Request for signup route
