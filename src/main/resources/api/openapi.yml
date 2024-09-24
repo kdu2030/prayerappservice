@@ -32,6 +32,17 @@ paths:
               schema:
                 $ref: "#/components/schemas/UserTokenPair"
   /api/v1/user/token:
+    get:
+      tags:
+        - User
+      summary: Generates a user token pair based on a refresh token in the header
+      responses:
+        200:
+          description: User Token Pair generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserTokenPair"
     post:
       tags:
         - User
@@ -48,7 +59,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserTokenPair"
-
 
 components:
   schemas:
