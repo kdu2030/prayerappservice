@@ -1,0 +1,62 @@
+openapi: 3.0.3
+
+info:
+  title: Prayer App Services
+  description: |-
+    This is the API that supports the  Prayer App.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: User
+    description: Handles user token generation, user signup/sign-in
+
+paths:
+  /api/v1/user:
+    post:
+      tags:
+        - User
+      summary: Creates a new user
+      requestBody:
+        description: Request for creating a new user
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+      responses:
+        200:
+          description: User added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserTokenPair"
+
+components:
+  schemas:
+    CreateUserRequest:
+      description: Request for signup route
+      type: object
+      properties:
+        username:
+          description: The user's username
+          type: string
+        fullName:
+          description: The user's full name
+          type: string
+        email:
+          description: The user's email
+          type: string
+        password:
+          description: The user's password
+          type: string
+    UserTokenPair:
+      description: The user's authentication token and refresh token
+      type: object
+      properties:
+        authToken:
+          description: The authentication token used to access API routes that require JWT tokens
+          type: string
+        refreshToken:
+          description: The refresh token used to get a new auth token when it expires
+          type: string
