@@ -31,6 +31,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserTokenPair"
+  /api/v1/user/token:
+    post:
+      tags:
+        - User
+      summary: Generates an user token pair based on the user's username and password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCredentials"
+      responses:
+        200:
+          description: Token generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserTokenPair"
+
 
 components:
   schemas:
@@ -46,6 +64,16 @@ components:
           type: string
         email:
           description: The user's email
+          type: string
+        password:
+          description: The user's password
+          type: string
+    UserCredentials:
+      description: Request to generate a token using the user's credentials
+      type: object
+      properties:
+        username:
+          description: The user's username
           type: string
         password:
           description: The user's password
