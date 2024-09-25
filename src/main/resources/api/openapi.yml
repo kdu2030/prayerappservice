@@ -17,6 +17,7 @@ paths:
       tags:
         - User
       summary: Creates a new user
+      operationId: createUser
       requestBody:
         content:
           application/json:
@@ -34,6 +35,7 @@ paths:
       tags:
         - User
       summary: Generates a user token pair based on a refresh token in the header
+      operationId: generateTokensFromRefreshToken
       security:
         - bearerAuth: []
       responses:
@@ -47,6 +49,7 @@ paths:
       tags:
         - User
       summary: Generates an user token pair based on the user's username and password
+      operationId: generateTokensFromLogin
       requestBody:
         content:
           application/json:
