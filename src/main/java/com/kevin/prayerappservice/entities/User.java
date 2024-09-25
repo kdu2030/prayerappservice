@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "BaseUser")
+@Table(name = "AppUser")
 public class User implements UserDetails {
     @Id
     @GeneratedValue

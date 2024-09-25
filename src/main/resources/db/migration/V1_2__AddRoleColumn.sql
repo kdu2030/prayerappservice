@@ -1,2 +1,0 @@
-ALTER TABLE "_user"
-ADD "role" VARCHAR(255);
