@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_user")
+@Table(name = "BaseUser")
 public class User implements UserDetails {
     @Id
     @GeneratedValue
@@ -36,6 +36,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserEmail userEmail;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(Role.USER.name()));
@@ -48,8 +51,11 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        // Since the user logs in with their email, we return email instead of username.
-        return email;
+        return username;
+    }
+
+    private String getEmail() {
+        return userEmail.getEmail();
     }
 
 }
