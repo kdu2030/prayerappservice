@@ -1,10 +1,7 @@
 package com.kevin.prayerappservice.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +10,8 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "AppUser")
+@Table(name = "app_user")
 public class User implements UserDetails {
     @Id
     @GeneratedValue
@@ -28,9 +22,6 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String username;
 
-    @Column(unique = true)
-    private String email;
-
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
@@ -38,6 +29,13 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private UserEmail userEmail;
+
+    public User(String fullName, String username, String passwordHash, Role role){
+        this.fullName = fullName;
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

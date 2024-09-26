@@ -1,13 +1,10 @@
 package com.kevin.prayerappservice.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserEmail {
     @Id
     @GeneratedValue
@@ -21,4 +18,9 @@ public class UserEmail {
     @Getter
     @Column(unique = true)
     private String email;
+
+    public UserEmail(User user, String email){
+        this.user = user;
+        this.email = email;
+    }
 }

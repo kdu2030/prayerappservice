@@ -19,6 +19,7 @@ paths:
       summary: Creates a new user
       operationId: createUser
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -51,6 +52,7 @@ paths:
       summary: Generates an user token pair based on the user's username and password
       operationId: generateTokensFromLogin
       requestBody:
+        required: true
         content:
           application/json:
             schema:
