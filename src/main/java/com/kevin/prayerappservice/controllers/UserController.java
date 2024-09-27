@@ -1,6 +1,5 @@
 package com.kevin.prayerappservice.controllers;
 
-import com.kevin.prayerappservice.api.UserApi;
 import com.kevin.prayerappservice.entities.Role;
 import com.kevin.prayerappservice.entities.User;
 import com.kevin.prayerappservice.entities.UserEmail;
