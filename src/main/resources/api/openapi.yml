@@ -85,9 +85,15 @@ components:
         email:
           description: The user's email
           type: string
+          format: email
         password:
           description: The user's password
           type: string
+      required:
+        - username
+        - fullName
+        - email
+        - password
     UserCredentials:
       description: Request to generate a token using the user's credentials
       type: object
