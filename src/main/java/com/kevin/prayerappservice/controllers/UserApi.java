@@ -29,7 +29,7 @@ public interface UserApi {
             tags = { "User" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Item added successfully", content = {
-                            @Content(mediaType = "application/json")
+                            @Content(mediaType = "application/json", schema=@Schema(implementation = UserTokenPair.class))
                     })
             }
     )
