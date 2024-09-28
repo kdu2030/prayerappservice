@@ -1,21 +1,24 @@
 package com.kevin.prayerappservice.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 
 @Entity
+@Data
 public class UserEmail {
     @Id
     @GeneratedValue
     private Integer userEmailId;
 
-    @Getter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName="userId")
     private User user;
 
-    @Getter
+    @Email
+    @NotBlank
     @Column(unique = true)
     private String email;
 

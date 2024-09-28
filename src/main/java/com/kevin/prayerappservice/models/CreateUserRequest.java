@@ -1,14 +1,7 @@
 package com.kevin.prayerappservice.models;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-@EqualsAndHashCode
-@AllArgsConstructor
+@Data
 public class CreateUserRequest {
     private String username;
     private String fullName;
