@@ -9,6 +9,7 @@ public enum ErrorCode {
     DATA_VALIDATION_ERROR("DATA_VALIDATION_ERROR", "A data validation error occurred.");
 
 
+
     private final String errCode;
     private final String errMessageKey;
 
