@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
     GENERIC_ERROR("GEN_ERROR", "An internal server error has occurred."),
-    REQUEST_DATA_NULL_ERROR("REQUEST_DATA_NULL_ERROR", "A required field in the request object cannot be null");
+    DATA_VALIDATION_ERROR("DATA_VALIDATION_ERROR", "A data validation error occurred.");
 
 
     private final String errCode;
