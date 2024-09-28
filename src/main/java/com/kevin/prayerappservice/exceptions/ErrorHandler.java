@@ -22,7 +22,6 @@ public class ErrorHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Error> handleValidationException(HttpServletRequest request, DataIntegrityViolationException exception){
-        System.out.println(exception.getCause().getLocalizedMessage());
         Error error = Error.builder()
                 .errorCode(ErrorCode.DATA_VALIDATION_ERROR.getErrCode())
                 .message(exception.getMostSpecificCause().getLocalizedMessage())
