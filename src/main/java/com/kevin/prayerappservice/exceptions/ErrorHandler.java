@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,9 +31,14 @@ public class ErrorHandler {
     public ResponseEntity<Error> handleValidationException(HttpServletRequest request, DataIntegrityViolationException exception){
         logger.error("Data validation error occurred.", exception);
 
+        String fullExceptionMessage = exception.getMostSpecificCause().getLocalizedMessage();
+        String[] exceptionMessageParts = fullExceptionMessage.split("Detail: ");
+
+        String constraintName = exceptionMessageParts[exceptionMessageParts.length - 1].trim();
+
         Error error = Error.builder()
                 .errorCode(ErrorCode.DATA_VALIDATION_ERROR.getErrCode())
-                .message(exception.getMostSpecificCause().getLocalizedMessage())
+                .message(constraintName)
                 .reqMethod(request.getMethod())
                 .url(request.getRequestURL().toString())
                 .build();
