@@ -3,11 +3,13 @@ package com.kevin.prayerappservice.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
-@Data
+@Getter
+@Setter
 public class UserEmail {
     @Id
     @GeneratedValue
@@ -22,8 +24,15 @@ public class UserEmail {
     @Column(unique = true)
     private String email;
 
+    public UserEmail(){
+        this.user = null;
+        this.email = null;
+        this.userEmailId = null;
+    }
+
     public UserEmail(User user, String email){
         this.user = user;
         this.email = email;
     }
+
 }

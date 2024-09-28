@@ -81,5 +81,19 @@ public class ErrorHandler {
         return handleException(request, exception);
     }
 
+    @ExceptionHandler(DataValidationException.class)
+    public ResponseEntity<Error> handleDataValidationException(HttpServletRequest request, DataValidationException exception){
+        logger.error("Data validation error occurred.", exception);
+
+        Error error = DataValidationError.dataValidationErrorBuilder()
+                .dataValidationErrors(exception.getDataValidationErrors())
+                .errorCode(ErrorCode.DATA_VALIDATION_ERROR.getErrCode())
+                .message(ErrorCode.DATA_VALIDATION_ERROR.getErrMessageKey())
+                .reqMethod(request.getMethod())
+                .url(request.getRequestURL().toString())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 
 }
