@@ -31,6 +31,10 @@ public class JwtService {
         return generateToken(userDetails, new HashMap<>(), TOKEN_VALIDITY_LENGTH_MS);
     }
 
+    public String generateToken(UserDetails userDetails, int validityLengthMs){
+        return generateToken(userDetails, new HashMap<>(),  validityLengthMs);
+    }
+
     public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims, int validityLengthMs) {
         long currentSystemTime = System.currentTimeMillis();
         return Jwts.builder()

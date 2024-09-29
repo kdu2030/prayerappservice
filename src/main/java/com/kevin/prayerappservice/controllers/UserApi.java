@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.controllers;
 
 import com.kevin.prayerappservice.models.CreateUserRequest;
+import com.kevin.prayerappservice.models.UserDetails;
 import com.kevin.prayerappservice.models.UserTokenPair;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,5 +33,5 @@ public interface UserApi {
                     })
             }
     )
-    ResponseEntity<UserTokenPair> createUser(@Valid @RequestBody CreateUserRequest createUserRequest);
+    ResponseEntity<UserDetails> createUser(@Valid @RequestBody CreateUserRequest createUserRequest);
 }
