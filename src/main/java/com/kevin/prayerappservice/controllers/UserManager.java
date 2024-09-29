@@ -6,6 +6,7 @@ import com.kevin.prayerappservice.entities.UserEmail;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.models.CreateUserRequest;
 import com.kevin.prayerappservice.models.UserDetails;
+import com.kevin.prayerappservice.models.UserTokenPair;
 import com.kevin.prayerappservice.repositories.UserEmailRepository;
 import com.kevin.prayerappservice.repositories.UserRepository;
 import com.kevin.prayerappservice.services.JwtService;
@@ -21,6 +22,9 @@ public class UserManager {
     private final UserEmailRepository userEmailRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+
+    private final static int ACCESS_TOKEN_VALIDITY_LENGTH_MS = 60 * 60 * 1000;
+    private final static int REFRESH_TOKEN_VALIDITY_LENGTH_MS = 15 * 24 * 60 * 60 * 1000;
 
     @Autowired
     public UserManager(UserRepository userRepository, UserEmailRepository userEmailRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
@@ -42,7 +46,11 @@ public class UserManager {
         user.setUserEmail(userEmail);
         userRepository.save(user);
 
-        return null;
+        String accessToken = jwtService.generateToken(user, ACCESS_TOKEN_VALIDITY_LENGTH_MS);
+        String refreshToken = jwtService.generateToken(user, REFRESH_TOKEN_VALIDITY_LENGTH_MS);
+        UserTokenPair userTokenPair = new UserTokenPair(accessToken, refreshToken);
+
+        return new UserDetails(user.getUserId(), userEmail.getEmail(), user.getFullName(), userTokenPair);
     }
 
 }

@@ -1,25 +1,23 @@
 package com.kevin.prayerappservice.models;
 
-import lombok.*;
-
 import java.io.Serializable;
 
 
 public class UserTokenPair implements Serializable {
-    private String authToken;
+    private String accessToken;
     private String refreshToken;
 
-    public UserTokenPair(String authToken, String refreshToken) {
-        this.authToken = authToken;
+    public UserTokenPair(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 
-    public String getAuthToken() {
-        return authToken;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public String getRefreshToken() {
