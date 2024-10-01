@@ -32,6 +32,17 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
+    private UserDetails createUserDetails(User user){
+        String accessToken = jwtService.generateToken(user, ACCESS_TOKEN_VALIDITY_LENGTH_MS);
+        String refreshToken = jwtService.generateToken(user, REFRESH_TOKEN_VALIDITY_LENGTH_MS);
+        UserTokenPair userTokenPair = new UserTokenPair(accessToken, refreshToken);
+
+        return new UserDetails(user.getUserId(),
+                user.getUserEmail().getEmail(),
+                user.getFullName(),
+                userTokenPair);
+    }
+
 
     public UserDetails createUser(CreateUserRequest request){
         List<UserEmail> existingUserEmails =  userEmailRepository.findAllByEmail(request.getEmail());
@@ -44,11 +55,7 @@ public class UserService {
         user.setUserEmail(userEmail);
         userRepository.save(user);
 
-        String accessToken = jwtService.generateToken(user, ACCESS_TOKEN_VALIDITY_LENGTH_MS);
-        String refreshToken = jwtService.generateToken(user, REFRESH_TOKEN_VALIDITY_LENGTH_MS);
-        UserTokenPair userTokenPair = new UserTokenPair(accessToken, refreshToken);
-
-        return new UserDetails(user.getUserId(), userEmail.getEmail(), user.getFullName(), userTokenPair);
+        return createUserDetails(user);
     }
 
 }
