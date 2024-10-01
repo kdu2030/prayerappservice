@@ -1,15 +1,13 @@
-package com.kevin.prayerappservice.controllers;
+package com.kevin.prayerappservice.user;
 
-import com.kevin.prayerappservice.entities.Role;
-import com.kevin.prayerappservice.entities.User;
-import com.kevin.prayerappservice.entities.UserEmail;
+import com.kevin.prayerappservice.user.entities.Role;
+import com.kevin.prayerappservice.user.entities.User;
+import com.kevin.prayerappservice.user.entities.UserEmail;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
-import com.kevin.prayerappservice.models.CreateUserRequest;
-import com.kevin.prayerappservice.models.UserDetails;
-import com.kevin.prayerappservice.models.UserTokenPair;
-import com.kevin.prayerappservice.repositories.UserEmailRepository;
-import com.kevin.prayerappservice.repositories.UserRepository;
-import com.kevin.prayerappservice.services.JwtService;
+import com.kevin.prayerappservice.user.models.CreateUserRequest;
+import com.kevin.prayerappservice.user.models.UserDetails;
+import com.kevin.prayerappservice.user.models.UserTokenPair;
+import com.kevin.prayerappservice.auth.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserManager {
+public class UserService {
     private final UserRepository userRepository;
     private final UserEmailRepository userEmailRepository;
     private final PasswordEncoder passwordEncoder;
@@ -27,7 +25,7 @@ public class UserManager {
     private final static int REFRESH_TOKEN_VALIDITY_LENGTH_MS = 15 * 24 * 60 * 60 * 1000;
 
     @Autowired
-    public UserManager(UserRepository userRepository, UserEmailRepository userEmailRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public UserService(UserRepository userRepository, UserEmailRepository userEmailRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.userEmailRepository = userEmailRepository;
         this.passwordEncoder = passwordEncoder;

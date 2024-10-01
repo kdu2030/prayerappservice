@@ -1,4 +1,4 @@
-package com.kevin.prayerappservice.entities;
+package com.kevin.prayerappservice.user.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

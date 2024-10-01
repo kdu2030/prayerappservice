@@ -1,4 +1,4 @@
-package com.kevin.prayerappservice.services;
+package com.kevin.prayerappservice.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;

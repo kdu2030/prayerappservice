@@ -1,4 +1,4 @@
-package com.kevin.prayerappservice.models;
+package com.kevin.prayerappservice.user.models;
 import lombok.*;
 
 @Data

@@ -1,6 +1,6 @@
 package com.kevin.prayerappservice.config;
 
-import com.kevin.prayerappservice.services.UserDetailsServiceImpl;
+import com.kevin.prayerappservice.auth.AuthUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final AuthUserDetailsService authUserDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -24,7 +24,7 @@ public class ApplicationConfig {
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsServiceImpl);
+        authenticationProvider.setUserDetailsService(authUserDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }

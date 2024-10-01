@@ -1,6 +1,6 @@
-package com.kevin.prayerappservice.repositories;
+package com.kevin.prayerappservice.user;
 
-import com.kevin.prayerappservice.entities.UserEmail;
+import com.kevin.prayerappservice.user.entities.UserEmail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

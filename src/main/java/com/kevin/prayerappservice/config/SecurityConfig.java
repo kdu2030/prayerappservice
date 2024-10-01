@@ -1,6 +1,6 @@
 package com.kevin.prayerappservice.config;
 
-import com.kevin.prayerappservice.services.JwtAuthenticationFilter;
+import com.kevin.prayerappservice.auth.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

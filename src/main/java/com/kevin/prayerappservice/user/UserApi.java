@@ -1,8 +1,8 @@
-package com.kevin.prayerappservice.controllers;
+package com.kevin.prayerappservice.user;
 
-import com.kevin.prayerappservice.models.CreateUserRequest;
-import com.kevin.prayerappservice.models.UserDetails;
-import com.kevin.prayerappservice.models.UserTokenPair;
+import com.kevin.prayerappservice.user.models.CreateUserRequest;
+import com.kevin.prayerappservice.user.models.UserDetails;
+import com.kevin.prayerappservice.user.models.UserTokenPair;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
