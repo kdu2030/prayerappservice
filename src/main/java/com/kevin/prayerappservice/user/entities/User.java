@@ -2,8 +2,6 @@ package com.kevin.prayerappservice.user.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,8 +10,6 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
 @Table(name = "app_user")
 public class User implements UserDetails {
     @Id
@@ -70,4 +66,27 @@ public class User implements UserDetails {
         return userEmail.getEmail();
     }
 
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setFullName(@NotBlank String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setUsername(@NotBlank String username) {
+        this.username = username;
+    }
+
+    public void setPasswordHash(@NotBlank String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setUserEmail(UserEmail userEmail) {
+        this.userEmail = userEmail;
+    }
 }

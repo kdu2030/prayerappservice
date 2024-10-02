@@ -3,13 +3,9 @@ package com.kevin.prayerappservice.user.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
 
 
 @Entity
-@Getter
-@Setter
 public class UserEmail {
     @Id
     @GeneratedValue
@@ -35,4 +31,24 @@ public class UserEmail {
         this.email = email;
     }
 
+    public Integer getUserEmailId() {
+        return userEmailId;
+    }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public @Email @NotBlank String getEmail() {
+        return email;
+    }
+
+    public void setEmail(@Email @NotBlank String email) {
+        this.email = email;
+    }
 }

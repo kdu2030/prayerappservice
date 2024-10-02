@@ -7,10 +7,10 @@ public class Error {
     private String reqMethod;
 
     public Error(ErrorBuilder builder) {
-        this.errorCode = builder.errorCode;
-        this.message = builder.message;
-        this.url = builder.url;
-        this.reqMethod = builder.reqMethod;
+        errorCode = builder.errorCode;
+        message = builder.message;
+        url = builder.url;
+        reqMethod = builder.reqMethod;
     }
 
     public String getErrorCode() {

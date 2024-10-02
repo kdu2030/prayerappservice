@@ -1,7 +1,7 @@
 package com.kevin.prayerappservice.config;
 
 import com.kevin.prayerappservice.auth.AuthUserDetailsService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,9 +12,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-@RequiredArgsConstructor
 public class ApplicationConfig {
     private final AuthUserDetailsService authUserDetailsService;
+
+    @Autowired
+    public ApplicationConfig(AuthUserDetailsService authUserDetailsService) {
+        this.authUserDetailsService = authUserDetailsService;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
