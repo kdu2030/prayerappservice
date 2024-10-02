@@ -92,7 +92,7 @@ public class ErrorHandler {
                 .reqMethod(request.getMethod())
                 .url(request.getRequestURL().toString())
                 .build();
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(error, exception.getHttpStatus());
     }
 
 

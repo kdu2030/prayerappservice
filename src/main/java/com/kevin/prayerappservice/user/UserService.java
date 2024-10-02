@@ -5,6 +5,7 @@ import com.kevin.prayerappservice.user.entities.User;
 import com.kevin.prayerappservice.user.entities.UserEmail;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.user.models.CreateUserRequest;
+import com.kevin.prayerappservice.user.models.UserCredentials;
 import com.kevin.prayerappservice.user.models.UserSummary;
 import com.kevin.prayerappservice.user.models.UserTokenPair;
 import com.kevin.prayerappservice.auth.JwtService;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -56,6 +58,11 @@ public class UserService {
         userRepository.save(user);
 
         return createUserSummary(user);
+    }
+
+    public UserSummary getUserSummary(UserCredentials credentials){
+        Optional<UserEmail> userEmail = userEmailRepository.findByEmail(credentials.getEmail());
+        return null;
     }
 
 }

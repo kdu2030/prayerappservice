@@ -1,10 +1,17 @@
 package com.kevin.prayerappservice.user.models;
 
 public class CreateUserRequest {
-    private String username;
-    private String fullName;
-    private String email;
-    private String password;
+    private final String username;
+    private final String fullName;
+    private final String email;
+    private final String password;
+
+    public CreateUserRequest(String username, String fullName, String email, String password) {
+        this.username = username;
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+    }
 
     public String getUsername() {
         return username;

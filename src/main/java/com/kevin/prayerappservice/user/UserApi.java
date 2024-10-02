@@ -1,8 +1,8 @@
 package com.kevin.prayerappservice.user;
 
 import com.kevin.prayerappservice.user.models.CreateUserRequest;
+import com.kevin.prayerappservice.user.models.UserCredentials;
 import com.kevin.prayerappservice.user.models.UserSummary;
-import com.kevin.prayerappservice.user.models.UserTokenPair;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,9 +29,29 @@ public interface UserApi {
             tags = { "User" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Item added successfully", content = {
-                            @Content(mediaType = "application/json", schema=@Schema(implementation = UserTokenPair.class))
+                            @Content(mediaType = "application/json", schema=@Schema(implementation = UserSummary.class))
                     })
             }
     )
     ResponseEntity<UserSummary> createUser(@Valid @RequestBody CreateUserRequest createUserRequest);
+
+    @RequestMapping(
+            method = RequestMethod.POST,
+            value = "/api/v1/user/summary",
+            produces = { "application/json" },
+            consumes = { "application/json" }
+    )
+    @Operation(
+            operationId = "getUserSummary",
+            summary = "Creates a user summary from user credentials",
+            tags = { "User" },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User summary fetched successfully", content = {
+                            @Content(mediaType = "application/json", schema=@Schema(implementation = UserSummary.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "User doesn't exist"),
+                    @ApiResponse(responseCode = "403", description = "Username or password is invalid")
+            }
+    )
+    ResponseEntity<UserSummary> getUserSummary(@Valid @RequestBody UserCredentials userCredentials);
 }
