@@ -1,4 +1,4 @@
-package com.kevin.prayerappservice.services;
+package com.kevin.prayerappservice.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -28,16 +28,20 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(userDetails, new HashMap<>());
+        return generateToken(userDetails, new HashMap<>(), TOKEN_VALIDITY_LENGTH_MS);
     }
 
-    public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims) {
+    public String generateToken(UserDetails userDetails, int validityLengthMs){
+        return generateToken(userDetails, new HashMap<>(),  validityLengthMs);
+    }
+
+    public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims, int validityLengthMs) {
         long currentSystemTime = System.currentTimeMillis();
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(currentSystemTime))
-                .expiration(new Date(currentSystemTime + TOKEN_VALIDITY_LENGTH_MS))
+                .expiration(new Date(currentSystemTime + validityLengthMs))
                 .signWith(getSigningKey())
                 .compact();
     }
