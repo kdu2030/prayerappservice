@@ -41,6 +41,7 @@ public class UserService {
         UserTokenPair userTokenPair = new UserTokenPair(accessToken, refreshToken);
 
         return new UserSummary(user.getUserId(),
+                user.getUsername(),
                 user.getUserEmail().getEmail(),
                 user.getFullName(),
                 userTokenPair);
@@ -68,9 +69,8 @@ public class UserService {
         }
 
         User user = userEmail.get().getUser();
-        String passwordHash = passwordEncoder.encode(credentials.getPassword());
 
-        if(!passwordHash.equals(user.getPasswordHash())){
+        if(!passwordEncoder.matches(credentials.getPassword(), user.getPasswordHash())){
             throw new DataValidationException(HttpStatus.UNAUTHORIZED, new String[] {"Password is incorrect."});
         }
 

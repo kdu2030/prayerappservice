@@ -2,15 +2,17 @@ package com.kevin.prayerappservice.user.models;
 
 public class UserSummary {
     private int userId;
+    private String username;
     private String emailAddress;
     private String fullName;
     private UserTokenPair tokens;
 
-    public UserSummary(int userId, String emailAddress, String fullName, UserTokenPair tokens) {
+    public UserSummary(int userId, String username, String emailAddress, String fullName, UserTokenPair tokens) {
         this.userId = userId;
         this.emailAddress = emailAddress;
         this.fullName = fullName;
         this.tokens = tokens;
+        this.username = username;
     }
 
 
@@ -44,5 +46,13 @@ public class UserSummary {
 
     public void setTokens(UserTokenPair tokens) {
         this.tokens = tokens;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
