@@ -49,8 +49,6 @@ public interface UserApi {
                     @ApiResponse(responseCode = "200", description = "User summary fetched successfully", content = {
                             @Content(mediaType = "application/json", schema=@Schema(implementation = UserSummary.class))
                     }),
-                    @ApiResponse(responseCode = "404", description = "User doesn't exist"),
-                    @ApiResponse(responseCode = "403", description = "Username or password is invalid")
             }
     )
     ResponseEntity<UserSummary> getUserSummary(@Valid @RequestBody UserCredentials userCredentials);

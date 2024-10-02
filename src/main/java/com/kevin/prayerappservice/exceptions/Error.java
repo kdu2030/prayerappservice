@@ -13,6 +13,13 @@ public class Error {
         reqMethod = builder.reqMethod;
     }
 
+    public Error(String errorCode, String message, String url, String reqMethod) {
+        this.errorCode = errorCode;
+        this.message = message;
+        this.url = url;
+        this.reqMethod = reqMethod;
+    }
+
     public String getErrorCode() {
         return errorCode;
     }

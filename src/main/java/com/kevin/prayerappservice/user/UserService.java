@@ -10,6 +10,7 @@ import com.kevin.prayerappservice.user.models.UserSummary;
 import com.kevin.prayerappservice.user.models.UserTokenPair;
 import com.kevin.prayerappservice.auth.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +63,18 @@ public class UserService {
 
     public UserSummary getUserSummary(UserCredentials credentials){
         Optional<UserEmail> userEmail = userEmailRepository.findByEmail(credentials.getEmail());
-        return null;
+        if(userEmail.isEmpty()){
+            throw new DataValidationException(HttpStatus.NOT_FOUND, new String[] { "A User with this email does not exist."});
+        }
+
+        User user = userEmail.get().getUser();
+        String passwordHash = passwordEncoder.encode(credentials.getPassword());
+
+        if(!passwordHash.equals(user.getPasswordHash())){
+            throw new DataValidationException(HttpStatus.UNAUTHORIZED, new String[] {"Password is incorrect."});
+        }
+
+        return createUserSummary(user);
     }
 
 }
