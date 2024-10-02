@@ -69,7 +69,6 @@ public class UserService {
         }
 
         User user = userEmail.get().getUser();
-
         if(!passwordEncoder.matches(credentials.getPassword(), user.getPasswordHash())){
             throw new DataValidationException(HttpStatus.UNAUTHORIZED, new String[] {"Password is incorrect."});
         }

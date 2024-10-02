@@ -43,7 +43,7 @@ public interface UserApi {
     )
     @Operation(
             operationId = "getUserSummary",
-            summary = "Creates a user summary from user credentials",
+            summary = "Gets user summary from user credentials",
             tags = { "User" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "User summary fetched successfully", content = {
