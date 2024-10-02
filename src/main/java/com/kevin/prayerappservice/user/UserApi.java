@@ -1,7 +1,7 @@
 package com.kevin.prayerappservice.user;
 
 import com.kevin.prayerappservice.user.models.CreateUserRequest;
-import com.kevin.prayerappservice.user.models.UserDetails;
+import com.kevin.prayerappservice.user.models.UserSummary;
 import com.kevin.prayerappservice.user.models.UserTokenPair;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,5 +33,5 @@ public interface UserApi {
                     })
             }
     )
-    ResponseEntity<UserDetails> createUser(@Valid @RequestBody CreateUserRequest createUserRequest);
+    ResponseEntity<UserSummary> createUser(@Valid @RequestBody CreateUserRequest createUserRequest);
 }

@@ -5,7 +5,7 @@ import com.kevin.prayerappservice.user.entities.User;
 import com.kevin.prayerappservice.user.entities.UserEmail;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.user.models.CreateUserRequest;
-import com.kevin.prayerappservice.user.models.UserDetails;
+import com.kevin.prayerappservice.user.models.UserSummary;
 import com.kevin.prayerappservice.user.models.UserTokenPair;
 import com.kevin.prayerappservice.auth.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,19 +32,19 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-    private UserDetails createUserDetails(User user){
+    private UserSummary createUserSummary(User user){
         String accessToken = jwtService.generateToken(user, ACCESS_TOKEN_VALIDITY_LENGTH_MS);
         String refreshToken = jwtService.generateToken(user, REFRESH_TOKEN_VALIDITY_LENGTH_MS);
         UserTokenPair userTokenPair = new UserTokenPair(accessToken, refreshToken);
 
-        return new UserDetails(user.getUserId(),
+        return new UserSummary(user.getUserId(),
                 user.getUserEmail().getEmail(),
                 user.getFullName(),
                 userTokenPair);
     }
 
 
-    public UserDetails createUser(CreateUserRequest request){
+    public UserSummary createUser(CreateUserRequest request){
         List<UserEmail> existingUserEmails =  userEmailRepository.findAllByEmail(request.getEmail());
         if(!existingUserEmails.isEmpty()){
             throw new DataValidationException(new String[]{"Email must be unique to each user."});
@@ -55,7 +55,7 @@ public class UserService {
         user.setUserEmail(userEmail);
         userRepository.save(user);
 
-        return createUserDetails(user);
+        return createUserSummary(user);
     }
 
 }

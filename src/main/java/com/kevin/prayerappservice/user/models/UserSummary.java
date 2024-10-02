@@ -1,12 +1,12 @@
 package com.kevin.prayerappservice.user.models;
 
-public class UserDetails {
+public class UserSummary {
     private int userId;
     private String emailAddress;
     private String fullName;
     private UserTokenPair tokens;
 
-    public UserDetails(int userId, String emailAddress, String fullName, UserTokenPair tokens) {
+    public UserSummary(int userId, String emailAddress, String fullName, UserTokenPair tokens) {
         this.userId = userId;
         this.emailAddress = emailAddress;
         this.fullName = fullName;

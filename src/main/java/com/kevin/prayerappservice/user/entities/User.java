@@ -66,6 +66,22 @@ public class User implements UserDetails {
         return userEmail.getEmail();
     }
 
+    public UserEmail getUserEmail() {
+        return userEmail;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public @NotBlank String getFullName() {
+        return fullName;
+    }
+
+    public @NotBlank String getPasswordHash() {
+        return passwordHash;
+    }
+
     public Integer getUserId() {
         return userId;
     }
