@@ -2,7 +2,7 @@ package com.kevin.prayerappservice.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class DataValidationException extends RuntimeException {
+public class DataValidationException extends IllegalArgumentException {
     private final String[] dataValidationErrors;
     private final HttpStatus httpStatus;
 
