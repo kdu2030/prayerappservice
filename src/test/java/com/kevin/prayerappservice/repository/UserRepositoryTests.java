@@ -46,7 +46,7 @@ public class UserRepositoryTests {
         userRepository.save(user);
 
         Optional<User> userResult = userRepository.findByUsername("michaelScarn");
-        Assertions.assertThat(userResult.get()).isNotNull();
+        Assertions.assertThat(userResult.isPresent()).isTrue();
 
     }
 
