@@ -7,6 +7,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -16,12 +18,23 @@ public class UserRepositoryTests {
     public UserRepository userRepository;
 
     @Test
+    @DirtiesContext
     public void save_allUserFieldsFilled_ReturnsCreatedUser(){
         User user = new User("Dwight Schrute", "dShrute", "wfeij4a2331", Role.USER);
         User createdUser = userRepository.save(user);
 
         Assertions.assertThat(createdUser).isNotNull();
         Assertions.assertThat(createdUser.getUserId()).isGreaterThan(0);
+    }
+
+    @Test
+    @DirtiesContext
+    public void save_usersWithSameUsername_ThrowsException(){
+        User user = new User("Dwight Shrute", "dShrute", "wer1212322", Role.USER);
+        User duplicateUser = new User("Jim Halpert", "dShrute", "1232243421", Role.USER);
+
+        userRepository.save(user);
+        Assertions.assertThatThrownBy(() -> userRepository.save(duplicateUser)).isInstanceOf(DataIntegrityViolationException.class);
     }
 
 }
