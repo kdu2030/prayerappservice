@@ -11,6 +11,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Optional;
+
 @SpringBootTest
 @ActiveProfiles("test")
 public class UserRepositoryTests {
@@ -35,6 +37,17 @@ public class UserRepositoryTests {
 
         userRepository.save(user);
         Assertions.assertThatThrownBy(() -> userRepository.save(duplicateUser)).isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    @DirtiesContext
+    public void findByUsername_userExists_ReturnsUser(){
+        User user = new User("Michael Scott", "michaelScarn", "234455561df", Role.USER);
+        userRepository.save(user);
+
+        Optional<User> userResult = userRepository.findByUsername("michaelScarn");
+        Assertions.assertThat(userResult.get()).isNotNull();
+
     }
 
 }
