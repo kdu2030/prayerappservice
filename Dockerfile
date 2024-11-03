@@ -14,4 +14,5 @@ COPY --from=0 /app/build/libs/*.jar app.jar
 EXPOSE ${PORT}
 ENV SERVER_PORT=${PORT}
 
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prd"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["--spring.profiles.active=prd"]
