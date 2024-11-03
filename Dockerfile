@@ -9,5 +9,10 @@ WORKDIR /app
 
 COPY --from=0 /app/build/libs/*.jar app.jar
 
+# Render provides a PORT environmental variable.
+# Needs to be mapped to SERVER_PORT so Spring Boot can use it.
+EXPOSE ${PORT}
+ENV SERVER_PORT=${PORT}
+
 # TODO: For testing purposes only, remove
 CMD ls .
