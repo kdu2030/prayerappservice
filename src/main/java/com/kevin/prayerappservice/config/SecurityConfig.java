@@ -19,6 +19,8 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
 
+    private final String[] WHITELIST_URL_PATTERNS = { "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/user/**" };
+
     @Autowired
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationProvider authenticationProvider) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -31,7 +33,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 // This will ensure that authorization checks happen for every route except in whitelist
                 .authorizeHttpRequests((auths) -> auths
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers(WHITELIST_URL_PATTERNS).permitAll()
                         .anyRequest().authenticated()
                 )
                 // We do not want to persist any data across requests to be compliant with REST
