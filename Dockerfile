@@ -14,5 +14,4 @@ COPY --from=0 /app/build/libs/*.jar app.jar
 EXPOSE ${PORT}
 ENV SERVER_PORT=${PORT}
 
-# TODO: For testing purposes only, remove
-CMD ls .
+ENTRYPOINT ["java", "-jar", "app.jar"]
