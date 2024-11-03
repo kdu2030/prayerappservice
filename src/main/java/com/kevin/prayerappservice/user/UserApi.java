@@ -15,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Tag(name = "User", description = "the User API")
+@RequestMapping("/api/v1/user")
 public interface UserApi {
 
     @RequestMapping(
             method = RequestMethod.POST,
-            value = "/api/v1/user",
+            value = "",
             produces = { "application/json" },
             consumes = { "application/json" }
     )
@@ -37,7 +38,7 @@ public interface UserApi {
 
     @RequestMapping(
             method = RequestMethod.POST,
-            value = "/api/v1/user/summary",
+            value = "/summary",
             produces = { "application/json" },
             consumes = { "application/json" }
     )
