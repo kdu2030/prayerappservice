@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.user;
 
 import com.kevin.prayerappservice.user.models.CreateUserRequest;
+import com.kevin.prayerappservice.user.models.UserCredentials;
 import com.kevin.prayerappservice.user.models.UserSummary;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,17 @@ public class UserController implements UserApi {
         this.userService = userService;
     }
 
+    @Override
     public ResponseEntity<UserSummary> createUser(@RequestBody @Valid CreateUserRequest request){
         UserSummary createdUserSummary = userService.createUser(request);
         return new ResponseEntity<>(createdUserSummary, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<UserSummary> getUserSummary(@RequestBody @Valid UserCredentials userCredentials) {
+        UserSummary userSummary = userService.getUserSummary(userCredentials);
+        return new ResponseEntity<>(userSummary, HttpStatus.OK);
+    }
+
 
 }

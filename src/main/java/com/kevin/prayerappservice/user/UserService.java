@@ -5,14 +5,17 @@ import com.kevin.prayerappservice.user.entities.User;
 import com.kevin.prayerappservice.user.entities.UserEmail;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.user.models.CreateUserRequest;
+import com.kevin.prayerappservice.user.models.UserCredentials;
 import com.kevin.prayerappservice.user.models.UserSummary;
 import com.kevin.prayerappservice.user.models.UserTokenPair;
 import com.kevin.prayerappservice.auth.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -38,6 +41,7 @@ public class UserService {
         UserTokenPair userTokenPair = new UserTokenPair(accessToken, refreshToken);
 
         return new UserSummary(user.getUserId(),
+                user.getUsername(),
                 user.getUserEmail().getEmail(),
                 user.getFullName(),
                 userTokenPair);
@@ -54,6 +58,20 @@ public class UserService {
         UserEmail userEmail = new UserEmail(user, request.getEmail());
         user.setUserEmail(userEmail);
         userRepository.save(user);
+
+        return createUserSummary(user);
+    }
+
+    public UserSummary getUserSummary(UserCredentials credentials){
+        Optional<UserEmail> userEmail = userEmailRepository.findByEmail(credentials.getEmail());
+        if(userEmail.isEmpty()){
+            throw new DataValidationException(HttpStatus.NOT_FOUND, new String[] { "A User with this email does not exist."});
+        }
+
+        User user = userEmail.get().getUser();
+        if(!passwordEncoder.matches(credentials.getPassword(), user.getPasswordHash())){
+            throw new DataValidationException(HttpStatus.UNAUTHORIZED, new String[] {"Password is incorrect."});
+        }
 
         return createUserSummary(user);
     }

@@ -40,7 +40,7 @@ public class ErrorHandler {
 
         String constraintName = exceptionMessageParts[exceptionMessageParts.length - 1].trim();
 
-        Error error = DataValidationError.dataValidationErrorBuilder()
+        DataValidationError error = DataValidationError.dataValidationErrorBuilder()
                 .dataValidationErrors(new String[] { constraintName })
                 .errorCode(ErrorCode.DATA_VALIDATION_ERROR.getErrCode())
                 .message(ErrorCode.DATA_VALIDATION_ERROR.getErrMessageKey())
@@ -62,7 +62,7 @@ public class ErrorHandler {
             errorMessages[i++] = String.format("%s %s", constraintViolation.getPropertyPath().toString(), constraintViolation.getMessage());
         }
 
-        Error error = DataValidationError.dataValidationErrorBuilder()
+        DataValidationError error = DataValidationError.dataValidationErrorBuilder()
                 .dataValidationErrors(errorMessages)
                 .errorCode(ErrorCode.DATA_VALIDATION_ERROR.getErrCode())
                 .message(ErrorCode.DATA_VALIDATION_ERROR.getErrMessageKey())
@@ -85,14 +85,14 @@ public class ErrorHandler {
     public ResponseEntity<Error> handleDataValidationException(HttpServletRequest request, DataValidationException exception){
         logger.error("Data validation error occurred.", exception);
 
-        Error error = DataValidationError.dataValidationErrorBuilder()
+        DataValidationError error = DataValidationError.dataValidationErrorBuilder()
                 .dataValidationErrors(exception.getDataValidationErrors())
                 .errorCode(ErrorCode.DATA_VALIDATION_ERROR.getErrCode())
                 .message(ErrorCode.DATA_VALIDATION_ERROR.getErrMessageKey())
                 .reqMethod(request.getMethod())
                 .url(request.getRequestURL().toString())
                 .build();
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(error, exception.getHttpStatus());
     }
 
 
