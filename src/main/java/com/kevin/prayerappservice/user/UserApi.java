@@ -3,6 +3,7 @@ package com.kevin.prayerappservice.user;
 import com.kevin.prayerappservice.user.models.CreateUserRequest;
 import com.kevin.prayerappservice.user.models.UserCredentials;
 import com.kevin.prayerappservice.user.models.UserSummary;
+import com.kevin.prayerappservice.user.models.UserTokenPair;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -53,4 +55,11 @@ public interface UserApi {
             }
     )
     ResponseEntity<UserSummary> getUserSummary(@Valid @RequestBody UserCredentials userCredentials);
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/token",
+            produces = { "application/json "}
+    )
+    ResponseEntity<UserTokenPair> getUserTokenPair(@RequestHeader("Authorization") String authorization);
 }

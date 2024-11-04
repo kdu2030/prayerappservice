@@ -19,7 +19,6 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String AUTH_HEADER_NAME = "Authorization";
-    private static final String BEARER_PREFIX = "Bearer ";
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
@@ -35,12 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader(AUTH_HEADER_NAME);
         final String jwt;
 
-        if(authHeader == null || !authHeader.contains(BEARER_PREFIX)) {
+        if(authHeader == null || !jwtService.doesAuthHeaderContainToken(authHeader)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(BEARER_PREFIX.length());
+        jwt = jwtService.extractTokenFromAuthHeader(authHeader);
         final String userEmail = jwtService.extractUsername(jwt);
 
         // If the user email is not null and the user is not authenticated already

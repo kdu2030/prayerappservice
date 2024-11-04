@@ -3,12 +3,14 @@ package com.kevin.prayerappservice.user;
 import com.kevin.prayerappservice.user.models.CreateUserRequest;
 import com.kevin.prayerappservice.user.models.UserCredentials;
 import com.kevin.prayerappservice.user.models.UserSummary;
+import com.kevin.prayerappservice.user.models.UserTokenPair;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @Controller
 public class UserController implements UserApi {
@@ -29,6 +31,11 @@ public class UserController implements UserApi {
     public ResponseEntity<UserSummary> getUserSummary(@RequestBody @Valid UserCredentials userCredentials) {
         UserSummary userSummary = userService.getUserSummary(userCredentials);
         return new ResponseEntity<>(userSummary, HttpStatus.OK);
+    }
+
+    public ResponseEntity<UserTokenPair> getUserTokenPair(@RequestHeader("Authorization") String authorization){
+        UserTokenPair userTokenPair = userService.getUserTokenPair(authorization);
+        return new ResponseEntity<>(userTokenPair, HttpStatus.OK);
     }
 
 

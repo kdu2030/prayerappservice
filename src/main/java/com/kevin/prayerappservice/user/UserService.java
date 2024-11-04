@@ -35,19 +35,6 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-    private UserSummary createUserSummary(User user){
-        String accessToken = jwtService.generateToken(user, ACCESS_TOKEN_VALIDITY_LENGTH_MS);
-        String refreshToken = jwtService.generateToken(user, REFRESH_TOKEN_VALIDITY_LENGTH_MS);
-        UserTokenPair userTokenPair = new UserTokenPair(accessToken, refreshToken);
-
-        return new UserSummary(user.getUserId(),
-                user.getUsername(),
-                user.getUserEmail().getEmail(),
-                user.getFullName(),
-                userTokenPair);
-    }
-
-
     public UserSummary createUser(CreateUserRequest request){
         List<UserEmail> existingUserEmails =  userEmailRepository.findAllByEmail(request.getEmail());
         if(!existingUserEmails.isEmpty()){
@@ -74,6 +61,30 @@ public class UserService {
         }
 
         return createUserSummary(user);
+    }
+
+    public UserTokenPair getUserTokenPair(String authorization){
+        String refreshToken = jwtService.extractTokenFromAuthHeader(authorization);
+        String username = jwtService.extractUsername(refreshToken);
+        User user = new User();
+        user.setUsername(username);
+        return generateUserTokenPair(user);
+    }
+
+    private UserTokenPair generateUserTokenPair(User user){
+        String accessToken = jwtService.generateToken(user, ACCESS_TOKEN_VALIDITY_LENGTH_MS);
+        String refreshToken = jwtService.generateToken(user, REFRESH_TOKEN_VALIDITY_LENGTH_MS);
+        return new UserTokenPair(accessToken, refreshToken);
+    }
+
+    private UserSummary createUserSummary(User user){
+        UserTokenPair userTokenPair = generateUserTokenPair(user);
+
+        return new UserSummary(user.getUserId(),
+                user.getUsername(),
+                user.getUserEmail().getEmail(),
+                user.getFullName(),
+                userTokenPair);
     }
 
 }
