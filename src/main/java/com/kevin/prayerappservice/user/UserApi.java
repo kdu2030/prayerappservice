@@ -61,5 +61,15 @@ public interface UserApi {
             value = "/token",
             produces = { "application/json "}
     )
+    @Operation(
+            operationId = "getUserTokenPair",
+            summary = "Gets a new user token pair from a refresh token",
+            tags = { "User" },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User token pair generated successfully", content = {
+                            @Content(mediaType = "application/json", schema=@Schema(implementation = UserTokenPair.class))
+                    })
+            }
+    )
     ResponseEntity<UserTokenPair> getUserTokenPair(@RequestHeader("Authorization") String authorization);
 }
