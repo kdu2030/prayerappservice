@@ -38,7 +38,7 @@ public class User implements UserDetails {
         this.username = null;
         this.passwordHash = null;
         this.role = null;
-        this.userEmail = null;
+        this.email = null;
     }
 
     public User(String fullName, String username, String email, String passwordHash, Role role){
