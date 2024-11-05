@@ -1,12 +1,10 @@
 package com.kevin.prayerappservice.service;
 
 import com.kevin.prayerappservice.exceptions.DataValidationException;
-import com.kevin.prayerappservice.user.UserEmailRepository;
 import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.UserService;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
-import com.kevin.prayerappservice.user.entities.UserEmail;
 import com.kevin.prayerappservice.user.models.CreateUserRequest;
 import com.kevin.prayerappservice.user.models.UserSummary;
 import org.assertj.core.api.Assertions;
@@ -22,9 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 public class UserServiceTests {
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private UserEmailRepository userEmailRepository;
 
     @Autowired
     private UserService userService;
@@ -44,11 +39,9 @@ public class UserServiceTests {
     @Test
     @DirtiesContext
     public void createUserSummary_duplicateEmail_throwsException(){
-        User user = new User("Count Dooku", "countD00ku", "21345412", Role.USER);
-        UserEmail userEmail = new UserEmail(user, "countdooku@cis.gov");
+        User user = new User("Count Dooku", "countD00ku", "countdooku@cis.gov", "21345412", Role.USER);
 
         userRepository.save(user);
-        userEmailRepository.save(userEmail);
 
         CreateUserRequest duplicateEmailRequest = new CreateUserRequest("anakinSkywalker", "Anakin Skywalker", "countdooku@cis.gov", "jediMaster");
         Assertions.assertThatThrownBy(() -> userService.createUser(duplicateEmailRequest)).isInstanceOf(DataValidationException.class);

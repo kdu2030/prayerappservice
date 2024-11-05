@@ -18,7 +18,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private final static int TOKEN_VALIDITY_LENGTH_MS = 1000 * 60 * 60 * 24 * 15;
+    private static final String BEARER_PREFIX = "Bearer ";
+    private static final int TOKEN_VALIDITY_LENGTH_MS = 1000 * 60 * 60 * 24 * 15;
 
     @Value("${jwt.signing-key}")
     private String signingKey;
@@ -51,6 +52,14 @@ public class JwtService {
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
+    public String extractTokenFromAuthHeader(String authorization){
+        return authorization.substring(BEARER_PREFIX.length());
+    }
+
+    public boolean doesAuthHeaderContainToken(String authorization){
+        return authorization.contains(BEARER_PREFIX);
+    }
+
     private boolean isTokenExpired(String token) {
         Date tokenExpirationDate = extractExpiration(token);
         Date currentDate = new Date();
@@ -78,4 +87,5 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(signingKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
 }

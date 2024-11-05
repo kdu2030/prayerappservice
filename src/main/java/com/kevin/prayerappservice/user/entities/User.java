@@ -23,26 +23,28 @@ public class User implements UserDetails {
     @NotBlank
     private String username;
 
+    @Column(unique = true)
+    @NotBlank
+    private String email;
+
     @NotBlank
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private UserEmail userEmail;
-
     public User(){
         this.fullName = null;
         this.username = null;
         this.passwordHash = null;
         this.role = null;
-        this.userEmail = null;
+        this.email = null;
     }
 
-    public User(String fullName, String username, String passwordHash, Role role){
+    public User(String fullName, String username, String email, String passwordHash, Role role){
         this.fullName = fullName;
         this.username = username;
+        this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
     }
@@ -62,12 +64,8 @@ public class User implements UserDetails {
         return username;
     }
 
-    private String getEmail() {
-        return userEmail.getEmail();
-    }
-
-    public UserEmail getUserEmail() {
-        return userEmail;
+    public @NotBlank String getEmail() {
+        return email;
     }
 
     public Role getRole() {
@@ -102,7 +100,7 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    public void setUserEmail(UserEmail userEmail) {
-        this.userEmail = userEmail;
+    public void setEmail(@NotBlank String email) {
+        this.email = email;
     }
 }
