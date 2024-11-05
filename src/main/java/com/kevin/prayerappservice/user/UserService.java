@@ -2,7 +2,6 @@ package com.kevin.prayerappservice.user;
 
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
-import com.kevin.prayerappservice.user.entities.UserEmail;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.user.models.CreateUserRequest;
 import com.kevin.prayerappservice.user.models.UserCredentials;
@@ -20,7 +19,6 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final UserEmailRepository userEmailRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
@@ -28,34 +26,31 @@ public class UserService {
     private final static int REFRESH_TOKEN_VALIDITY_LENGTH_MS = 15 * 24 * 60 * 60 * 1000;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserEmailRepository userEmailRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
-        this.userEmailRepository = userEmailRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
 
     public UserSummary createUser(CreateUserRequest request){
-        List<UserEmail> existingUserEmails =  userEmailRepository.findAllByEmail(request.getEmail());
+        List<User> existingUserEmails =  userRepository.findAllByEmail(request.getEmail());
         if(!existingUserEmails.isEmpty()){
             throw new DataValidationException(new String[]{"Email must be unique to each user."});
         }
 
-        User user = new User(request.getFullName(), request.getUsername(), passwordEncoder.encode(request.getPassword()), Role.USER);
-        UserEmail userEmail = new UserEmail(user, request.getEmail());
-        user.setUserEmail(userEmail);
+        User user = new User(request.getFullName(), request.getUsername(), request.getEmail(), passwordEncoder.encode(request.getPassword()), Role.USER);
         userRepository.save(user);
 
         return createUserSummary(user);
     }
 
     public UserSummary getUserSummary(UserCredentials credentials){
-        Optional<UserEmail> userEmail = userEmailRepository.findByEmail(credentials.getEmail());
-        if(userEmail.isEmpty()){
+        Optional<User> userResult = userRepository.findByEmail(credentials.getEmail());
+        if(userResult.isEmpty()){
             throw new DataValidationException(HttpStatus.NOT_FOUND, new String[] { "A User with this email does not exist."});
         }
 
-        User user = userEmail.get().getUser();
+        User user = userResult.get();
         if(!passwordEncoder.matches(credentials.getPassword(), user.getPasswordHash())){
             throw new DataValidationException(HttpStatus.UNAUTHORIZED, new String[] {"Password is incorrect."});
         }
@@ -82,7 +77,7 @@ public class UserService {
 
         return new UserSummary(user.getUserId(),
                 user.getUsername(),
-                user.getUserEmail().getEmail(),
+                user.getEmail(),
                 user.getFullName(),
                 userTokenPair);
     }
