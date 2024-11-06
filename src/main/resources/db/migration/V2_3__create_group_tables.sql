@@ -17,7 +17,7 @@ INCREMENT 50;
 CREATE TABLE IF NOT EXISTS file (
     file_id INT PRIMARY KEY DEFAULT nextval('file_seq'),
     file_name VARCHAR(255) NOT NULL,
-    file_url VARCHAR(255) NOT NULL,
+    file_url VARCHAR(255) NOT NULL UNIQUE,
     file_type_id INT,
     CONSTRAINT fk_file_type_id FOREIGN KEY (file_type_id) REFERENCES file_type(file_type_id)
 );
