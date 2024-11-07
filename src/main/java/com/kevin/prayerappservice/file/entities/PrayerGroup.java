@@ -35,10 +35,6 @@ public class PrayerGroup {
         return prayerGroupId;
     }
 
-    public void setPrayerGroupId(Integer prayerGroupId) {
-        this.prayerGroupId = prayerGroupId;
-    }
-
     public @NotBlank String getGroupName() {
         return groupName;
     }
