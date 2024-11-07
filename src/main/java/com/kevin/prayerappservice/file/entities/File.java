@@ -3,6 +3,8 @@ package com.kevin.prayerappservice.file.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.List;
+
 @Entity
 public class File {
     @Id
@@ -18,6 +20,9 @@ public class File {
 
     @Enumerated
     private FileType fileType;
+
+    @OneToMany(mappedBy = "imageFile")
+    private List<PrayerGroup> prayerGroupImages;
 
     public File(String fileName, String fileUrl, FileType fileType){
         this.fileName = fileName;
