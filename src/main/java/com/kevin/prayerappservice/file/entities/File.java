@@ -19,6 +19,7 @@ public class File {
     private String fileUrl;
 
     @Enumerated
+    @Column(name = "file_type_id")
     private FileType fileType;
 
     @OneToMany(mappedBy = "imageFile")
