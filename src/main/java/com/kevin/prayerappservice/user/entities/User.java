@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.user.entities;
 
+import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +33,9 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<PrayerGroupUser> prayerGroupUsers;
 
     public User(){
         this.fullName = null;

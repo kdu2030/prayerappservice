@@ -1,7 +1,10 @@
-package com.kevin.prayerappservice.file.entities;
+package com.kevin.prayerappservice.group.entities;
 
+import com.kevin.prayerappservice.file.entities.File;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.List;
 
 @Entity
 public class PrayerGroup {
@@ -22,6 +25,9 @@ public class PrayerGroup {
     @ManyToOne
     @JoinColumn(name = "image_file_id")
     private File imageFile;
+
+    @OneToMany(mappedBy = "prayerGroup")
+    private List<PrayerGroupUser> prayerGroupUsers;
 
     public PrayerGroup(String groupName, String description, String rules, Integer color, File imageFile) {
         this.groupName = groupName;
@@ -73,5 +79,13 @@ public class PrayerGroup {
 
     public void setImageFile(File imageFile) {
         this.imageFile = imageFile;
+    }
+
+    public List<PrayerGroupUser> getPrayerGroupUsers() {
+        return prayerGroupUsers;
+    }
+
+    public void setPrayerGroupUsers(List<PrayerGroupUser> prayerGroupUsers) {
+        this.prayerGroupUsers = prayerGroupUsers;
     }
 }

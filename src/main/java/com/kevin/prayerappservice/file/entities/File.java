@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.file.entities;
 
+import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -18,8 +19,7 @@ public class File {
     @Column(unique = true)
     private String fileUrl;
 
-    @Enumerated
-    @Column(name = "file_type_id")
+    @Enumerated(EnumType.STRING)
     private FileType fileType;
 
     @OneToMany(mappedBy = "imageFile")
