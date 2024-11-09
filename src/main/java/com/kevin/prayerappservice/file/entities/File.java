@@ -1,10 +1,8 @@
 package com.kevin.prayerappservice.file.entities;
 
-import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -66,17 +64,4 @@ public class File {
     public void setFileType(FileType fileType) {
         this.fileType = fileType;
     }
-
-    public static File createFileFromMultipartFile(MultipartFile multipartFile){
-        FileType fileType = FileType.getFileTypeFromContentType(multipartFile.getContentType());
-        // TODO: Contains full path, we will need to parse it to retrieve the last part
-        String fullFilePath = multipartFile.getOriginalFilename();
-
-        if(!FileType.isFileSizeWithinBounds(fileType, multipartFile.getSize())){
-            throw new DataValidationException(new String[]{ "File exceeds max size"});
-        }
-
-        return null;
-    }
-
 }
