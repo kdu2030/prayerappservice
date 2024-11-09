@@ -70,7 +70,7 @@ public class File {
     public static File createFileFromMultipartFile(MultipartFile multipartFile){
         FileType fileType = FileType.getFileTypeFromContentType(multipartFile.getContentType());
         // TODO: Contains full path, we will need to parse it to retrieve the last part
-        String fileName = multipartFile.getOriginalFilename();
+        String fullFilePath = multipartFile.getOriginalFilename();
 
         if(!FileType.isFileSizeWithinBounds(fileType, multipartFile.getSize())){
             throw new DataValidationException(new String[]{ "File exceeds max size"});
