@@ -4,6 +4,7 @@ import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+@Entity
 public class PrayerGroupUser {
 
     @Id
