@@ -20,60 +20,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/api/v1/user")
 public interface UserApi {
 
-    @RequestMapping(
-            method = RequestMethod.POST,
-            value = "",
-            produces = {"application/json"},
-            consumes = {"application/json"}
-    )
-    @Operation(
-            operationId = "createUser",
-            summary = "Creates a user",
-            tags = {"User"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Item added successfully", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation =
-                                    UserSummary.class))
-                    })
-            }
-    )
+    @RequestMapping(method = RequestMethod.POST, value = "", produces = {"application/json"}, consumes = {
+            "application/json"})
+    @Operation(summary = "Creates a user")
     ResponseEntity<UserSummary> createUser(@Valid @RequestBody CreateUserRequest createUserRequest);
 
-    @RequestMapping(
-            method = RequestMethod.POST,
-            value = "/summary",
-            produces = {"application/json"},
-            consumes = {"application/json"}
-    )
-    @Operation(
-            operationId = "getUserSummary",
-            summary = "Gets user summary from user credentials",
-            tags = {"User"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "User summary fetched successfully", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation =
-                                    UserSummary.class))
-                    }),
-            }
-    )
+    @RequestMapping(method = RequestMethod.POST, value = "/summary", produces = {"application/json"}, consumes = {
+            "application/json"})
+    @Operation(summary = "Gets user summary from user credentials")
     ResponseEntity<UserSummary> getUserSummary(@Valid @RequestBody UserCredentials userCredentials);
 
-    @RequestMapping(
-            method = RequestMethod.GET,
-            value = "/token",
-            produces = {"application/json"}
-    )
-    @Operation(
-            operationId = "getUserTokenPair",
-            summary = "Gets a new user token pair from a refresh token",
-            tags = {"User"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "User token pair generated successfully",
-                            content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation =
-                                    UserTokenPair.class))
-                    })
-            }
-    )
+    @RequestMapping(method = RequestMethod.GET, value = "/token", produces = {"application/json"})
+    @Operation(summary = "Gets a new user token pair from a refresh token")
     ResponseEntity<UserTokenPair> getUserTokenPair(@RequestHeader("Authorization") String authorization);
 }
