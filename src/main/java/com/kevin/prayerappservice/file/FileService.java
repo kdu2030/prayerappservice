@@ -17,7 +17,7 @@ public class FileService {
     @Value("fileupload.url")
     private String fileUploadBaseUrl;
 
-    private static final Logger log = LoggerFactory.getLogger(FileService.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileService.class);
 
     public File uploadFile(MultipartFile rawFile) {
         String contentType = rawFile.getContentType();
@@ -41,8 +41,8 @@ public class FileService {
                     .post(requestBody)
                     .build();
             return null;
-        } catch(IOException exception){
-            log.error("Unable to read file", exception);
+        } catch (IOException exception) {
+            logger.error("Unable to read file", exception);
             throw new RuntimeException("Unable to upload file.");
         }
     }
