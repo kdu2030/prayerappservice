@@ -1,8 +1,10 @@
 package com.kevin.prayerappservice.file.entities;
 
+import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,6 +31,12 @@ public class File {
         this.fileName = fileName;
         this.fileUrl = fileUrl;
         this.fileType = fileType;
+    }
+
+    public File(String fileName, FileType fileType){
+        this.fileName = fileName;
+        this.fileType = fileType;
+        this.fileUrl = null;
     }
 
     public @NotBlank String getFileUrl() {
@@ -58,4 +66,17 @@ public class File {
     public void setFileType(FileType fileType) {
         this.fileType = fileType;
     }
+
+    public static File createFileFromMultipartFile(MultipartFile multipartFile){
+        FileType fileType = FileType.getFileTypeFromContentType(multipartFile.getContentType());
+        // TODO: Contains full path, we will need to parse it to retrieve the last part
+        String fileName = multipartFile.getOriginalFilename();
+
+        if(!FileType.isFileSizeWithinBounds(fileType, multipartFile.getSize())){
+            throw new DataValidationException(new String[]{ "File exceeds max size"});
+        }
+
+        return null;
+    }
+
 }
