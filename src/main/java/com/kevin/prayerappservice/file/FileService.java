@@ -3,10 +3,9 @@ package com.kevin.prayerappservice.file;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.file.entities.File;
 import com.kevin.prayerappservice.file.entities.FileType;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
+import okhttp3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +17,9 @@ public class FileService {
     @Value("fileupload.url")
     private String fileUploadBaseUrl;
 
-    public File uploadFile(MultipartFile rawFile) throws IOException {
+    private static final Logger log = LoggerFactory.getLogger(FileService.class);
+
+    public File uploadFile(MultipartFile rawFile) {
         String contentType = rawFile.getContentType();
         FileType fileType = FileType.getFileTypeFromContentType(contentType);
         if (contentType == null || fileType == FileType.UNKNOWN) {
@@ -27,17 +28,23 @@ public class FileService {
 
         OkHttpClient client = new OkHttpClient();
 
-        RequestBody requestBody = new MultipartBody.Builder()
-                .addFormDataPart("file",
-                        rawFile.getOriginalFilename(),
-                        RequestBody.create(rawFile.getBytes(),
-                        MediaType.parse(rawFile.getContentType())))
-                .build();
+        try {
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .addFormDataPart("file",
+                            rawFile.getOriginalFilename(),
+                            RequestBody.create(rawFile.getBytes(),
+                                    MediaType.parse(rawFile.getContentType())))
+                    .build();
 
-
-
-
-        return null;
+            Request request = new Request.Builder()
+                    .url(fileUploadBaseUrl + "/file-upload")
+                    .post(requestBody)
+                    .build();
+            return null;
+        } catch(IOException exception){
+            log.error("Unable to read file", exception);
+            throw new RuntimeException("Unable to upload file.");
+        }
     }
 
 }
