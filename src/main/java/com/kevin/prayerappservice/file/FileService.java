@@ -1,29 +1,44 @@
 package com.kevin.prayerappservice.file;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
+import com.kevin.prayerappservice.file.dtos.FileUploadResponse;
 import com.kevin.prayerappservice.file.entities.File;
 import com.kevin.prayerappservice.file.entities.FileType;
 import okhttp3.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 @Service
 public class FileService {
     @Value("${fileupload.url}")
     private String fileUploadBaseUrl;
 
-    private static final Logger logger = LoggerFactory.getLogger(FileService.class);
+    private final ObjectMapper objectMapper;
+    private final FileRepository fileRepository;
+
+    @Autowired
+    public FileService(ObjectMapper objectMapper, FileRepository fileRepository){
+        this.objectMapper = objectMapper;
+        this.fileRepository = fileRepository;
+    }
 
     public File uploadFile(MultipartFile rawFile) throws IOException {
         String contentType = rawFile.getContentType();
         FileType fileType = FileType.getFileTypeFromContentType(contentType);
+        String rawFilePath = rawFile.getOriginalFilename();
+
         if (contentType == null || fileType == FileType.UNKNOWN) {
             throw new DataValidationException(new String[]{"File type is not supported."});
+        }
+
+        if(rawFilePath == null){
+            throw new DataValidationException(new String[]{"File must have a name."});
         }
 
         OkHttpClient client = new OkHttpClient();
@@ -31,9 +46,9 @@ public class FileService {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file",
-                        rawFile.getOriginalFilename(),
+                        rawFilePath,
                         RequestBody.create(rawFile.getBytes(),
-                                MediaType.parse(rawFile.getContentType())))
+                                MediaType.parse(contentType)))
                 .build();
 
         Request request = new Request.Builder()
@@ -43,11 +58,16 @@ public class FileService {
 
         Response response = client.newCall(request).execute();
 
-        if (!response.isSuccessful()) {
+        if (!response.isSuccessful() || response.body() == null) {
             throw new IOException("Unable to upload file to File API");
         }
 
-        return null;
+        FileUploadResponse fileResponseBody = objectMapper.readValue(response.body().string(), FileUploadResponse.class);
+        String fileName = String.valueOf(Paths.get(rawFilePath).getFileName());
+
+        File file = new File(fileName, fileType, fileResponseBody.getUrl());
+        fileRepository.save(file);
+        return file;
     }
 
 }

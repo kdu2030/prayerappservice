@@ -25,16 +25,16 @@ public class File {
     @OneToMany(mappedBy = "imageFile")
     private List<PrayerGroup> prayerGroupImages;
 
-    public File(String fileName, String fileUrl, FileType fileType){
-        this.fileName = fileName;
-        this.fileUrl = fileUrl;
-        this.fileType = fileType;
-    }
-
     public File(String fileName, FileType fileType){
         this.fileName = fileName;
         this.fileType = fileType;
         this.fileUrl = null;
+    }
+
+    public File(String fileName, FileType fileType,  String fileUrl){
+        this.fileName = fileName;
+        this.fileUrl = fileUrl;
+        this.fileType = fileType;
     }
 
     public @NotBlank String getFileUrl() {
