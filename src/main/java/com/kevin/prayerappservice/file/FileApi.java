@@ -7,12 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @Tag(name = "File", description = "The File API")
 @RequestMapping("/api/v1/file")
 public interface FileApi {
     @PostMapping(value = "", produces = {"application/json"}, consumes = { "multipart/form-data" })
     @Operation(summary = "Uploads file")
-    ResponseEntity<File> uploadFile(@RequestParam("file") MultipartFile file);
+    ResponseEntity<File> uploadFile(@RequestParam("file") MultipartFile file) throws IOException;
 
    @DeleteMapping(value = "/{fileId}")
    @Operation(summary = "Deletes file")

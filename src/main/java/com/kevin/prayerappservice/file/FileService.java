@@ -14,12 +14,12 @@ import java.io.IOException;
 
 @Service
 public class FileService {
-    @Value("fileupload.url")
+    @Value("${fileupload.url}")
     private String fileUploadBaseUrl;
 
     private static final Logger logger = LoggerFactory.getLogger(FileService.class);
 
-    public File uploadFile(MultipartFile rawFile) {
+    public File uploadFile(MultipartFile rawFile) throws IOException {
         String contentType = rawFile.getContentType();
         FileType fileType = FileType.getFileTypeFromContentType(contentType);
         if (contentType == null || fileType == FileType.UNKNOWN) {
@@ -28,23 +28,26 @@ public class FileService {
 
         OkHttpClient client = new OkHttpClient();
 
-        try {
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .addFormDataPart("file",
-                            rawFile.getOriginalFilename(),
-                            RequestBody.create(rawFile.getBytes(),
-                                    MediaType.parse(rawFile.getContentType())))
-                    .build();
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file",
+                        rawFile.getOriginalFilename(),
+                        RequestBody.create(rawFile.getBytes(),
+                                MediaType.parse(rawFile.getContentType())))
+                .build();
 
-            Request request = new Request.Builder()
-                    .url(fileUploadBaseUrl + "/file-upload")
-                    .post(requestBody)
-                    .build();
-            return null;
-        } catch (IOException exception) {
-            logger.error("Unable to read file", exception);
-            throw new RuntimeException("Unable to upload file.");
+        Request request = new Request.Builder()
+                .url(fileUploadBaseUrl + "/file-upload")
+                .post(requestBody)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if (!response.isSuccessful()) {
+            throw new IOException("Unable to upload file to File API");
         }
+
+        return null;
     }
 
 }
