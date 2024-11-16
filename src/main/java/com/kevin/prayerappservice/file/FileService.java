@@ -70,4 +70,9 @@ public class FileService {
         return file;
     }
 
+    public void deleteFile(int fileId){
+
+
+    }
+
 }
