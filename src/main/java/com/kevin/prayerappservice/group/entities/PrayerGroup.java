@@ -21,7 +21,7 @@ public class PrayerGroup {
 
     private String rules;
 
-    private int color;
+    private Integer color;
 
     @ManyToOne
     @JoinColumn(name = "image_file_id")
