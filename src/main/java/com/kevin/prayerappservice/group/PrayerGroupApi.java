@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.group;
 
 import com.kevin.prayerappservice.group.models.NewPrayerGroup;
+import com.kevin.prayerappservice.group.models.PrayerGroupSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -15,5 +16,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface PrayerGroupApi {
     @PostMapping(value = "")
     @Operation(summary = "Creates a prayer group")
-    ResponseEntity<Void> createPrayerGroup(@RequestHeader("Authorization") String authorization, @Valid @RequestBody NewPrayerGroup group);
+    ResponseEntity<PrayerGroupSummary> createPrayerGroup(@RequestHeader("Authorization") String authorization, @Valid @RequestBody NewPrayerGroup group);
 }

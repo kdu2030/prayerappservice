@@ -2,7 +2,7 @@ package com.kevin.prayerappservice.group.entities;
 
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class PrayerGroupUser {
@@ -11,7 +11,7 @@ public class PrayerGroupUser {
     @GeneratedValue
     private Integer prayerGroupUserId;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private PrayerGroupRole prayerGroupRole;
 
@@ -33,11 +33,11 @@ public class PrayerGroupUser {
         return prayerGroupUserId;
     }
 
-    public @NotBlank PrayerGroupRole getPrayerGroupRole() {
+    public @NotNull PrayerGroupRole getPrayerGroupRole() {
         return prayerGroupRole;
     }
 
-    public void setPrayerGroupRole(@NotBlank PrayerGroupRole prayerGroupRole) {
+    public void setPrayerGroupRole(@NotNull PrayerGroupRole prayerGroupRole) {
         this.prayerGroupRole = prayerGroupRole;
     }
 

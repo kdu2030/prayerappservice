@@ -11,4 +11,8 @@ public class ColorUtils {
         String digitsStr = colorHexString.substring(1);
         return Integer.parseInt(digitsStr, 16);
     }
+
+    public static String colorIntToHexString(int colorInt){
+        return String.format("#%x", colorInt);
+    }
 }

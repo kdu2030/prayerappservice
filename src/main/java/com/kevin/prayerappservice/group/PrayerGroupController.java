@@ -1,12 +1,11 @@
 package com.kevin.prayerappservice.group;
 
 import com.kevin.prayerappservice.group.models.NewPrayerGroup;
-import jakarta.validation.Valid;
+import com.kevin.prayerappservice.group.models.PrayerGroupSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class PrayerGroupController implements PrayerGroupApi {
@@ -18,8 +17,8 @@ public class PrayerGroupController implements PrayerGroupApi {
     }
 
     @Override
-    public ResponseEntity<Void> createPrayerGroup(String authorization, NewPrayerGroup group) {
-        prayerGroupService.createPrayerGroup(authorization, group);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<PrayerGroupSummary> createPrayerGroup(String authorization, NewPrayerGroup group) {
+        PrayerGroupSummary prayerGroupSummary = prayerGroupService.createPrayerGroup(authorization, group);
+        return new ResponseEntity<>(prayerGroupSummary, HttpStatus.OK);
     }
 }
