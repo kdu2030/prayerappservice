@@ -1,0 +1,14 @@
+package com.kevin.prayerappservice.utils;
+
+import com.kevin.prayerappservice.exceptions.DataValidationException;
+
+public class ColorUtils {
+    public static int colorHexStringToInt(String colorHexString) {
+        if (!colorHexString.matches("#[0-9a-fA-F]{6}")) {
+            throw new DataValidationException(new String[]{String.format("%s is not a valid color hex string.",
+                    colorHexString)});
+        }
+
+        return 0;
+    }
+}

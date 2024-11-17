@@ -7,10 +7,10 @@ public class NewPrayerGroup {
     private String name;
     private String description;
     private String rules;
-    private int color;
+    private String color;
     private int imageFileId;
 
-    public NewPrayerGroup(String name, String description, String rules, int color, int imageFileId) {
+    public NewPrayerGroup(String name, String description, String rules, String color, int imageFileId) {
         this.name = name;
         this.description = description;
         this.rules = rules;
@@ -42,11 +42,11 @@ public class NewPrayerGroup {
         this.rules = rules;
     }
 
-    public int getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(String color) {
         this.color = color;
     }
 
