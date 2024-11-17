@@ -6,6 +6,7 @@ import com.kevin.prayerappservice.file.FileRepository;
 import com.kevin.prayerappservice.file.entities.File;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.models.NewPrayerGroup;
+import com.kevin.prayerappservice.utils.ColorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
@@ -27,8 +28,9 @@ public class PrayerGroupService {
             throw new DataValidationException(new String[] {"A group with this name already exists."});
         }
         Optional<File> imageFile = fileRepository.findById(newPrayerGroup.getImageFileId());
+        int colorInt = ColorUtils.colorHexStringToInt(newPrayerGroup.getColor());
         PrayerGroup prayerGroup = new PrayerGroup(newPrayerGroup.getName(), newPrayerGroup.getDescription(),
-                newPrayerGroup.getRules(), newPrayerGroup.getColor(), imageFile.orElse(null));
+                newPrayerGroup.getRules(), colorInt, imageFile.orElse(null));
     }
 
 

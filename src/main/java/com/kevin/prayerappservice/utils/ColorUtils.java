@@ -8,7 +8,7 @@ public class ColorUtils {
             throw new DataValidationException(new String[]{String.format("%s is not a valid color hex string.",
                     colorHexString)});
         }
-
-        return 0;
+        String digitsStr = colorHexString.substring(1);
+        return Integer.parseInt(digitsStr, 16);
     }
 }
