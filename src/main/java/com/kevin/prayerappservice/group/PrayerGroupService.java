@@ -8,9 +8,11 @@ import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.models.NewPrayerGroup;
 import com.kevin.prayerappservice.utils.ColorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class PrayerGroupService {
     private final PrayerGroupRepository prayerGroupRepository;
     private final FileRepository fileRepository;
@@ -27,10 +29,12 @@ public class PrayerGroupService {
         if(prayerGroupRepository.findByGroupName(newPrayerGroup.getName()).isPresent()){
             throw new DataValidationException(new String[] {"A group with this name already exists."});
         }
+
         Optional<File> imageFile = fileRepository.findById(newPrayerGroup.getImageFileId());
         int colorInt = ColorUtils.colorHexStringToInt(newPrayerGroup.getColor());
         PrayerGroup prayerGroup = new PrayerGroup(newPrayerGroup.getName(), newPrayerGroup.getDescription(),
                 newPrayerGroup.getRules(), colorInt, imageFile.orElse(null));
+
     }
 
 

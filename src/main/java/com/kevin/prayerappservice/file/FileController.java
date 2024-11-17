@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.file;
 
 import com.kevin.prayerappservice.file.entities.File;
+import com.kevin.prayerappservice.file.models.FileSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class FileController implements FileApi{
     }
 
     @Override
-    public ResponseEntity<File> uploadFile(MultipartFile rawFile) throws IOException {
-        File file = fileService.uploadFile(rawFile);
+    public ResponseEntity<FileSummary> uploadFile(MultipartFile rawFile) throws IOException {
+        FileSummary file = fileService.uploadFile(rawFile);
         return new ResponseEntity<>(file, HttpStatus.OK);
     }
 

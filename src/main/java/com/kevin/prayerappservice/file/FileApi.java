@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.file;
 
 import com.kevin.prayerappservice.file.entities.File;
+import com.kevin.prayerappservice.file.models.FileSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import java.io.IOException;
 public interface FileApi {
     @PostMapping(value = "", produces = {"application/json"}, consumes = { "multipart/form-data" })
     @Operation(summary = "Uploads file")
-    ResponseEntity<File> uploadFile(@RequestParam("file") MultipartFile file) throws IOException;
+    ResponseEntity<FileSummary> uploadFile(@RequestParam("file") MultipartFile file) throws IOException;
 
    @DeleteMapping(value = "/{fileId}")
    @Operation(summary = "Deletes file")

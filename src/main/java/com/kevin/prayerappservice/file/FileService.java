@@ -6,6 +6,7 @@ import com.kevin.prayerappservice.file.dtos.FileDeleteValidation;
 import com.kevin.prayerappservice.file.dtos.FileUploadResponse;
 import com.kevin.prayerappservice.file.entities.File;
 import com.kevin.prayerappservice.file.entities.FileType;
+import com.kevin.prayerappservice.file.models.FileSummary;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +31,7 @@ public class FileService {
         this.fileRepository = fileRepository;
     }
 
-    public File uploadFile(MultipartFile rawFile) throws IOException {
+    public FileSummary uploadFile(MultipartFile rawFile) throws IOException {
         String contentType = rawFile.getContentType();
         FileType fileType = FileType.getFileTypeFromContentType(contentType);
         String rawFilePath = rawFile.getOriginalFilename();
@@ -69,7 +70,7 @@ public class FileService {
 
         File file = new File(fileName, fileType, fileResponseBody.getUrl());
         fileRepository.save(file);
-        return file;
+        return FileSummary.fileToFileSummary(file);
     }
 
     public void deleteFile(int fileId) throws IOException{
