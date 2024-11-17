@@ -1,6 +1,9 @@
 package com.kevin.prayerappservice.group.models;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class NewPrayerGroup {
+    @NotBlank
     private String name;
     private String description;
     private String rules;
