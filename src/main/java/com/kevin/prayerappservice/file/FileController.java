@@ -28,6 +28,6 @@ public class FileController implements FileApi{
     @Override
     public ResponseEntity<Void> deleteFile(@PathVariable int fileId) throws IOException{
         fileService.deleteFile(fileId);
-        return null;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

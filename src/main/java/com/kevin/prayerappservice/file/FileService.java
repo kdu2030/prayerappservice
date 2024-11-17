@@ -93,6 +93,8 @@ public class FileService {
         if(!response.isSuccessful()){
             throw new IOException("Unable to delete file");
         }
+
+        fileRepository.delete(file);
     }
 
     private FileDeleteValidation validateFileDelete(int fileId){
