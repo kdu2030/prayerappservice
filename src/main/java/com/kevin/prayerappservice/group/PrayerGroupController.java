@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class PrayerGroupController implements PrayerGroupApi {
 
     @Override
-    public ResponseEntity<Void> createPrayerGroup(@Valid @RequestBody NewPrayerGroup group) {
+    public ResponseEntity<Void> createPrayerGroup(String authorization, NewPrayerGroup group) {
         return null;
     }
 }

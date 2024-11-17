@@ -3,6 +3,7 @@ package com.kevin.prayerappservice.group.entities;
 import com.kevin.prayerappservice.file.entities.File;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class PrayerGroup {
 
     private String rules;
 
-    private Integer color;
+    private int color;
 
     @ManyToOne
     @JoinColumn(name = "image_file_id")
@@ -29,7 +30,7 @@ public class PrayerGroup {
     @OneToMany(mappedBy = "prayerGroup")
     private List<PrayerGroupUser> prayerGroupUsers;
 
-    public PrayerGroup(String groupName, String description, String rules, Integer color, File imageFile) {
+    public PrayerGroup(String groupName, @Nullable String description, @Nullable String rules, @Nullable int color, @Nullable File imageFile) {
         this.groupName = groupName;
         this.description = description;
         this.rules = rules;
