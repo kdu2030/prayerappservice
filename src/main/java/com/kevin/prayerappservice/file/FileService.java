@@ -2,6 +2,7 @@ package com.kevin.prayerappservice.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
+import com.kevin.prayerappservice.file.dtos.FileDeleteValidation;
 import com.kevin.prayerappservice.file.dtos.FileUploadResponse;
 import com.kevin.prayerappservice.file.entities.File;
 import com.kevin.prayerappservice.file.entities.FileType;
@@ -71,8 +72,17 @@ public class FileService {
     }
 
     public void deleteFile(int fileId){
+        FileDeleteValidation fileDeleteValidation = validateFileDelete(fileId);
+        if(!fileDeleteValidation.isCanDelete()){
+            throw new DataValidationException(new String[] {fileDeleteValidation.getDeleteError()});
+        }
 
 
+    }
+
+    private FileDeleteValidation validateFileDelete(int fileId){
+        Object[][] result = fileRepository.validateFileDeleteRaw(fileId);
+        return new FileDeleteValidation((boolean) result[0][0], (String) result[0][1]);
     }
 
 }
