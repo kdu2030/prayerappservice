@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.file.entities;
 
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
+import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -24,6 +25,9 @@ public class File {
 
     @OneToMany(mappedBy = "imageFile")
     private List<PrayerGroup> prayerGroupImages;
+
+    @OneToMany(mappedBy = "imageFile")
+    private List<User> userImages;
 
     public File(String fileName, FileType fileType){
         this.fileName = fileName;
@@ -63,5 +67,13 @@ public class File {
 
     public void setFileType(FileType fileType) {
         this.fileType = fileType;
+    }
+
+    public List<PrayerGroup> getPrayerGroupImages() {
+        return prayerGroupImages;
+    }
+
+    public List<User> getUserImages() {
+        return userImages;
     }
 }

@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.user.entities;
 
+import com.kevin.prayerappservice.file.entities.File;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -37,12 +38,17 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<PrayerGroupUser> prayerGroupUsers;
 
+    @ManyToOne
+    @JoinColumn(name = "image_file_id")
+    private File imageFile;
+
     public User(){
         this.fullName = null;
         this.username = null;
         this.passwordHash = null;
         this.role = null;
         this.email = null;
+        this.imageFile = null;
     }
 
     public User(String fullName, String username, String email, String passwordHash, Role role){
@@ -51,6 +57,7 @@ public class User implements UserDetails {
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
+        this.imageFile = null;
     }
 
     @Override
@@ -106,5 +113,13 @@ public class User implements UserDetails {
 
     public void setEmail(@NotBlank String email) {
         this.email = email;
+    }
+
+    public File getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(File imageFile) {
+        this.imageFile = imageFile;
     }
 }
