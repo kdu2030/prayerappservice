@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @Service
 public class FileService {
@@ -53,7 +54,7 @@ public class FileService {
                 .build();
 
         Request request = new Request.Builder()
-                .url(fileUploadBaseUrl + "/file-upload")
+                .url(fileUploadBaseUrl + "/file/upload")
                 .post(requestBody)
                 .build();
 
@@ -73,11 +74,14 @@ public class FileService {
 
     public void deleteFile(int fileId){
         FileDeleteValidation fileDeleteValidation = validateFileDelete(fileId);
-        if(!fileDeleteValidation.isCanDelete()){
-            throw new DataValidationException(new String[] {fileDeleteValidation.getDeleteError()});
+        if(!fileDeleteValidation.isCanDelete()) {
+            throw new DataValidationException(new String[]{fileDeleteValidation.getDeleteError()});
         }
 
-
+        File file = fileRepository.findById(fileId).get();
+        String fileUrl = file.getFileUrl();
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+        System.out.println(fileName);
     }
 
     private FileDeleteValidation validateFileDelete(int fileId){

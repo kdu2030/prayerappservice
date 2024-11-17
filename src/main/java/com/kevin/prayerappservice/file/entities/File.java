@@ -29,6 +29,8 @@ public class File {
     @OneToMany(mappedBy = "imageFile")
     private List<User> userImages;
 
+    public File() {}
+
     public File(String fileName, FileType fileType){
         this.fileName = fileName;
         this.fileType = fileType;
