@@ -54,7 +54,7 @@ public class FileService {
                 .build();
 
         Request request = new Request.Builder()
-                .url(fileUploadBaseUrl + "/file/upload")
+                .url(fileUploadBaseUrl + "/file")
                 .post(requestBody)
                 .build();
 
@@ -72,7 +72,7 @@ public class FileService {
         return file;
     }
 
-    public void deleteFile(int fileId){
+    public void deleteFile(int fileId) throws IOException{
         FileDeleteValidation fileDeleteValidation = validateFileDelete(fileId);
         if(!fileDeleteValidation.isCanDelete()) {
             throw new DataValidationException(new String[]{fileDeleteValidation.getDeleteError()});
@@ -81,7 +81,18 @@ public class FileService {
         File file = fileRepository.findById(fileId).get();
         String fileUrl = file.getFileUrl();
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-        System.out.println(fileName);
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(String.format("%s/file/%s", fileUploadBaseUrl, fileName))
+                .delete()
+                .build();
+
+        Response response = client.newCall(request).execute();
+        if(!response.isSuccessful()){
+            throw new IOException("Unable to delete file");
+        }
     }
 
     private FileDeleteValidation validateFileDelete(int fileId){

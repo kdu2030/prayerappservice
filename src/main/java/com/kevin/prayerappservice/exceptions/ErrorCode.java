@@ -2,6 +2,7 @@ package com.kevin.prayerappservice.exceptions;
 
 public enum ErrorCode {
     GENERIC_ERROR("GEN_ERROR", "An internal server error has occurred."),
+    IO_ERROR("IO_ERROR", "An I/O error has occurred"),
     DATA_VALIDATION_ERROR("DATA_VALIDATION_ERROR", "A data validation error occurred.");
 
     private final String errCode;

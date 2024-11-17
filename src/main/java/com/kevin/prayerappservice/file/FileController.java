@@ -26,7 +26,7 @@ public class FileController implements FileApi{
     }
 
     @Override
-    public ResponseEntity<Void> deleteFile(@PathVariable int fileId){
+    public ResponseEntity<Void> deleteFile(@PathVariable int fileId) throws IOException{
         fileService.deleteFile(fileId);
         return null;
     }

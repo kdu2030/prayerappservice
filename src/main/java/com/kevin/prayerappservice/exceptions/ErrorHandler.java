@@ -12,6 +12,8 @@ import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
 @ControllerAdvice
@@ -24,7 +26,20 @@ public class ErrorHandler {
 
         Error error = Error.builder()
                 .errorCode(ErrorCode.GENERIC_ERROR.getErrCode())
-                .message(ErrorCode.GENERIC_ERROR.getErrMessageKey())
+                .message(Optional.ofNullable(exception.getMessage()).orElse(ErrorCode.GENERIC_ERROR.getErrMessageKey()))
+                .url(request.getRequestURL().toString())
+                .reqMethod(request.getMethod())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<Error> handleException(HttpServletRequest request, IOException exception){
+        logger.error("Generic Error occurred", exception);
+
+        Error error = Error.builder()
+                .errorCode(ErrorCode.IO_ERROR.getErrCode())
+                .message(Optional.ofNullable(exception.getMessage()).orElse(ErrorCode.IO_ERROR.getErrMessageKey()))
                 .url(request.getRequestURL().toString())
                 .reqMethod(request.getMethod())
                 .build();

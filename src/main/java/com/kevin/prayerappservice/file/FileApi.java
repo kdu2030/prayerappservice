@@ -18,6 +18,6 @@ public interface FileApi {
 
    @DeleteMapping(value = "/{fileId}")
    @Operation(summary = "Deletes file")
-   ResponseEntity<Void> deleteFile(@PathVariable int fileId);
+   ResponseEntity<Void> deleteFile(@PathVariable int fileId) throws IOException;
 
 }
