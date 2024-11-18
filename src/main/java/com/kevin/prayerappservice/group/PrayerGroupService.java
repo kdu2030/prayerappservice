@@ -43,7 +43,9 @@ public class PrayerGroupService {
         }
 
         Optional<File> imageFile = fileRepository.findById(newPrayerGroup.getImageFileId());
-        int colorInt = ColorUtils.colorHexStringToInt(newPrayerGroup.getColor());
+
+        String colorString = newPrayerGroup.getColor();
+        Integer colorInt = colorString != null ? ColorUtils.colorHexStringToInt(newPrayerGroup.getColor()) : null;
         PrayerGroup prayerGroup = new PrayerGroup(newPrayerGroup.getName(), newPrayerGroup.getDescription(),
                 newPrayerGroup.getRules(), colorInt, imageFile.orElse(null));
 

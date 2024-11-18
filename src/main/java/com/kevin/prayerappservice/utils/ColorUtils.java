@@ -13,6 +13,9 @@ public class ColorUtils {
     }
 
     public static String colorIntToHexString(int colorInt){
-        return String.format("#%x", colorInt);
+        int red = (colorInt & 0xFF0000) >> 16;
+        int green = (colorInt & 0xFF00) >> 8;
+        int blue = colorInt & 0xFF;
+        return String.format("#%02x%02x%02x", red, green, blue);
     }
 }

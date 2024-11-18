@@ -32,7 +32,7 @@ public class PrayerGroup {
 
     public PrayerGroup(){}
 
-    public PrayerGroup(String groupName, @Nullable String description, @Nullable String rules, @Nullable int color, @Nullable File imageFile) {
+    public PrayerGroup(String groupName, @Nullable String description, @Nullable String rules, @Nullable Integer color, @Nullable File imageFile) {
         this.groupName = groupName;
         this.description = description;
         this.rules = rules;
