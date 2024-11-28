@@ -15,6 +15,7 @@ import com.kevin.prayerappservice.utils.ColorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -61,6 +62,13 @@ public class PrayerGroupService {
             prayerGroupUserRepository.save(prayerGroupUser);
         }
 
+        return PrayerGroupSummary.createPrayerGroupSummary(prayerGroup);
+    }
+
+    public PrayerGroupSummary getPrayerGroup(int prayerGroupId) {
+        PrayerGroup prayerGroup =
+                prayerGroupRepository.findById(prayerGroupId).orElseThrow(() -> new NoSuchElementException("Unable to" +
+                        " find a prayer group with ID:" + prayerGroupId));
         return PrayerGroupSummary.createPrayerGroupSummary(prayerGroup);
     }
 
