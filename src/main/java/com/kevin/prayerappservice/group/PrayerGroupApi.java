@@ -19,4 +19,6 @@ public interface PrayerGroupApi {
     @GetMapping(value = "/{prayerGroupId}", produces = {"application/json"})
     @Operation(summary = "Gets a prayer group summary")
     ResponseEntity<PrayerGroupSummary> getPrayerGroup(@PathVariable int prayerGroupId);
+
+
 }
