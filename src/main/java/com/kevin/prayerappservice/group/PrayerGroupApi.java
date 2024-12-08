@@ -2,6 +2,7 @@ package com.kevin.prayerappservice.group;
 
 import com.kevin.prayerappservice.group.models.NewPrayerGroup;
 import com.kevin.prayerappservice.group.models.PrayerGroupSummary;
+import com.kevin.prayerappservice.lang.CultureCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,6 +20,9 @@ public interface PrayerGroupApi {
     @GetMapping(value = "/{prayerGroupId}", produces = {"application/json"})
     @Operation(summary = "Gets a prayer group summary")
     ResponseEntity<PrayerGroupSummary> getPrayerGroup(@PathVariable int prayerGroupId);
+
+    @GetMapping(value = "/search")
+    ResponseEntity<PrayerGroupSummary[]> searchPrayerGroups(@RequestParam CultureCode cultureCode, @RequestParam(required = false) String searchTerm, @RequestParam(required = false) int userId);
 
 
 }
