@@ -4,6 +4,7 @@ import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.group.models.NewPrayerGroup;
 import com.kevin.prayerappservice.group.models.PrayerGroupSummary;
 import com.kevin.prayerappservice.lang.CultureCode;
+import com.kevin.prayerappservice.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class PrayerGroupController implements PrayerGroupApi {
     private final PrayerGroupService prayerGroupService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PrayerGroupController(PrayerGroupService prayerGroupService){
+    public PrayerGroupController(PrayerGroupService prayerGroupService, UserRepository userRepository){
         this.prayerGroupService = prayerGroupService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -36,7 +39,12 @@ public class PrayerGroupController implements PrayerGroupApi {
         if(searchTerm == null || userId == 0){
             throw new DataValidationException(new String[] {"Search term or user ID must be non null."});
         }
+
+
+
         return null;
     }
+
+
 
 }

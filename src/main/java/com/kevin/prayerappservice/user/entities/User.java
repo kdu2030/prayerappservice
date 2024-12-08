@@ -122,4 +122,8 @@ public class User implements UserDetails {
     public void setImageFile(File imageFile) {
         this.imageFile = imageFile;
     }
+
+    public List<PrayerGroupUser> getPrayerGroupUsers() {
+        return prayerGroupUsers;
+    }
 }
