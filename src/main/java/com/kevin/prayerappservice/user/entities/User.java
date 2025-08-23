@@ -84,6 +84,10 @@ public class User implements UserDetails {
         return userId;
     }
 
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
     public void setFullName(@NotBlank String fullName) {
         this.fullName = fullName;
     }
