@@ -68,11 +68,6 @@ public class FileService {
     }
 
     public void deleteFile(int fileId) throws IOException {
-        FileDeleteValidation fileDeleteValidation = validateFileDelete(fileId);
-        if (!fileDeleteValidation.isCanDelete()) {
-            throw new DataValidationException(new String[]{fileDeleteValidation.getDeleteError()});
-        }
-
         File file = fileRepository.findById(fileId).get();
         String fileUrl = file.getFileUrl();
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
@@ -91,10 +86,4 @@ public class FileService {
 
         fileRepository.delete(file);
     }
-
-    private FileDeleteValidation validateFileDelete(int fileId) {
-        Object[][] result = fileRepository.validateFileDeleteRaw(fileId);
-        return new FileDeleteValidation((boolean) result[0][0], (String) result[0][1]);
-    }
-
 }
