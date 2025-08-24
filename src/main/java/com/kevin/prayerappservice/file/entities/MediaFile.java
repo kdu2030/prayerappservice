@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.file.entities;
 
+import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -23,8 +24,13 @@ public class MediaFile {
     private FileType fileType;
 
     @OneToMany(mappedBy = "imageFile")
-    private List<User> userImages;
+    private List<User> users;
 
+    @OneToMany(mappedBy = "avatarFile")
+    private List<PrayerGroup> avatarPrayerGroups;
+
+    @OneToMany(mappedBy = "bannerFile")
+    private List<PrayerGroup> bannerPrayerGroups;
 
     public MediaFile() {}
 
