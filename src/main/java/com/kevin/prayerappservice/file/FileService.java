@@ -7,7 +7,9 @@ import com.kevin.prayerappservice.file.dtos.FileUploadResponse;
 import com.kevin.prayerappservice.file.entities.File;
 import com.kevin.prayerappservice.file.entities.FileType;
 import com.kevin.prayerappservice.file.models.FileSummary;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,11 +25,14 @@ public class FileService {
 
     private final ObjectMapper objectMapper;
     private final FileRepository fileRepository;
+    private final FileServicesClient fileServicesClient;
 
     @Autowired
-    public FileService(ObjectMapper objectMapper, FileRepository fileRepository){
+    public FileService(ObjectMapper objectMapper, FileRepository fileRepository,
+                       FileServicesClient fileServicesClient) {
         this.objectMapper = objectMapper;
         this.fileRepository = fileRepository;
+        this.fileServicesClient = fileServicesClient;
     }
 
     public FileSummary uploadFile(MultipartFile rawFile) throws IOException {
@@ -39,42 +44,32 @@ public class FileService {
             throw new DataValidationException(new String[]{"File type is not supported."});
         }
 
-        if(rawFilePath == null){
+        if (rawFilePath == null) {
             throw new DataValidationException(new String[]{"File must have a name."});
         }
 
-        OkHttpClient client = new OkHttpClient();
+        try (Response response = fileServicesClient.uploadFile(rawFilePath, rawFile, contentType)) {
 
-        RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("file",
-                        rawFilePath,
-                        RequestBody.create(rawFile.getBytes(),
-                                MediaType.parse(contentType)))
-                .build();
+            if (!response.isSuccessful() || response.body() == null) {
+                throw new IOException("Unable to upload file to File API");
+            }
 
-        Request request = new Request.Builder()
-                .url(fileUploadBaseUrl + "/file")
-                .post(requestBody)
-                .build();
+            FileUploadResponse fileResponseBody = objectMapper.readValue(response.body().string(),
+                    FileUploadResponse.class);
+            String fileName = String.valueOf(Paths.get(rawFilePath).getFileName());
 
-        Response response = client.newCall(request).execute();
+            File file = new File(fileName, fileType, fileResponseBody.getUrl());
+            fileRepository.save(file);
 
-        if (!response.isSuccessful() || response.body() == null) {
+            return FileSummary.fileToFileSummary(file);
+        } catch (Exception e) {
             throw new IOException("Unable to upload file to File API");
         }
-
-        FileUploadResponse fileResponseBody = objectMapper.readValue(response.body().string(), FileUploadResponse.class);
-        String fileName = String.valueOf(Paths.get(rawFilePath).getFileName());
-
-        File file = new File(fileName, fileType, fileResponseBody.getUrl());
-        fileRepository.save(file);
-        return FileSummary.fileToFileSummary(file);
     }
 
-    public void deleteFile(int fileId) throws IOException{
+    public void deleteFile(int fileId) throws IOException {
         FileDeleteValidation fileDeleteValidation = validateFileDelete(fileId);
-        if(!fileDeleteValidation.isCanDelete()) {
+        if (!fileDeleteValidation.isCanDelete()) {
             throw new DataValidationException(new String[]{fileDeleteValidation.getDeleteError()});
         }
 
@@ -90,14 +85,14 @@ public class FileService {
                 .build();
 
         Response response = client.newCall(request).execute();
-        if(!response.isSuccessful()){
+        if (!response.isSuccessful()) {
             throw new IOException("Unable to delete file");
         }
 
         fileRepository.delete(file);
     }
 
-    private FileDeleteValidation validateFileDelete(int fileId){
+    private FileDeleteValidation validateFileDelete(int fileId) {
         Object[][] result = fileRepository.validateFileDeleteRaw(fileId);
         return new FileDeleteValidation((boolean) result[0][0], (String) result[0][1]);
     }
