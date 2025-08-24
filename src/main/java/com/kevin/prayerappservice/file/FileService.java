@@ -2,13 +2,10 @@ package com.kevin.prayerappservice.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
-import com.kevin.prayerappservice.file.dtos.FileDeleteValidation;
 import com.kevin.prayerappservice.file.dtos.FileUploadResponse;
 import com.kevin.prayerappservice.file.entities.File;
 import com.kevin.prayerappservice.file.entities.FileType;
 import com.kevin.prayerappservice.file.models.FileSummary;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,27 +60,25 @@ public class FileService {
 
             return FileSummary.fileToFileSummary(file);
         } catch (Exception e) {
-            throw new IOException("Unable to upload file to File API");
+            throw new IOException("Unable to upload file");
         }
     }
 
     public void deleteFile(int fileId) throws IOException {
-        File file = fileRepository.findById(fileId).get();
+        File file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new DataValidationException(new String[]{"Unable to find file"}));
+
         String fileUrl = file.getFileUrl();
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
 
-        OkHttpClient client = new OkHttpClient();
+        try (Response response = fileServicesClient.deleteFile(fileName)) {
+            if (!response.isSuccessful()) {
+                throw new IOException(String.format("Unable to delete file %d", fileId));
+            }
 
-        Request request = new Request.Builder()
-                .url(String.format("%s/file/%s", fileUploadBaseUrl, fileName))
-                .delete()
-                .build();
-
-        Response response = client.newCall(request).execute();
-        if (!response.isSuccessful()) {
-            throw new IOException("Unable to delete file");
+            fileRepository.delete(file);
+        } catch (IOException e) {
+            throw new IOException(String.format("Unable to delete file %d", fileId));
         }
-
-        fileRepository.delete(file);
     }
 }

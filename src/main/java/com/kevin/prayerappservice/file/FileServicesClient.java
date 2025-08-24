@@ -34,4 +34,13 @@ public class FileServicesClient {
 
         return httpClient.newCall(request).execute();
     }
+
+    public Response deleteFile(String fileName) throws IOException {
+        Request request = new Request.Builder()
+                .url(String.format("%s/file/%s", fileUploadBaseUrl, fileName))
+                .delete()
+                .build();
+
+        return httpClient.newCall(request).execute();
+    }
 }
