@@ -1,0 +1,10 @@
+CREATE SEQUENCE IF NOT EXISTS file_seq
+START 1
+INCREMENT 50;
+
+CREATE TABLE IF NOT EXISTS file (
+    file_id INT PRIMARY KEY DEFAULT nextval('file_seq'),
+    file_name VARCHAR(255) NOT NULL,
+    file_url VARCHAR(255) NOT NULL,
+    file_type VARCHAR(255) NOT NULL
+);
