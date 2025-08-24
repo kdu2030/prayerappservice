@@ -22,7 +22,7 @@ public class FileServicesClient {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file",
-                        rawFilePath,
+                        filePath,
                         RequestBody.create(rawFile.getBytes(),
                                 MediaType.parse(contentType)))
                 .build();
