@@ -73,4 +73,32 @@ public class MediaFile {
     public void setFileType(FileType fileType) {
         this.fileType = fileType;
     }
+
+    public void setMediaFileId(Integer mediaFileId) {
+        this.mediaFileId = mediaFileId;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public List<PrayerGroup> getAvatarPrayerGroups() {
+        return avatarPrayerGroups;
+    }
+
+    public void setAvatarPrayerGroups(List<PrayerGroup> avatarPrayerGroups) {
+        this.avatarPrayerGroups = avatarPrayerGroups;
+    }
+
+    public List<PrayerGroup> getBannerPrayerGroups() {
+        return bannerPrayerGroups;
+    }
+
+    public void setBannerPrayerGroups(List<PrayerGroup> bannerPrayerGroups) {
+        this.bannerPrayerGroups = bannerPrayerGroups;
+    }
 }
