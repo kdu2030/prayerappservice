@@ -23,7 +23,7 @@ public class SecurityConfig {
     private final AuthUserDetailsService authUserDetailsService;
     private final PasswordEncoder passwordEncoder;
 
-    private static final String[] WHITELIST_URL_PATTERNS = {"/swagger-ui/**", "/v3/api-docs/**", "/api/v1/user/**"};
+    private static final String[] WHITELIST_URL_PATTERNS = {"/swagger-ui/**", "/v3/api-docs/**", "/api/user/**"};
 
     @Autowired
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,

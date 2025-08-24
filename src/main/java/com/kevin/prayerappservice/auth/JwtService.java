@@ -19,6 +19,7 @@ import java.util.function.Function;
 public class JwtService {
 
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final String USER_ID_CLAIM = "userId";
     private static final int TOKEN_VALIDITY_LENGTH_MS = 1000 * 60 * 60 * 24 * 15;
 
     @Value("${jwt.signing-key}")
@@ -28,16 +29,25 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(userDetails, new HashMap<>(), TOKEN_VALIDITY_LENGTH_MS);
+    public Integer extractUserId(String token) {
+        return this.<Integer>extractClaim(token, (claims) -> (Integer)claims.get(USER_ID_CLAIM));
     }
 
-    public String generateToken(UserDetails userDetails, int validityLengthMs){
-        return generateToken(userDetails, new HashMap<>(),  validityLengthMs);
+    public String generateToken(Integer userId, UserDetails userDetails) {
+        return generateToken(userId, userDetails, new HashMap<>(), TOKEN_VALIDITY_LENGTH_MS);
     }
 
-    public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims, int validityLengthMs) {
+    public String generateToken(Integer userId, UserDetails userDetails, int validityLengthMs){
+        return generateToken(userId, userDetails, new HashMap<>(),  validityLengthMs);
+    }
+
+    public String generateToken(Integer userId, UserDetails userDetails, Map<String, Object> extraClaims, int validityLengthMs) {
         long currentSystemTime = System.currentTimeMillis();
+
+        if(userId != null){
+            extraClaims.put(USER_ID_CLAIM, userId);
+        }
+
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())

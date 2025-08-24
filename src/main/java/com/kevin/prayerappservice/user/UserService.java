@@ -61,14 +61,18 @@ public class UserService {
     public UserTokenPair getUserTokenPair(String authorization){
         String refreshToken = jwtService.extractTokenFromAuthHeader(authorization);
         String username = jwtService.extractUsername(refreshToken);
+        Integer userId = jwtService.extractUserId(refreshToken);
+
         User user = new User();
         user.setUsername(username);
+        user.setUserId(userId);
+
         return generateUserTokenPair(user);
     }
 
     private UserTokenPair generateUserTokenPair(User user){
-        String accessToken = jwtService.generateToken(user, ACCESS_TOKEN_VALIDITY_LENGTH_MS);
-        String refreshToken = jwtService.generateToken(user, REFRESH_TOKEN_VALIDITY_LENGTH_MS);
+        String accessToken = jwtService.generateToken(user.getUserId(), user, ACCESS_TOKEN_VALIDITY_LENGTH_MS);
+        String refreshToken = jwtService.generateToken(user.getUserId(), user, REFRESH_TOKEN_VALIDITY_LENGTH_MS);
         return new UserTokenPair(accessToken, refreshToken);
     }
 

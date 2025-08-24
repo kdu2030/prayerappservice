@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Tag(name = "User", description = "the User API")
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/user")
 public interface UserApi {
 
     @RequestMapping(
