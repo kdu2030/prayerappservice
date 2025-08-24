@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.user.entities;
 
+import com.kevin.prayerappservice.file.entities.MediaFile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +33,10 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ManyToOne
+    @JoinColumn(name = "image_file_id")
+    private MediaFile imageFile;
 
     public User(){
         this.fullName = null;
@@ -106,5 +111,13 @@ public class User implements UserDetails {
 
     public void setEmail(@NotBlank String email) {
         this.email = email;
+    }
+
+    public MediaFile getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(MediaFile imageFile) {
+        this.imageFile = imageFile;
     }
 }

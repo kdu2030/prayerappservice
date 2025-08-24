@@ -1,7 +1,10 @@
 package com.kevin.prayerappservice.file.entities;
 
+import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.List;
 
 @Entity
 public class MediaFile {
@@ -18,6 +21,10 @@ public class MediaFile {
 
     @Enumerated(EnumType.STRING)
     private FileType fileType;
+
+    @OneToMany(mappedBy = "imageFile")
+    private List<User> userImages;
+
 
     public MediaFile() {}
 
