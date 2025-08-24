@@ -11,11 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Controller
-public class MediaMediaFileController implements MediaFileApi {
+public class MediaFileController implements MediaFileApi {
     private final MediaFileService mediaFileService;
 
     @Autowired
-    public MediaMediaFileController(MediaFileService mediaFileService){
+    public MediaFileController(MediaFileService mediaFileService){
         this.mediaFileService = mediaFileService;
     }
 

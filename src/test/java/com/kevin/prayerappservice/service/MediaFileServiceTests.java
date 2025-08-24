@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class MediaMediaFileServiceTests {
+public class MediaFileServiceTests {
     @Autowired
     private MediaFileRepository mediaFileRepository;
 
