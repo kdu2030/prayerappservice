@@ -3,9 +3,9 @@ package com.kevin.prayerappservice.file;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.file.dtos.FileUploadResponse;
-import com.kevin.prayerappservice.file.entities.File;
+import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.file.entities.FileType;
-import com.kevin.prayerappservice.file.models.FileSummary;
+import com.kevin.prayerappservice.file.models.MediaFileSummary;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class FileService {
         this.fileServicesClient = fileServicesClient;
     }
 
-    public FileSummary uploadFile(MultipartFile rawFile) throws IOException {
+    public MediaFileSummary uploadFile(MultipartFile rawFile) throws IOException {
         String contentType = rawFile.getContentType();
         FileType fileType = FileType.getFileTypeFromContentType(contentType);
         String rawFilePath = rawFile.getOriginalFilename();
@@ -55,20 +55,20 @@ public class FileService {
                     FileUploadResponse.class);
             String fileName = String.valueOf(Paths.get(rawFilePath).getFileName());
 
-            File file = new File(fileName, fileType, fileResponseBody.getUrl());
-            fileRepository.save(file);
+            MediaFile mediaFile = new MediaFile(fileName, fileType, fileResponseBody.getUrl());
+            fileRepository.save(mediaFile);
 
-            return FileSummary.fileToFileSummary(file);
+            return MediaFileSummary.fileToFileSummary(mediaFile);
         } catch (Exception e) {
             throw new IOException("Unable to upload file");
         }
     }
 
     public void deleteFile(int fileId) throws IOException {
-        File file = fileRepository.findById(fileId)
+        MediaFile mediaFile = fileRepository.findById(fileId)
                 .orElseThrow(() -> new DataValidationException(new String[]{"Unable to find file"}));
 
-        String fileUrl = file.getFileUrl();
+        String fileUrl = mediaFile.getFileUrl();
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
 
         try (Response response = fileServicesClient.deleteFile(fileName)) {
@@ -76,7 +76,7 @@ public class FileService {
                 throw new IOException(String.format("Unable to delete file %d", fileId));
             }
 
-            fileRepository.delete(file);
+            fileRepository.delete(mediaFile);
         } catch (IOException e) {
             throw new IOException(String.format("Unable to delete file %d", fileId));
         }

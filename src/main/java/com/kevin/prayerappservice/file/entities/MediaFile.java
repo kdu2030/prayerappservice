@@ -3,13 +3,11 @@ package com.kevin.prayerappservice.file.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.List;
-
 @Entity
-public class File {
+public class MediaFile {
     @Id
     @GeneratedValue
-    private Integer fileId;
+    private Integer mediaFileId;
 
     @NotBlank
     private String fileName;
@@ -21,15 +19,15 @@ public class File {
     @Enumerated(EnumType.STRING)
     private FileType fileType;
 
-    public File() {}
+    public MediaFile() {}
 
-    public File(String fileName, FileType fileType){
+    public MediaFile(String fileName, FileType fileType){
         this.fileName = fileName;
         this.fileType = fileType;
         this.fileUrl = null;
     }
 
-    public File(String fileName, FileType fileType,  String fileUrl){
+    public MediaFile(String fileName, FileType fileType, String fileUrl){
         this.fileName = fileName;
         this.fileUrl = fileUrl;
         this.fileType = fileType;
@@ -43,8 +41,8 @@ public class File {
         this.fileUrl = fileUrl;
     }
 
-    public Integer getFileId() {
-        return fileId;
+    public Integer getMediaFileId() {
+        return mediaFileId;
     }
 
     public @NotBlank String getFileName() {

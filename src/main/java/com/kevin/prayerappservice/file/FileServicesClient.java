@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.file;
 
+import com.kevin.prayerappservice.file.dtos.FileUploadResponse;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
