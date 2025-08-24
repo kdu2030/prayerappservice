@@ -11,23 +11,23 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Controller
-public class FileController implements FileApi{
-    private final FileService fileService;
+public class MediaMediaFileController implements MediaFileApi {
+    private final MediaFileService mediaFileService;
 
     @Autowired
-    public FileController(FileService fileService){
-        this.fileService = fileService;
+    public MediaMediaFileController(MediaFileService mediaFileService){
+        this.mediaFileService = mediaFileService;
     }
 
     @Override
     public ResponseEntity<MediaFileSummary> uploadFile(MultipartFile rawFile) throws IOException {
-        MediaFileSummary file = fileService.uploadFile(rawFile);
+        MediaFileSummary file = mediaFileService.uploadFile(rawFile);
         return new ResponseEntity<>(file, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<Void> deleteFile(@PathVariable int fileId) throws IOException{
-        fileService.deleteFile(fileId);
+        mediaFileService.deleteFile(fileId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

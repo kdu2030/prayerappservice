@@ -16,19 +16,19 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 @Service
-public class FileService {
+public class MediaFileService {
     @Value("${fileupload.url}")
     private String fileUploadBaseUrl;
 
     private final ObjectMapper objectMapper;
-    private final FileRepository fileRepository;
+    private final MediaFileRepository mediaFileRepository;
     private final FileServicesClient fileServicesClient;
 
     @Autowired
-    public FileService(ObjectMapper objectMapper, FileRepository fileRepository,
-                       FileServicesClient fileServicesClient) {
+    public MediaFileService(ObjectMapper objectMapper, MediaFileRepository mediaFileRepository,
+                            FileServicesClient fileServicesClient) {
         this.objectMapper = objectMapper;
-        this.fileRepository = fileRepository;
+        this.mediaFileRepository = mediaFileRepository;
         this.fileServicesClient = fileServicesClient;
     }
 
@@ -56,16 +56,16 @@ public class FileService {
             String fileName = String.valueOf(Paths.get(rawFilePath).getFileName());
 
             MediaFile mediaFile = new MediaFile(fileName, fileType, fileResponseBody.getUrl());
-            fileRepository.save(mediaFile);
+            mediaFileRepository.save(mediaFile);
 
             return MediaFileSummary.fileToFileSummary(mediaFile);
         } catch (Exception e) {
-            throw new IOException("Unable to upload file");
+            throw e;
         }
     }
 
     public void deleteFile(int fileId) throws IOException {
-        MediaFile mediaFile = fileRepository.findById(fileId)
+        MediaFile mediaFile = mediaFileRepository.findById(fileId)
                 .orElseThrow(() -> new DataValidationException(new String[]{"Unable to find file"}));
 
         String fileUrl = mediaFile.getFileUrl();
@@ -76,7 +76,7 @@ public class FileService {
                 throw new IOException(String.format("Unable to delete file %d", fileId));
             }
 
-            fileRepository.delete(mediaFile);
+            mediaFileRepository.delete(mediaFile);
         } catch (IOException e) {
             throw new IOException(String.format("Unable to delete file %d", fileId));
         }

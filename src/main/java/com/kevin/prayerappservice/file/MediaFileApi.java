@@ -9,9 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@Tag(name = "File", description = "The File API")
+@Tag(name = "MediaFile", description = "The Media File API")
 @RequestMapping("/api/file")
-public interface FileApi {
+public interface MediaFileApi {
     @PostMapping(value = "", produces = {"application/json"}, consumes = { "multipart/form-data" })
     @Operation(summary = "Uploads file")
     ResponseEntity<MediaFileSummary> uploadFile(@RequestParam("file") MultipartFile file) throws IOException;

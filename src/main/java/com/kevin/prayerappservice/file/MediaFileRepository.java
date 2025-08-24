@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface FileRepository extends JpaRepository<MediaFile, Integer> {
+public interface MediaFileRepository extends JpaRepository<MediaFile, Integer> {
     public Optional<MediaFile> findByFileName(String fileName);
 }

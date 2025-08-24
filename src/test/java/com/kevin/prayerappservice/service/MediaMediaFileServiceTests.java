@@ -2,8 +2,8 @@ package com.kevin.prayerappservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
-import com.kevin.prayerappservice.file.FileRepository;
-import com.kevin.prayerappservice.file.FileService;
+import com.kevin.prayerappservice.file.MediaFileRepository;
+import com.kevin.prayerappservice.file.MediaFileService;
 import com.kevin.prayerappservice.file.FileServicesClient;
 import com.kevin.prayerappservice.file.dtos.FileUploadResponse;
 import com.kevin.prayerappservice.file.entities.MediaFile;
@@ -29,9 +29,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class MediaFileServiceTests {
+public class MediaMediaFileServiceTests {
     @Autowired
-    private FileRepository fileRepository;
+    private MediaFileRepository mediaFileRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -40,7 +40,7 @@ public class MediaFileServiceTests {
     private FileServicesClient mockFileServicesClient;
 
     @Autowired
-    private FileService fileService;
+    private MediaFileService mediaFileService;
 
     @Test
     public void uploadFile_validImage_savesImage() throws IOException {
@@ -60,8 +60,8 @@ public class MediaFileServiceTests {
 
         MockMultipartFile mockMultipartFile = new MockMultipartFile("jake_peralta.png", "jake_peralta.png",
                 MediaType.IMAGE_PNG_VALUE, new byte[]{});
-        fileService.uploadFile(mockMultipartFile);
-        Optional<MediaFile> file = fileRepository.findByFileName("jake_peralta.png");
+        mediaFileService.uploadFile(mockMultipartFile);
+        Optional<MediaFile> file = mediaFileRepository.findByFileName("jake_peralta.png");
 
         Assertions.assertThat(file.isPresent()).isTrue();
         Assertions.assertThat(file.get().getFileType()).isEqualTo(FileType.IMAGE);
@@ -73,9 +73,9 @@ public class MediaFileServiceTests {
                 MediaType.IMAGE_GIF_VALUE, new byte[]{});
 
         Assertions.assertThatExceptionOfType(DataValidationException.class)
-                .isThrownBy(() -> fileService.uploadFile(mockMultipartFile));
+                .isThrownBy(() -> mediaFileService.uploadFile(mockMultipartFile));
 
-        Optional<MediaFile> file = fileRepository.findByFileName("jake_peralta.gif");
+        Optional<MediaFile> file = mediaFileRepository.findByFileName("jake_peralta.gif");
         Assertions.assertThat(file.isEmpty()).isTrue();
     }
 
