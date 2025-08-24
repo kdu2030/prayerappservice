@@ -10,6 +10,7 @@ import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.file.entities.FileType;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -80,7 +81,21 @@ public class MediaFileServiceTests {
     }
 
     @Test
-    public void deleteFile_givenValidId_deletesFile(){
+    public void deleteFile_givenValidId_deletesFile() throws IOException {
+        MediaFile file = new MediaFile("amySantiago.jpg", FileType.IMAGE, "https://testurl.com/test.jpg");
+        mediaFileRepository.save(file);
 
+        Response mockResponse = Mockito.mock(Response.class);
+        Mockito.when(mockResponse.isSuccessful()).thenReturn(true);
+
+        Mockito.when(mockFileServicesClient.deleteFile(anyString()))
+                .thenReturn(mockResponse);
+
+        mediaFileService.deleteFile(file.getMediaFileId());
+
+        Optional<MediaFile> deletedFile = mediaFileRepository.findById(file.getMediaFileId());
+        Assertions.assertThat(deletedFile.isEmpty());
     }
+
+
 }
