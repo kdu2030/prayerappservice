@@ -4,6 +4,8 @@ import com.kevin.prayerappservice.file.entities.MediaFile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.List;
+
 @Entity
 public class PrayerGroup {
     @Id
@@ -31,6 +33,9 @@ public class PrayerGroup {
     @ManyToOne
     @JoinColumn(name = "banner_file_id")
     private MediaFile bannerFile;
+
+    @OneToMany(mappedBy = "prayerGroup")
+    private List<PrayerGroupUser> prayerGroupUsers;
 
     public PrayerGroup(String groupName, String description, String rules, VisibilityLevel visibilityLevel,
                        MediaFile avatarFile, MediaFile bannerFile) {
@@ -96,5 +101,13 @@ public class PrayerGroup {
 
     public void setBannerFile(MediaFile bannerFile) {
         this.bannerFile = bannerFile;
+    }
+
+    public List<PrayerGroupUser> getPrayerGroupUsers() {
+        return prayerGroupUsers;
+    }
+
+    public void setPrayerGroupUsers(List<PrayerGroupUser> prayerGroupUsers) {
+        this.prayerGroupUsers = prayerGroupUsers;
     }
 }

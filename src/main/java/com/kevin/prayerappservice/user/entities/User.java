@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.user.entities;
 
 import com.kevin.prayerappservice.file.entities.MediaFile;
+import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,6 +38,9 @@ public class User implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "image_file_id")
     private MediaFile imageFile;
+
+    @OneToMany(mappedBy = "user")
+    private List<PrayerGroupUser> prayerGroupUsers;
 
     public User(){
         this.fullName = null;
@@ -119,5 +123,13 @@ public class User implements UserDetails {
 
     public void setImageFile(MediaFile imageFile) {
         this.imageFile = imageFile;
+    }
+
+    public List<PrayerGroupUser> getPrayerGroupUsers() {
+        return prayerGroupUsers;
+    }
+
+    public void setPrayerGroupUsers(List<PrayerGroupUser> prayerGroupUsers) {
+        this.prayerGroupUsers = prayerGroupUsers;
     }
 }
