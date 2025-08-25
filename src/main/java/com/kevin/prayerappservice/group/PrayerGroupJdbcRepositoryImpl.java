@@ -6,15 +6,17 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public class PrayerGroupJdbcRepositoryImpl implements PrayerGroupJdbcRepository {
-   private final JdbcTemplate jdbcTemplate;
+   private final NamedParameterJdbcTemplate jdbcTemplate;
 
-   public PrayerGroupJdbcRepositoryImpl(JdbcTemplate jdbcTemplate){
+   public PrayerGroupJdbcRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate){
        this.jdbcTemplate = jdbcTemplate;
    }
 
@@ -23,17 +25,11 @@ public class PrayerGroupJdbcRepositoryImpl implements PrayerGroupJdbcRepository 
         String sql = "SELECT * FROM createPrayerGroup(:creatorUserId, :newGroupName, :groupDescription, :groupRules, :groupVisibility, :avatarFileId, :bannerFileId)";
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(createPrayerGroupRequest);
 
-        List<CreatedPrayerGroupDTO> results = jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 sql,
-                (PreparedStatementSetter) params,
+                params,
                 new BeanPropertyRowMapper<>(CreatedPrayerGroupDTO.class)
         );
-
-        if (results.isEmpty()) {
-            throw new RuntimeException("Failed to create prayer group - no result returned");
-        }
-
-        return results.getFirst();
     }
 
 }
