@@ -6,11 +6,11 @@ public class CreatePrayerGroupRequest {
     private String groupName;
     private String description;
     private String rules;
-    private int avatarFileId;
-    private int bannerFileId;
+    private Integer avatarFileId;
+    private Integer bannerFileId;
     private VisibilityLevel visibilityLevel;
 
-    public CreatePrayerGroupRequest(String groupName, String description, String rules, int avatarFileId, int bannerFileId, VisibilityLevel visibilityLevel) {
+    public CreatePrayerGroupRequest(String groupName, String description, String rules, Integer avatarFileId, Integer bannerFileId, VisibilityLevel visibilityLevel) {
         this.groupName = groupName;
         this.description = description;
         this.rules = rules;
@@ -43,19 +43,19 @@ public class CreatePrayerGroupRequest {
         this.rules = rules;
     }
 
-    public int getAvatarFileId() {
+    public Integer getAvatarFileId() {
         return avatarFileId;
     }
 
-    public void setAvatarFileId(int avatarFileId) {
+    public void setAvatarFileId(Integer avatarFileId) {
         this.avatarFileId = avatarFileId;
     }
 
-    public int getBannerFileId() {
+    public Integer getBannerFileId() {
         return bannerFileId;
     }
 
-    public void setBannerFileId(int bannerFileId) {
+    public void setBannerFileId(Integer bannerFileId) {
         this.bannerFileId = bannerFileId;
     }
 

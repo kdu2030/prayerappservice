@@ -3,15 +3,15 @@ package com.kevin.prayerappservice.group.dtos;
 import com.kevin.prayerappservice.group.entities.VisibilityLevel;
 
 public class CreatePrayerGroupRequestDTO {
-    private String creatorUserId;
+    private int creatorUserId;
     private String newGroupName;
     private String groupDescription;
     private String groupRules;
-    private VisibilityLevel groupVisibility;
+    private String groupVisibility;
     private Integer avatarFileId;
     private Integer bannerFileId;
 
-    public CreatePrayerGroupRequestDTO(String creatorUserId, String newGroupName, String groupDescription, String groupRules, VisibilityLevel groupVisibility, Integer avatarFileId, Integer bannerFileId) {
+    public CreatePrayerGroupRequestDTO(int creatorUserId, String newGroupName, String groupDescription, String groupRules, String groupVisibility, Integer avatarFileId, Integer bannerFileId) {
         this.creatorUserId = creatorUserId;
         this.newGroupName = newGroupName;
         this.groupDescription = groupDescription;
@@ -21,11 +21,11 @@ public class CreatePrayerGroupRequestDTO {
         this.bannerFileId = bannerFileId;
     }
 
-    public String getCreatorUserId() {
+    public int getCreatorUserId() {
         return creatorUserId;
     }
 
-    public void setCreatorUserId(String creatorUserId) {
+    public void setCreatorUserId(int creatorUserId) {
         this.creatorUserId = creatorUserId;
     }
 
@@ -53,11 +53,11 @@ public class CreatePrayerGroupRequestDTO {
         this.groupRules = groupRules;
     }
 
-    public VisibilityLevel getGroupVisibility() {
+    public String getGroupVisibility() {
         return groupVisibility;
     }
 
-    public void setGroupVisibility(VisibilityLevel groupVisibility) {
+    public void setGroupVisibility(String groupVisibility) {
         this.groupVisibility = groupVisibility;
     }
 

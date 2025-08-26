@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "PrayerGroup API", description = "The PrayerGroup API")
@@ -14,5 +15,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface PrayerGroupApi {
     @PostMapping(value = "", produces = {"application/json"}, consumes = { "application/json" })
     @Operation(summary = "Creates prayer group")
-    ResponseEntity<PrayerGroupModel> createPrayerGroup(@RequestBody CreatePrayerGroupRequest createPrayerGroupRequest);
+    ResponseEntity<Void> createPrayerGroup(@RequestHeader("Authorization") String authorizationHeader,  @RequestBody CreatePrayerGroupRequest createPrayerGroupRequest);
 }

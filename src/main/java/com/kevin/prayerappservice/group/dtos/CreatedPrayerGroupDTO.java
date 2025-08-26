@@ -8,18 +8,21 @@ public class CreatedPrayerGroupDTO {
     private String description;
     private String rules;
     private VisibilityLevel visibilityLevel;
-    private int avatarFileId;
+    private Integer avatarFileId;
     private String groupAvatarFileName;
     private String groupAvatarFileUrl;
-    private int bannerFileId;
+    private Integer bannerFileId;
     private String groupBannerFileName;
     private String groupBannerFileUrl;
     private int adminUserId;
     private String adminFullName;
-    private int adminImageFileId;
-    private int adminImageFile;
+    private Integer adminImageFileId;
+    private String adminImageFileName;
+    private String adminImageFileUrl;
 
-    public CreatedPrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules, VisibilityLevel visibilityLevel, int avatarFileId, String groupAvatarFileName, String groupAvatarFileUrl, int bannerFileId, String groupBannerFileName, String groupBannerFileUrl, int adminUserId, String adminFullName, int adminImageFileId, int adminImageFile) {
+    public CreatedPrayerGroupDTO(){}
+
+    public CreatedPrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules, VisibilityLevel visibilityLevel, Integer avatarFileId, String groupAvatarFileName, String groupAvatarFileUrl, Integer bannerFileId, String groupBannerFileName, String groupBannerFileUrl, int adminUserId, String adminFullName, Integer adminImageFileId, String adminImageFileName, String adminImageFileUrl) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.description = description;
@@ -34,7 +37,8 @@ public class CreatedPrayerGroupDTO {
         this.adminUserId = adminUserId;
         this.adminFullName = adminFullName;
         this.adminImageFileId = adminImageFileId;
-        this.adminImageFile = adminImageFile;
+        this.adminImageFileName = adminImageFileName;
+        this.adminImageFileUrl = adminImageFileUrl;
     }
 
     public int getPrayerGroupId() {
@@ -77,11 +81,11 @@ public class CreatedPrayerGroupDTO {
         this.visibilityLevel = visibilityLevel;
     }
 
-    public int getAvatarFileId() {
+    public Integer getAvatarFileId() {
         return avatarFileId;
     }
 
-    public void setAvatarFileId(int avatarFileId) {
+    public void setAvatarFileId(Integer avatarFileId) {
         this.avatarFileId = avatarFileId;
     }
 
@@ -101,11 +105,11 @@ public class CreatedPrayerGroupDTO {
         this.groupAvatarFileUrl = groupAvatarFileUrl;
     }
 
-    public int getBannerFileId() {
+    public Integer getBannerFileId() {
         return bannerFileId;
     }
 
-    public void setBannerFileId(int bannerFileId) {
+    public void setBannerFileId(Integer bannerFileId) {
         this.bannerFileId = bannerFileId;
     }
 
@@ -141,19 +145,27 @@ public class CreatedPrayerGroupDTO {
         this.adminFullName = adminFullName;
     }
 
-    public int getAdminImageFileId() {
+    public Integer getAdminImageFileId() {
         return adminImageFileId;
     }
 
-    public void setAdminImageFileId(int adminImageFileId) {
+    public void setAdminImageFileId(Integer adminImageFileId) {
         this.adminImageFileId = adminImageFileId;
     }
 
-    public int getAdminImageFile() {
-        return adminImageFile;
+    public String getAdminImageFileName() {
+        return adminImageFileName;
     }
 
-    public void setAdminImageFile(int adminImageFile) {
-        this.adminImageFile = adminImageFile;
+    public void setAdminImageFileName(String adminImageFileName) {
+        this.adminImageFileName = adminImageFileName;
+    }
+
+    public String getAdminImageFileUrl() {
+        return adminImageFileUrl;
+    }
+
+    public void setAdminImageFileUrl(String adminImageFileUrl) {
+        this.adminImageFileUrl = adminImageFileUrl;
     }
 }
