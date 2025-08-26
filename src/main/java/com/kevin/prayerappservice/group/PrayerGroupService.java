@@ -21,7 +21,8 @@ public class PrayerGroupService {
     public void createPrayerGroup(String authorizationHeader, CreatePrayerGroupRequest prayerGroupRequest) {
         String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
         int userId = jwtService.extractUserId(token);
-        VisibilityLevel visibilityLevel = Optional.ofNullable(prayerGroupRequest.getVisibilityLevel()).orElse(VisibilityLevel.PUBLIC);
+        VisibilityLevel visibilityLevel =
+                Optional.ofNullable(prayerGroupRequest.getVisibilityLevel()).orElse(VisibilityLevel.PUBLIC);
 
         CreatePrayerGroupRequestDTO createPrayerGroupRequestDTO = new CreatePrayerGroupRequestDTO(userId,
                 prayerGroupRequest.getGroupName(), prayerGroupRequest.getDescription(), prayerGroupRequest.getRules(),
@@ -29,6 +30,9 @@ public class PrayerGroupService {
 
         prayerGroupRepository.createPrayerGroup(createPrayerGroupRequestDTO);
 
+        // TODO: Return created prayer group
     }
+
+    // TODO: Add validation method to ensure prayer group name is unique
 
 }
