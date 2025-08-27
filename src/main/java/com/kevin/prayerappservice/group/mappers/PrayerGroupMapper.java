@@ -6,12 +6,14 @@ import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
 import com.kevin.prayerappservice.group.models.PrayerGroupModel;
 import com.kevin.prayerappservice.group.models.PrayerGroupUserModel;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface PrayerGroupMapper {
     @Mapping(source = "avatarFileId", target = "avatarFile.mediaFileId")
     @Mapping(source = "groupAvatarFileName", target = "avatarFile.fileName")
@@ -26,10 +28,29 @@ public interface PrayerGroupMapper {
     @Mapping(constant = "ADMIN", target = "prayerGroupRole")
     PrayerGroupModel createdPrayerGroupDTOToPrayerGroupModel(CreatedPrayerGroupDTO source);
 
+    @AfterMapping
+    default void setImagesToNull(@MappingTarget PrayerGroupModel prayerGroupModel){
+        MediaFile avatarMediaFile = prayerGroupModel.getAvatarFile();
+        MediaFile bannerMediaFile = prayerGroupModel.getBannerFile();
+
+        if(avatarMediaFile.getMediaFileId() == null){
+            prayerGroupModel.setAvatarFile(null);
+        }
+
+        if(bannerMediaFile.getMediaFileId() == null){
+            prayerGroupModel.setBannerFile(null);
+        }
+    }
+
     default List<PrayerGroupUserModel> mapToPrayerGroupUsers(CreatedPrayerGroupDTO source) {
-        MediaFile adminImage = new MediaFile(source.getAdminImageFileName(), FileType.IMAGE,
-                source.getAdminImageFileUrl());
-        adminImage.setMediaFileId(source.getAdminImageFileId());
+        MediaFile adminImage = null;
+
+        if(source.getAdminImageFileId() != null){
+           adminImage =  new MediaFile(source.getAdminImageFileName(), FileType.IMAGE,
+                    source.getAdminImageFileUrl());
+           adminImage.setMediaFileId(source.getAdminImageFileId());
+        }
+
 
         PrayerGroupUserModel[] prayerGroupUsers =
                 new PrayerGroupUserModel[]{new PrayerGroupUserModel(source.getAdminUserId(), null,
