@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class PrayerGroupController implements PrayerGroupApi {
-    private PrayerGroupService prayerGroupService;
+    private final PrayerGroupService prayerGroupService;
 
     public PrayerGroupController(PrayerGroupService prayerGroupService){
         this.prayerGroupService = prayerGroupService;
