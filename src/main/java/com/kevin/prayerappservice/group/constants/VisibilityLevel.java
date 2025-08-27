@@ -1,4 +1,4 @@
-package com.kevin.prayerappservice.group.entities;
+package com.kevin.prayerappservice.group.constants;
 
 public enum VisibilityLevel {
     PUBLIC,

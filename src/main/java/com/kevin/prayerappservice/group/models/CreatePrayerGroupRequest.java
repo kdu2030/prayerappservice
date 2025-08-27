@@ -1,6 +1,6 @@
 package com.kevin.prayerappservice.group.models;
 
-import com.kevin.prayerappservice.group.entities.VisibilityLevel;
+import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 
 public class CreatePrayerGroupRequest {
     private String groupName;

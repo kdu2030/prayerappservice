@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.group.entities;
 
+import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.group.entities;
 
 import com.kevin.prayerappservice.file.entities.MediaFile;
+import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 

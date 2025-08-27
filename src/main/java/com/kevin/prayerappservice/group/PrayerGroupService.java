@@ -2,7 +2,7 @@ package com.kevin.prayerappservice.group;
 
 import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.group.dtos.CreatePrayerGroupRequestDTO;
-import com.kevin.prayerappservice.group.entities.VisibilityLevel;
+import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import com.kevin.prayerappservice.group.models.CreatePrayerGroupRequest;
 import org.springframework.stereotype.Service;
 

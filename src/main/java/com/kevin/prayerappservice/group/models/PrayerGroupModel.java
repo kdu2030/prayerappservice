@@ -1,8 +1,10 @@
 package com.kevin.prayerappservice.group.models;
 
 import com.kevin.prayerappservice.file.entities.MediaFile;
-import com.kevin.prayerappservice.group.entities.PrayerGroupRole;
-import com.kevin.prayerappservice.group.entities.VisibilityLevel;
+import com.kevin.prayerappservice.group.constants.JoinStatus;
+import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
+import com.kevin.prayerappservice.group.constants.VisibilityLevel;
+import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.user.entities.User;
 
 import java.util.List;
@@ -14,12 +16,14 @@ public class PrayerGroupModel {
     private String rules;
     private MediaFile avatarFile;
     private MediaFile bannerFile;
-    private List<User> admins;
+    private List<PrayerGroupUserModel> admins;
     private VisibilityLevel visibilityLevel;
-    private boolean isUserJoined;
+    private JoinStatus userJoinStatus;
     private PrayerGroupRole prayerGroupRole;
 
-    public PrayerGroupModel(Integer prayerGroupId, String groupName, String description, String rules, MediaFile avatarFile, MediaFile bannerFile, List<User> admins, VisibilityLevel visibilityLevel, boolean isUserJoined, PrayerGroupRole prayerGroupRole) {
+    public PrayerGroupModel(){}
+
+    public PrayerGroupModel(Integer prayerGroupId, String groupName, String description, String rules, MediaFile avatarFile, MediaFile bannerFile, List<PrayerGroupUserModel> admins, VisibilityLevel visibilityLevel, JoinStatus userJoinStatus, PrayerGroupRole prayerGroupRole) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.description = description;
@@ -28,7 +32,7 @@ public class PrayerGroupModel {
         this.bannerFile = bannerFile;
         this.admins = admins;
         this.visibilityLevel = visibilityLevel;
-        this.isUserJoined = isUserJoined;
+        this.userJoinStatus = userJoinStatus;
         this.prayerGroupRole = prayerGroupRole;
     }
 
@@ -80,11 +84,11 @@ public class PrayerGroupModel {
         this.bannerFile = bannerFile;
     }
 
-    public List<User> getAdmins() {
+    public List<PrayerGroupUserModel> getAdmins() {
         return admins;
     }
 
-    public void setAdmins(List<User> admins) {
+    public void setAdmins(List<PrayerGroupUserModel> admins) {
         this.admins = admins;
     }
 
@@ -96,12 +100,12 @@ public class PrayerGroupModel {
         this.visibilityLevel = visibilityLevel;
     }
 
-    public boolean isUserJoined() {
-        return isUserJoined;
+    public JoinStatus getUserJoinStatus() {
+        return userJoinStatus;
     }
 
-    public void setUserJoined(boolean userJoined) {
-        isUserJoined = userJoined;
+    public void setUserJoinStatus(JoinStatus userJoinStatus) {
+        this.userJoinStatus = userJoinStatus;
     }
 
     public PrayerGroupRole getPrayerGroupRole() {

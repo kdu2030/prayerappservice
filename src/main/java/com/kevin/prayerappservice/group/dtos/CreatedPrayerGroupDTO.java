@@ -1,6 +1,6 @@
 package com.kevin.prayerappservice.group.dtos;
 
-import com.kevin.prayerappservice.group.entities.VisibilityLevel;
+import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 
 public class CreatedPrayerGroupDTO {
     private int prayerGroupId;

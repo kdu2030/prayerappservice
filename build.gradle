@@ -45,6 +45,10 @@ dependencies {
 	// Http Requests
 	implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 
+	//Mapping
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
 	// Swagger
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 	implementation 'io.swagger.core.v3:swagger-annotations:2.2.15'
