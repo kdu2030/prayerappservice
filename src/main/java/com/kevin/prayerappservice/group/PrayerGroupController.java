@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.group;
 
 import com.kevin.prayerappservice.group.models.CreatePrayerGroupRequest;
+import com.kevin.prayerappservice.group.models.GroupNameValidationResponse;
 import com.kevin.prayerappservice.group.models.PrayerGroupModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,5 +19,11 @@ public class PrayerGroupController implements PrayerGroupApi {
     public ResponseEntity<PrayerGroupModel> createPrayerGroup(String authorizationHeader, CreatePrayerGroupRequest createPrayerGroupRequest){
         PrayerGroupModel prayerGroupModel = prayerGroupService.createPrayerGroup(authorizationHeader, createPrayerGroupRequest);
         return new ResponseEntity<>(prayerGroupModel, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<GroupNameValidationResponse> validateGroupName(String name) {
+        GroupNameValidationResponse validationResponse = prayerGroupService.validateGroupName(name);
+        return new ResponseEntity<>(validationResponse, HttpStatus.OK);
     }
 }

@@ -4,8 +4,10 @@ import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.group.dtos.CreatePrayerGroupRequestDTO;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
+import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.mappers.PrayerGroupMapper;
 import com.kevin.prayerappservice.group.models.CreatePrayerGroupRequest;
+import com.kevin.prayerappservice.group.models.GroupNameValidationResponse;
 import com.kevin.prayerappservice.group.models.PrayerGroupModel;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,17 @@ public class PrayerGroupService {
        return prayerGroupMapper.createdPrayerGroupDTOToPrayerGroupModel(createdPrayerGroupDTO);
     }
 
-    // TODO: Add validation method to ensure prayer group name is unique
+    public GroupNameValidationResponse validateGroupName(String groupName){
+        boolean isError = false;
+        String[] errors = null;
+        Optional<PrayerGroup> prayerGroup = prayerGroupRepository.findByGroupName(groupName);
+
+        if(prayerGroup.isPresent()){
+            isError = true;
+            errors = new String[] {"A prayer group with this name already exists."};
+        }
+
+        return new GroupNameValidationResponse(false, errors);
+    }
 
 }
