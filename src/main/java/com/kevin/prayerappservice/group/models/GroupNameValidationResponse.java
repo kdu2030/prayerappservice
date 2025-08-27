@@ -9,7 +9,7 @@ public class GroupNameValidationResponse {
         this.errors = errors;
     }
 
-    public boolean isNameValid() {
+    public boolean getIsNameValid() {
         return isNameValid;
     }
 

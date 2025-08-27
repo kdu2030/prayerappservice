@@ -4,6 +4,9 @@ import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 
 import java.util.List;
 
@@ -18,9 +21,11 @@ public class PrayerGroup {
     private String groupName;
 
     @Lob
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String description;
 
     @Lob
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String rules;
 
     @NotBlank
