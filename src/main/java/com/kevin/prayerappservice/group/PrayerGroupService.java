@@ -49,7 +49,7 @@ public class PrayerGroupService {
             errors = new String[] {"A prayer group with this name already exists."};
         }
 
-        return new GroupNameValidationResponse(false, errors);
+        return new GroupNameValidationResponse(isError, errors);
     }
 
 }
