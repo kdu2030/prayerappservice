@@ -12,6 +12,15 @@ public class UserSummary {
 
     public UserSummary() {}
 
+    public UserSummary(int userId, String username, String emailAddress, String fullName, UserTokenPair tokens) {
+        this.userId = userId;
+        this.emailAddress = emailAddress;
+        this.fullName = fullName;
+        this.tokens = tokens;
+        this.username = username;
+        image = null;
+    }
+
     public UserSummary(int userId, String username, String emailAddress, String fullName, UserTokenPair tokens, MediaFile image) {
         this.userId = userId;
         this.emailAddress = emailAddress;

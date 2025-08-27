@@ -24,16 +24,16 @@ public interface PrayerGroupMapper {
     @Mapping(source = "source", target = "admins")
     @Mapping(constant = "JOINED", target = "userJoinStatus")
     @Mapping(constant = "ADMIN", target = "prayerGroupRole")
-    PrayerGroupModel createdPrayerGroupDTOToPrayerGroupModel(CreatedPrayerGroupDTO createdPrayerGroupDTO);
+    PrayerGroupModel createdPrayerGroupDTOToPrayerGroupModel(CreatedPrayerGroupDTO source);
 
-    default List<PrayerGroupUserModel> mapToPrayerGroupUsers(CreatedPrayerGroupDTO createdPrayerGroupDTO) {
-        MediaFile adminImage = new MediaFile(createdPrayerGroupDTO.getAdminImageFileName(), FileType.IMAGE,
-                createdPrayerGroupDTO.getAdminImageFileUrl());
-        adminImage.setMediaFileId(createdPrayerGroupDTO.getAdminImageFileId());
+    default List<PrayerGroupUserModel> mapToPrayerGroupUsers(CreatedPrayerGroupDTO source) {
+        MediaFile adminImage = new MediaFile(source.getAdminImageFileName(), FileType.IMAGE,
+                source.getAdminImageFileUrl());
+        adminImage.setMediaFileId(source.getAdminImageFileId());
 
         PrayerGroupUserModel[] prayerGroupUsers =
-                new PrayerGroupUserModel[]{new PrayerGroupUserModel(createdPrayerGroupDTO.getAdminUserId(), null,
-                        null, createdPrayerGroupDTO.getAdminFullName(), null, adminImage, PrayerGroupRole.ADMIN)};
+                new PrayerGroupUserModel[]{new PrayerGroupUserModel(source.getAdminUserId(), null,
+                        null, source.getAdminFullName(), null, adminImage, PrayerGroupRole.ADMIN)};
         return List.of(prayerGroupUsers);
     }
 }

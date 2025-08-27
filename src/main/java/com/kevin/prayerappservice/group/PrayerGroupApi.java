@@ -15,5 +15,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface PrayerGroupApi {
     @PostMapping(value = "", produces = {"application/json"}, consumes = { "application/json" })
     @Operation(summary = "Creates prayer group")
-    ResponseEntity<Void> createPrayerGroup(@RequestHeader("Authorization") String authorizationHeader,  @RequestBody CreatePrayerGroupRequest createPrayerGroupRequest);
+    ResponseEntity<PrayerGroupModel> createPrayerGroup(@RequestHeader("Authorization") String authorizationHeader,  @RequestBody CreatePrayerGroupRequest createPrayerGroupRequest);
 }

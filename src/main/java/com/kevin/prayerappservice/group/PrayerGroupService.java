@@ -3,7 +3,10 @@ package com.kevin.prayerappservice.group;
 import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.group.dtos.CreatePrayerGroupRequestDTO;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
+import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
+import com.kevin.prayerappservice.group.mappers.PrayerGroupMapper;
 import com.kevin.prayerappservice.group.models.CreatePrayerGroupRequest;
+import com.kevin.prayerappservice.group.models.PrayerGroupModel;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,13 +15,15 @@ import java.util.Optional;
 public class PrayerGroupService {
     private final PrayerGroupRepository prayerGroupRepository;
     private final JwtService jwtService;
+    private final PrayerGroupMapper prayerGroupMapper;
 
-    public PrayerGroupService(PrayerGroupRepository prayerGroupRepository, JwtService jwtService) {
+    public PrayerGroupService(PrayerGroupRepository prayerGroupRepository, JwtService jwtService, PrayerGroupMapper prayerGroupMapper) {
         this.prayerGroupRepository = prayerGroupRepository;
         this.jwtService = jwtService;
+        this.prayerGroupMapper = prayerGroupMapper;
     }
 
-    public void createPrayerGroup(String authorizationHeader, CreatePrayerGroupRequest prayerGroupRequest) {
+    public PrayerGroupModel createPrayerGroup(String authorizationHeader, CreatePrayerGroupRequest prayerGroupRequest) {
         String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
         int userId = jwtService.extractUserId(token);
         VisibilityLevel visibilityLevel =
@@ -28,9 +33,8 @@ public class PrayerGroupService {
                 prayerGroupRequest.getGroupName(), prayerGroupRequest.getDescription(), prayerGroupRequest.getRules(),
                 visibilityLevel.toString(), prayerGroupRequest.getAvatarFileId(), prayerGroupRequest.getBannerFileId());
 
-        prayerGroupRepository.createPrayerGroup(createPrayerGroupRequestDTO);
-
-        // TODO: Return created prayer group
+       CreatedPrayerGroupDTO createdPrayerGroupDTO =  prayerGroupRepository.createPrayerGroup(createPrayerGroupRequestDTO);
+       return prayerGroupMapper.createdPrayerGroupDTOToPrayerGroupModel(createdPrayerGroupDTO);
     }
 
     // TODO: Add validation method to ensure prayer group name is unique
