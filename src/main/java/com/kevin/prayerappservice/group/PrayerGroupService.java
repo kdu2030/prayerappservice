@@ -40,16 +40,16 @@ public class PrayerGroupService {
     }
 
     public GroupNameValidationResponse validateGroupName(String groupName){
-        boolean isError = false;
+        boolean isNameValid = true;
         String[] errors = null;
         Optional<PrayerGroup> prayerGroup = prayerGroupRepository.findByGroupName(groupName);
 
         if(prayerGroup.isPresent()){
-            isError = true;
+            isNameValid = false;
             errors = new String[] {"A prayer group with this name already exists."};
         }
 
-        return new GroupNameValidationResponse(isError, errors);
+        return new GroupNameValidationResponse(isNameValid, errors);
     }
 
 }

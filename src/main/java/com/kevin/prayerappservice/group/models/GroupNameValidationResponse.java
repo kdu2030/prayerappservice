@@ -1,20 +1,20 @@
 package com.kevin.prayerappservice.group.models;
 
 public class GroupNameValidationResponse {
-    private boolean isError;
+    private boolean isNameValid;
     private String[] errors;
 
-    public GroupNameValidationResponse(boolean isError, String[] errors) {
-        this.isError = isError;
+    public GroupNameValidationResponse(boolean isNameValid, String[] errors) {
+        this.isNameValid = isNameValid;
         this.errors = errors;
     }
 
-    public boolean isError() {
-        return isError;
+    public boolean isNameValid() {
+        return isNameValid;
     }
 
-    public void setError(boolean error) {
-        isError = error;
+    public void setNameValid(boolean nameValid) {
+        isNameValid = nameValid;
     }
 
     public String[] getErrors() {

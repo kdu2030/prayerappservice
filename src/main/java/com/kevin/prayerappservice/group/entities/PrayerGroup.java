@@ -38,6 +38,8 @@ public class PrayerGroup {
     @OneToMany(mappedBy = "prayerGroup")
     private List<PrayerGroupUser> prayerGroupUsers;
 
+    public PrayerGroup() {}
+
     public PrayerGroup(String groupName, String description, String rules, VisibilityLevel visibilityLevel,
                        MediaFile avatarFile, MediaFile bannerFile) {
         this.groupName = groupName;

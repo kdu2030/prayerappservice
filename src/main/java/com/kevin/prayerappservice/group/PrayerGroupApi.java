@@ -15,6 +15,7 @@ public interface PrayerGroupApi {
     @Operation(summary = "Creates prayer group")
     ResponseEntity<PrayerGroupModel> createPrayerGroup(@RequestHeader("Authorization") String authorizationHeader,  @RequestBody CreatePrayerGroupRequest createPrayerGroupRequest);
 
+    @GetMapping(value="validate-name")
     @Operation(summary = "Validates group name")
     ResponseEntity<GroupNameValidationResponse> validateGroupName(@RequestParam String name);
 }
