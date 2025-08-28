@@ -39,10 +39,17 @@ public class UserService {
     }
 
     public UserSummary createUser(CreateUserRequest request) {
-        List<User> existingUserEmails = userRepository.findAllByEmail(request.getEmail());
-        if (!existingUserEmails.isEmpty()) {
+        Optional<User> userWithMatchingEmail = userRepository.findByEmail(request.getEmail());
+        Optional<User> userWithMatchingUsername = userRepository.findByUsername(request.getUsername());
+
+        if (userWithMatchingEmail.isPresent()) {
             throw new DataValidationException(new String[]{"Email must be unique to each user."});
         }
+
+        if(userWithMatchingUsername.isPresent()){
+            throw new DataValidationException(new String[]{"Username must be unique to each user."});
+        }
+
 
         User user = new User(request.getFullName(), request.getUsername(), request.getEmail(),
                 passwordEncoder.encode(request.getPassword()), Role.USER);
