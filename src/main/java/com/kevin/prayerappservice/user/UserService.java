@@ -68,6 +68,19 @@ public class UserService {
         return createUserSummary(user, prayerGroups);
     }
 
+    public UserSummary getUserSummary(int userId){
+        Optional<User> userResult = userRepository.findById(userId);
+
+        if(userResult.isEmpty()){
+            String errorMessage = String.format("A user with userId %d does not exist", userId);
+            throw new DataValidationException(HttpStatus.NOT_FOUND, new String[] { errorMessage });
+        }
+
+        User user = userResult.get();
+        List<PrayerGroupSummaryModel> prayerGroups = prayerGroupService.getPrayerGroupSummariesByUser(user.getUserId());
+        return createUserSummary(user, prayerGroups);
+    }
+
     public UserTokenPair getUserTokenPair(String authorization) {
         String refreshToken = jwtService.extractTokenFromAuthHeader(authorization);
         String username = jwtService.extractUsername(refreshToken);
@@ -85,6 +98,7 @@ public class UserService {
         String refreshToken = jwtService.generateToken(user.getUserId(), user, REFRESH_TOKEN_VALIDITY_LENGTH_MS);
         return new UserTokenPair(accessToken, refreshToken);
     }
+
 
     private UserSummary createUserSummary(User user, List<PrayerGroupSummaryModel> prayerGroups) {
         UserTokenPair userTokenPair = generateUserTokenPair(user);
