@@ -1,6 +1,9 @@
 package com.kevin.prayerappservice.user.models;
 
 import com.kevin.prayerappservice.file.entities.MediaFile;
+import com.kevin.prayerappservice.group.models.PrayerGroupSummaryModel;
+
+import java.util.List;
 
 public class UserSummary {
     private int userId;
@@ -9,6 +12,7 @@ public class UserSummary {
     private String fullName;
     private MediaFile image;
     private UserTokenPair tokens;
+    private List<PrayerGroupSummaryModel> prayerGroups;
 
     public UserSummary() {}
 
@@ -21,13 +25,14 @@ public class UserSummary {
         image = null;
     }
 
-    public UserSummary(int userId, String username, String emailAddress, String fullName, UserTokenPair tokens, MediaFile image) {
+    public UserSummary(int userId, String username, String emailAddress, String fullName, UserTokenPair tokens, MediaFile image,  List<PrayerGroupSummaryModel> prayerGroups) {
         this.userId = userId;
         this.emailAddress = emailAddress;
         this.fullName = fullName;
         this.tokens = tokens;
         this.username = username;
         this.image = image;
+        this.prayerGroups = prayerGroups;
     }
 
 
@@ -77,5 +82,13 @@ public class UserSummary {
 
     public void setImage(MediaFile image) {
         this.image = image;
+    }
+
+    public List<PrayerGroupSummaryModel> getPrayerGroups() {
+        return prayerGroups;
+    }
+
+    public void setPrayerGroups(List<PrayerGroupSummaryModel> prayerGroups) {
+        this.prayerGroups = prayerGroups;
     }
 }

@@ -31,7 +31,7 @@ public interface PrayerGroupMapper {
     PrayerGroupModel createdPrayerGroupDTOToPrayerGroupModel(CreatedPrayerGroupDTO source);
 
     @Mapping(source = "mediaFileId", target = "avatarFile.mediaFileId")
-    @Mapping(source = "fileName", target = "avatarFileId.fileName")
+    @Mapping(source = "fileName", target = "avatarFile.fileName")
     @Mapping(source = "fileUrl", target = "avatarFile.fileUrl")
     @Mapping(source = "fileType", target = "avatarFile.fileType")
     PrayerGroupSummaryModel prayerGroupSummaryDTOToPrayerGroupSummaryModel(PrayerGroupSummaryDTO source);

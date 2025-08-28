@@ -13,7 +13,7 @@ public class PrayerGroupUserModel extends UserSummary {
     }
 
     public PrayerGroupUserModel(int userId, String username, String emailAddress, String fullName, UserTokenPair tokens, MediaFile image, PrayerGroupRole prayerGroupRole) {
-        super(userId, username, emailAddress, fullName, tokens, image);
+        super(userId, username, emailAddress, fullName, tokens, image, null);
         this.prayerGroupRole = prayerGroupRole;
     }
 
