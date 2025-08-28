@@ -4,7 +4,9 @@ import com.kevin.prayerappservice.file.entities.FileType;
 import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
+import com.kevin.prayerappservice.group.dtos.PrayerGroupSummaryDTO;
 import com.kevin.prayerappservice.group.models.PrayerGroupModel;
+import com.kevin.prayerappservice.group.models.PrayerGroupSummaryModel;
 import com.kevin.prayerappservice.group.models.PrayerGroupUserModel;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -28,27 +30,44 @@ public interface PrayerGroupMapper {
     @Mapping(constant = "ADMIN", target = "prayerGroupRole")
     PrayerGroupModel createdPrayerGroupDTOToPrayerGroupModel(CreatedPrayerGroupDTO source);
 
+    @Mapping(source = "mediaFileId", target = "avatarFile.mediaFileId")
+    @Mapping(source = "fileName", target = "avatarFileId.fileName")
+    @Mapping(source = "fileUrl", target = "avatarFile.fileUrl")
+    @Mapping(source = "fileType", target = "avatarFile.fileType")
+    PrayerGroupSummaryModel prayerGroupSummaryDTOToPrayerGroupSummaryModel(PrayerGroupSummaryDTO source);
+
     @AfterMapping
-    default void setImagesToNull(@MappingTarget PrayerGroupModel prayerGroupModel){
+    default void setImagesToNull(@MappingTarget PrayerGroupModel prayerGroupModel) {
         MediaFile avatarMediaFile = prayerGroupModel.getAvatarFile();
         MediaFile bannerMediaFile = prayerGroupModel.getBannerFile();
 
-        if(avatarMediaFile.getMediaFileId() == null){
+        if (avatarMediaFile.getMediaFileId() == null) {
             prayerGroupModel.setAvatarFile(null);
         }
 
-        if(bannerMediaFile.getMediaFileId() == null){
+        if (bannerMediaFile.getMediaFileId() == null) {
             prayerGroupModel.setBannerFile(null);
         }
     }
 
+    @AfterMapping
+    default void setAvatarImageToNull(@MappingTarget PrayerGroupSummaryModel prayerGroupSummaryModel){
+        MediaFile avatarMediaFile = prayerGroupSummaryModel.getAvatarFile();
+
+        if(avatarMediaFile.getMediaFileId() == null){
+            prayerGroupSummaryModel.setAvatarFile(null);
+        }
+    }
+
+
+
     default List<PrayerGroupUserModel> mapToPrayerGroupUsers(CreatedPrayerGroupDTO source) {
         MediaFile adminImage = null;
 
-        if(source.getAdminImageFileId() != null){
-           adminImage =  new MediaFile(source.getAdminImageFileName(), FileType.IMAGE,
+        if (source.getAdminImageFileId() != null) {
+            adminImage = new MediaFile(source.getAdminImageFileName(), FileType.IMAGE,
                     source.getAdminImageFileUrl());
-           adminImage.setMediaFileId(source.getAdminImageFileId());
+            adminImage.setMediaFileId(source.getAdminImageFileId());
         }
 
 

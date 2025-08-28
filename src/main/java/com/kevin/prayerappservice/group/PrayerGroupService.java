@@ -52,4 +52,7 @@ public class PrayerGroupService {
         return new GroupNameValidationResponse(isNameValid, errors);
     }
 
+    public void getPrayerGroupSummariesByUser(int userId){
+        prayerGroupRepository.getPrayerGroupSummariesByUserId(userId);
+    }
 }
