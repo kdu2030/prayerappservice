@@ -2,9 +2,7 @@ package com.kevin.prayerappservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
-import com.kevin.prayerappservice.file.MediaFileRepository;
-import com.kevin.prayerappservice.file.MediaFileService;
-import com.kevin.prayerappservice.file.FileServicesClient;
+import com.kevin.prayerappservice.file.*;
 import com.kevin.prayerappservice.file.dtos.FileUploadResponse;
 import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.file.entities.FileType;
@@ -18,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +29,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 @SpringBootTest
 @ActiveProfiles("test")
 public class MediaFileServiceTests {
+    @MockBean
+    private MediaFileJdbcRepositoryImpl mockMediaFileJdbcRepository;
+
     @Autowired
     private MediaFileRepository mediaFileRepository;
 
@@ -43,6 +45,7 @@ public class MediaFileServiceTests {
     private MediaFileService mediaFileService;
 
     @Test
+    @DirtiesContext
     public void uploadFile_validImage_savesImage() throws IOException {
         FileUploadResponse mockFileUploadResponse = new FileUploadResponse(false, "https://testurl.com/image.png");
         String rawResponseBody = objectMapper.writeValueAsString(mockFileUploadResponse);
@@ -68,6 +71,7 @@ public class MediaFileServiceTests {
     }
 
     @Test
+    @DirtiesContext
     public void uploadFile_unsupportedFileType_throwsException() {
         MockMultipartFile mockMultipartFile = new MockMultipartFile("jake_peralta.gif", "jake_peralta.png",
                 MediaType.IMAGE_GIF_VALUE, new byte[]{});
@@ -80,6 +84,7 @@ public class MediaFileServiceTests {
     }
 
     @Test
+    @DirtiesContext
     public void deleteFile_givenValidId_deletesFile() throws IOException {
         MediaFile file = new MediaFile("amySantiago.jpg", FileType.IMAGE, "https://testurl.com/test.jpg");
         mediaFileRepository.save(file);
