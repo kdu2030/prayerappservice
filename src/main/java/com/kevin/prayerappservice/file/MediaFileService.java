@@ -2,9 +2,10 @@ package com.kevin.prayerappservice.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
+import com.kevin.prayerappservice.file.dtos.DeleteFileReference;
 import com.kevin.prayerappservice.file.dtos.FileUploadResponse;
-import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.file.entities.FileType;
+import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.file.models.MediaFileSummary;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Service
 public class MediaFileService {
@@ -68,6 +70,11 @@ public class MediaFileService {
         MediaFile mediaFile = mediaFileRepository.findById(fileId)
                 .orElseThrow(() -> new DataValidationException(new String[]{"Unable to find file"}));
 
+        List<DeleteFileReference> deleteFileReferences = mediaFileRepository.getFileReferencesForDelete(fileId);
+        if (!deleteFileReferences.isEmpty()) {
+            throw new DataValidationException(new String[]{getDeleteFileReferencesErrorMessage(deleteFileReferences)});
+        }
+
         String fileUrl = mediaFile.getFileUrl();
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
 
@@ -80,5 +87,20 @@ public class MediaFileService {
         } catch (IOException e) {
             throw new IOException(String.format("Unable to delete file %d", fileId));
         }
+    }
+
+    public String getDeleteFileReferencesErrorMessage(List<DeleteFileReference> references) {
+        StringBuilder stringBuilder = new StringBuilder("File cannot be deleted because it is referenced by: ");
+
+        for (int i = 0; i < references.size(); i++) {
+            DeleteFileReference reference = references.get(i);
+            stringBuilder.append(String.format("%s %d", reference.getEntityType(), reference.getEntityId()));
+
+            if (i < references.size() - 1) {
+                stringBuilder.append(", ");
+            }
+        }
+
+        return stringBuilder.toString();
     }
 }
