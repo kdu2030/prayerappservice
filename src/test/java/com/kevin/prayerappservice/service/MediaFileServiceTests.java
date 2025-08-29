@@ -21,10 +21,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -86,6 +86,10 @@ public class MediaFileServiceTests {
     @Test
     @DirtiesContext
     public void deleteFile_givenValidId_deletesFile() throws IOException {
+        Mockito.when(mockMediaFileJdbcRepository
+                .getFileReferencesForDelete(anyInt()))
+                .thenReturn(new ArrayList<>());
+
         MediaFile file = new MediaFile("amySantiago.jpg", FileType.IMAGE, "https://testurl.com/test.jpg");
         mediaFileRepository.save(file);
 
