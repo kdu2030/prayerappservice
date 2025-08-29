@@ -112,6 +112,7 @@ public class MediaFileServiceTests {
     }
 
     @Test
+    @DirtiesContext
     public void deleteFile_deleteFileCallFails_doesNotDeleteFileInDB() throws IOException {
         Mockito.when(mockMediaFileJdbcRepository
                         .getFileReferencesForDelete(anyInt()))
@@ -133,6 +134,7 @@ public class MediaFileServiceTests {
     }
 
     @Test
+    @DirtiesContext
     public void deleteFile_fileIsReferenced_throwsException() {
         MediaFile file = new MediaFile("captainHolt.jpg", FileType.IMAGE, "https://testurl.com/test.jpg");
         mediaFileRepository.save(file);
