@@ -76,5 +76,5 @@ public interface UserApi {
 
     @GetMapping("/{userId}/summary")
     @Operation(summary = "Gets a user summary from a user ID")
-    ResponseEntity<UserSummary> getUserSummary(int userId);
+    ResponseEntity<UserSummary> getUserSummary(@PathVariable int userId);
 }
