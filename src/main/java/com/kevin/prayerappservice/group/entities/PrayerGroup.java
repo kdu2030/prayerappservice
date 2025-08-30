@@ -4,6 +4,7 @@ import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -28,7 +29,7 @@ public class PrayerGroup {
     @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String rules;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private VisibilityLevel visibilityLevel;
 
@@ -87,11 +88,11 @@ public class PrayerGroup {
         this.rules = rules;
     }
 
-    public @NotBlank VisibilityLevel getVisibilityLevel() {
+    public @NotNull VisibilityLevel getVisibilityLevel() {
         return visibilityLevel;
     }
 
-    public void setVisibilityLevel(@NotBlank VisibilityLevel visibilityLevel) {
+    public void setVisibilityLevel(@NotNull VisibilityLevel visibilityLevel) {
         this.visibilityLevel = visibilityLevel;
     }
 
