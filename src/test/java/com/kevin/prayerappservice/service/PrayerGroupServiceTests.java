@@ -87,4 +87,25 @@ public class PrayerGroupServiceTests {
         Assertions.assertThat(prayerGroupModel.getGroupName()).isEqualTo(createdPrayerGroupDTO.getGroupName());
         Assertions.assertThat(prayerGroupModel.getAdmins().get(0).getUserId()).isEqualTo(createdPrayerGroupDTO.getAdminUserId());
     }
+
+    @Test
+    @DirtiesContext
+    public void createPrayerGroup_givenPrayerGroupWithNullableFields_returnsGroupModel() {
+        CreatedPrayerGroupDTO createdPrayerGroupDTO = new CreatedPrayerGroupDTO(777, "Top Gear", null, null,
+                VisibilityLevel.PUBLIC, null, null, null, null, null, null, 80, "James May", null, null, null);
+
+        CreatePrayerGroupRequest request = new CreatePrayerGroupRequest(createdPrayerGroupDTO.getGroupName(),
+                createdPrayerGroupDTO.getDescription(), createdPrayerGroupDTO.getRules(),
+                createdPrayerGroupDTO.getAvatarFileId(), createdPrayerGroupDTO.getBannerFileId(),
+                createdPrayerGroupDTO.getVisibilityLevel());
+
+        Mockito.when(mockPrayerGroupJdbcRepository.createPrayerGroup(any(CreatePrayerGroupRequestDTO.class))).thenReturn(createdPrayerGroupDTO);
+        Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(createdPrayerGroupDTO.getAdminUserId());
+
+        PrayerGroupModel prayerGroupModel = prayerGroupService.createPrayerGroup("mockAuthHeader", request);
+
+        Assertions.assertThat(prayerGroupModel.getPrayerGroupId()).isEqualTo(createdPrayerGroupDTO.getPrayerGroupId());
+        Assertions.assertThat(prayerGroupModel.getBannerFile()).isNull();
+        Assertions.assertThat(prayerGroupModel.getAvatarFile()).isNull();
+    }
 }
