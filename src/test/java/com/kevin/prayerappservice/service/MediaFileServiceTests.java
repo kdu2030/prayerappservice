@@ -2,14 +2,17 @@ package com.kevin.prayerappservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
+import com.kevin.prayerappservice.file.FileServicesClient;
+import com.kevin.prayerappservice.file.MediaFileJdbcRepositoryImpl;
 import com.kevin.prayerappservice.file.MediaFileRepository;
 import com.kevin.prayerappservice.file.MediaFileService;
-import com.kevin.prayerappservice.file.FileServicesClient;
+import com.kevin.prayerappservice.file.dtos.DeleteFileReference;
 import com.kevin.prayerappservice.file.dtos.FileUploadResponse;
-import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.file.entities.FileType;
+import com.kevin.prayerappservice.file.entities.MediaFile;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,18 +21,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
 public class MediaFileServiceTests {
+    @MockBean
+    private MediaFileJdbcRepositoryImpl mockMediaFileJdbcRepository;
+
     @Autowired
     private MediaFileRepository mediaFileRepository;
 
@@ -43,6 +51,7 @@ public class MediaFileServiceTests {
     private MediaFileService mediaFileService;
 
     @Test
+    @DirtiesContext
     public void uploadFile_validImage_savesImage() throws IOException {
         FileUploadResponse mockFileUploadResponse = new FileUploadResponse(false, "https://testurl.com/image.png");
         String rawResponseBody = objectMapper.writeValueAsString(mockFileUploadResponse);
@@ -68,6 +77,7 @@ public class MediaFileServiceTests {
     }
 
     @Test
+    @DirtiesContext
     public void uploadFile_unsupportedFileType_throwsException() {
         MockMultipartFile mockMultipartFile = new MockMultipartFile("jake_peralta.gif", "jake_peralta.png",
                 MediaType.IMAGE_GIF_VALUE, new byte[]{});
@@ -80,7 +90,12 @@ public class MediaFileServiceTests {
     }
 
     @Test
+    @DirtiesContext
     public void deleteFile_givenValidId_deletesFile() throws IOException {
+        Mockito.when(mockMediaFileJdbcRepository
+                        .getFileReferencesForDelete(anyInt()))
+                .thenReturn(new ArrayList<>());
+
         MediaFile file = new MediaFile("amySantiago.jpg", FileType.IMAGE, "https://testurl.com/test.jpg");
         mediaFileRepository.save(file);
 
@@ -97,7 +112,12 @@ public class MediaFileServiceTests {
     }
 
     @Test
+    @DirtiesContext
     public void deleteFile_deleteFileCallFails_doesNotDeleteFileInDB() throws IOException {
+        Mockito.when(mockMediaFileJdbcRepository
+                        .getFileReferencesForDelete(anyInt()))
+                .thenReturn(new ArrayList<>());
+
         MediaFile file = new MediaFile("captainHolt.jpg", FileType.IMAGE, "https://testurl.com/test.jpg");
         mediaFileRepository.save(file);
 
@@ -111,6 +131,22 @@ public class MediaFileServiceTests {
 
         Optional<MediaFile> undeletedFile = mediaFileRepository.findById(file.getMediaFileId());
         Assertions.assertThat(undeletedFile.isPresent()).isTrue();
+    }
+
+    @Test
+    @DirtiesContext
+    public void deleteFile_fileIsReferenced_throwsException() {
+        MediaFile file = new MediaFile("captainHolt.jpg", FileType.IMAGE, "https://testurl.com/test.jpg");
+        mediaFileRepository.save(file);
+
+        DeleteFileReference mockDeleteFileReference = new DeleteFileReference(747, "USER");
+        DeleteFileReference[] mockReferences = new DeleteFileReference[]{mockDeleteFileReference};
+
+        Mockito.when(mockMediaFileJdbcRepository.getFileReferencesForDelete(file.getMediaFileId()))
+                .thenReturn(new ArrayList<>(List.of(mockReferences)));
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class)
+                .isThrownBy(() -> mediaFileService.deleteFile(file.getMediaFileId()));
     }
 
 }

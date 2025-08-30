@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "User", description = "the User API")
 @RequestMapping("/api/user")
@@ -76,4 +73,8 @@ public interface UserApi {
             }
     )
     ResponseEntity<UserTokenPair> getUserTokenPair(@RequestHeader("Authorization") String authorization);
+
+    @GetMapping("/{userId}/summary")
+    @Operation(summary = "Gets a user summary from a user ID")
+    ResponseEntity<UserSummary> getUserSummary(int userId);
 }

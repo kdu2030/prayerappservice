@@ -33,6 +33,9 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.flywaydb:flyway-database-postgresql'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.postgresql:postgresql'
+
 
 	// Jwt Processing
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
@@ -41,6 +44,10 @@ dependencies {
 
 	// Http Requests
 	implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
+	//Mapping
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
 	// Swagger
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'

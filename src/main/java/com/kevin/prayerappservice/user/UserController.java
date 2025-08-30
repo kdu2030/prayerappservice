@@ -33,10 +33,16 @@ public class UserController implements UserApi {
         return new ResponseEntity<>(userSummary, HttpStatus.OK);
     }
 
+    @Override
     public ResponseEntity<UserTokenPair> getUserTokenPair(@RequestHeader("Authorization") String authorization){
         UserTokenPair userTokenPair = userService.getUserTokenPair(authorization);
         return new ResponseEntity<>(userTokenPair, HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<UserSummary> getUserSummary(int userId){
+        UserSummary userSummary = userService.getUserSummary(userId);
+        return new ResponseEntity<>(userSummary, HttpStatus.OK);
+    }
 
 }
