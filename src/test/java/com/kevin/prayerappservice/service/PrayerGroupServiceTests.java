@@ -36,7 +36,7 @@ public class PrayerGroupServiceTests {
 
     @Test
     @DirtiesContext
-    public void validateGroupName_returnsError_whenNameIsDuplicate() {
+    public void validateGroupName_nameIsDuplicate_returnsError() {
         PrayerGroup mockPrayerGroup = new PrayerGroup("Autobots", "Robots in disguise", null, VisibilityLevel.PUBLIC,
                 null, null);
         prayerGroupRepository.save(mockPrayerGroup);
@@ -44,5 +44,17 @@ public class PrayerGroupServiceTests {
         GroupNameValidationResponse response = prayerGroupService.validateGroupName("Autobots");
 
         Assertions.assertThat(response.getErrors()[0]).isEqualTo("A prayer group with this name already exists.");
+    }
+
+    @Test
+    @DirtiesContext
+    public void validateGroupName_nameIsUnique_doesNotReturnError(){
+        PrayerGroup mockPrayerGroup = new PrayerGroup("Autobots", "Robots in disguise", null, VisibilityLevel.PUBLIC,
+                null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        GroupNameValidationResponse response = prayerGroupService.validateGroupName("Autos");
+        Assertions.assertThat(response.getIsNameValid()).isTrue();
+        Assertions.assertThat(response.getErrors()).isNullOrEmpty();
     }
 }
