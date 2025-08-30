@@ -5,8 +5,6 @@ import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-// TODO: Add the SQL that will create the Prayer Group User Table
-
 @Entity
 public class PrayerGroupUser {
     @Id
