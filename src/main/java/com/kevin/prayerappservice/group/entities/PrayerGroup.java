@@ -2,6 +2,7 @@ package com.kevin.prayerappservice.group.entities;
 
 import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
+import com.kevin.prayerappservice.request.JoinRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -43,6 +44,9 @@ public class PrayerGroup {
 
     @OneToMany(mappedBy = "prayerGroup")
     private List<PrayerGroupUser> prayerGroupUsers;
+
+    @OneToMany(mappedBy = "prayerGroup")
+    private List<JoinRequest> joinRequests;
 
     public PrayerGroup() {}
 
@@ -118,5 +122,13 @@ public class PrayerGroup {
 
     public void setPrayerGroupUsers(List<PrayerGroupUser> prayerGroupUsers) {
         this.prayerGroupUsers = prayerGroupUsers;
+    }
+
+    public List<JoinRequest> getJoinRequests() {
+        return joinRequests;
+    }
+
+    public void setJoinRequests(List<JoinRequest> joinRequests) {
+        this.joinRequests = joinRequests;
     }
 }
