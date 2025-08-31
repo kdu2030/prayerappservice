@@ -1,8 +1,8 @@
-CREATE SEQUENCE join_request_seq
+CREATE SEQUENCE IF NOT EXISTS join_request_seq
 START 1
 INCREMENT 50;
 
-CREATE TABLE IF EXISTS join_request (
+CREATE TABLE IF NOT EXISTS join_request (
     join_request_id INT PRIMARY KEY DEFAULT nextval('join_request_seq'),
     user_id INT NOT NULL,
     prayer_group_id INT NOT NULL,
