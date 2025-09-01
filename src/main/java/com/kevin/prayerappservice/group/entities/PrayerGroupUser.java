@@ -25,6 +25,8 @@ public class PrayerGroupUser {
     @Enumerated(EnumType.STRING)
     private PrayerGroupRole prayerGroupRole;
 
+    public PrayerGroupUser(){}
+
     public PrayerGroupUser(User user, PrayerGroup prayerGroup, PrayerGroupRole prayerGroupRole) {
         this.user = user;
         this.prayerGroup = prayerGroup;

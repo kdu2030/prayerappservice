@@ -25,6 +25,6 @@ public interface PrayerGroupApi {
     ResponseEntity<PrayerGroupModel> getPrayerGroup(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId);
 
     @PutMapping("/{prayerGroupId}")
-    @Operation(summary = "Gets prayer group")
+    @Operation(summary = "Updates prayer group")
     ResponseEntity<PrayerGroupModel> updatePrayerGroup(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @RequestBody PutPrayerGroupRequest putPrayerGroupRequest);
 }
