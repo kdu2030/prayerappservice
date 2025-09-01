@@ -11,11 +11,14 @@ import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import com.kevin.prayerappservice.group.dtos.CreatePrayerGroupRequestDTO;
 import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
 import com.kevin.prayerappservice.group.dtos.PrayerGroupDTO;
+import com.kevin.prayerappservice.group.dtos.PrayerGroupUserDTO;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.mappers.PrayerGroupMapper;
 import com.kevin.prayerappservice.group.models.CreatePrayerGroupRequest;
 import com.kevin.prayerappservice.group.models.GroupNameValidationResponse;
 import com.kevin.prayerappservice.group.models.PrayerGroupModel;
+import com.kevin.prayerappservice.group.models.PrayerGroupUserModel;
+import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,6 +27,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 
@@ -130,7 +135,7 @@ public class PrayerGroupServiceTests {
     }
 
     @Test
-    public void getPrayerGroup_givenJoinRequestId_returnsRequestSubmittedJoinStatus(){
+    public void getPrayerGroup_givenJoinRequestId_returnsRequestSubmittedJoinStatus() {
         PrayerGroupDTO mockPrayerGroup = new PrayerGroupDTO(6116, "Naboo Delegation", "Senator Amidala and " +
                 "Representative Binks", null, VisibilityLevel.PRIVATE.toString(), 34, "naboo.png", "https" +
                 "://prayerappfileservices.pythonanywhere.com/test.png", FileType.IMAGE.toString(), null, null, null,
@@ -142,5 +147,32 @@ public class PrayerGroupServiceTests {
         PrayerGroupModel prayerGroupModel = prayerGroupService.getPrayerGroup("Bearer testToken", 6116);
 
         Assertions.assertThat(prayerGroupModel.getUserJoinStatus()).isEqualTo(JoinStatus.REQUEST_SUBMITTED);
+    }
+
+    @Test
+    public void getPrayerGroup_givenValidId_returnsAdmins() {
+        PrayerGroupDTO mockPrayerGroup = new PrayerGroupDTO(6116, "Naboo Delegation", "Senator Amidala and " +
+                "Representative Binks", null, VisibilityLevel.PRIVATE.toString(), 34, "naboo.png", "https" +
+                "://prayerappfileservices.pythonanywhere.com/test.png", FileType.IMAGE.toString(), null, null, null,
+                null, null, 1004);
+
+        PrayerGroupUserDTO[] prayerGroupUserDTOS = new PrayerGroupUserDTO[]{
+                new PrayerGroupUserDTO(320, "Padme Amidala", "pamidala", PrayerGroupRole.ADMIN.toString(), null, null
+                        , null, null),
+                new PrayerGroupUserDTO(380, "Jar Jar Binks", "jbinks", PrayerGroupRole.ADMIN.toString(), 330,
+                        "jarjar_binks.jpeg", "https://prayerappfileservices.pythonanywhere.com/45.png",
+                        FileType.IMAGE.toString())
+        };
+
+        Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroup(anyInt(), anyInt())).thenReturn(mockPrayerGroup);
+        Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroupUsers(anyInt(), any(PrayerGroupRole[].class))).thenReturn(List.of(prayerGroupUserDTOS));
+        Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(1409);
+
+        PrayerGroupModel prayerGroupModel = prayerGroupService.getPrayerGroup("Bearer testToken", 6116);
+
+        List<PrayerGroupUserModel> admins = prayerGroupModel.getAdmins();
+
+        Assertions.assertThat(admins.getFirst().getUserId()).isEqualTo(prayerGroupUserDTOS[0].getUserId());
+        Assertions.assertThat(admins.get(1).getUserId()).isEqualTo(prayerGroupUserDTOS[1].getUserId());
     }
 }
