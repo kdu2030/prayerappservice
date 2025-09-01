@@ -18,4 +18,8 @@ public interface PrayerGroupApi {
     @GetMapping(value="validate-name")
     @Operation(summary = "Validates group name")
     ResponseEntity<GroupNameValidationResponse> validateGroupName(@RequestParam String name);
+
+    @GetMapping("/{prayerGroupId}")
+    @Operation(summary = "Gets prayer group")
+    ResponseEntity<PrayerGroupModel> getPrayerGroup(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId);
 }

@@ -26,4 +26,9 @@ public class PrayerGroupController implements PrayerGroupApi {
         GroupNameValidationResponse validationResponse = prayerGroupService.validateGroupName(name);
         return new ResponseEntity<>(validationResponse, HttpStatus.OK);
     }
+
+    public ResponseEntity<PrayerGroupModel> getPrayerGroup(String authorizationHeader, int prayerGroupId){
+        PrayerGroupModel prayerGroupModel = prayerGroupService.getPrayerGroup(authorizationHeader, prayerGroupId);
+        return new ResponseEntity<>(prayerGroupModel, HttpStatus.OK);
+    }
 }

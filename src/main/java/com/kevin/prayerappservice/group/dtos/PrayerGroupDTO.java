@@ -8,11 +8,11 @@ public class PrayerGroupDTO {
     private String visibilityLevel;
     private Integer avatarFileId;
     private String avatarFileName;
-    private String avatarfileUrl;
+    private String avatarFileUrl;
     private String avatarFileType;
     private Integer bannerFileId;
     private String bannerFileName;
-    private String bannerfileUrl;
+    private String bannerFileUrl;
     private String bannerFileType;
     private String prayerGroupRole;
     private Integer joinRequestId;
@@ -21,8 +21,8 @@ public class PrayerGroupDTO {
     }
 
     public PrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules,
-                          String visibilityLevel, Integer avatarFileId, String avatarFileName, String avatarfileUrl,
-                          String avatarFileType, Integer bannerFileId, String bannerFileName, String bannerfileUrl,
+                          String visibilityLevel, Integer avatarFileId, String avatarFileName, String avatarFileUrl,
+                          String avatarFileType, Integer bannerFileId, String bannerFileName, String bannerFileUrl,
                           String bannerFileType, String prayerGroupRole, Integer joinRequestId) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
@@ -31,11 +31,11 @@ public class PrayerGroupDTO {
         this.visibilityLevel = visibilityLevel;
         this.avatarFileId = avatarFileId;
         this.avatarFileName = avatarFileName;
-        this.avatarfileUrl = avatarfileUrl;
+        this.avatarFileUrl = avatarFileUrl;
         this.avatarFileType = avatarFileType;
         this.bannerFileId = bannerFileId;
         this.bannerFileName = bannerFileName;
-        this.bannerfileUrl = bannerfileUrl;
+        this.bannerFileUrl = bannerFileUrl;
         this.bannerFileType = bannerFileType;
         this.prayerGroupRole = prayerGroupRole;
         this.joinRequestId = joinRequestId;
@@ -97,12 +97,12 @@ public class PrayerGroupDTO {
         this.avatarFileName = avatarFileName;
     }
 
-    public String getAvatarfileUrl() {
-        return avatarfileUrl;
+    public String getAvatarFileUrl() {
+        return avatarFileUrl;
     }
 
-    public void setAvatarfileUrl(String avatarfileUrl) {
-        this.avatarfileUrl = avatarfileUrl;
+    public void setAvatarFileUrl(String avatarFileUrl) {
+        this.avatarFileUrl = avatarFileUrl;
     }
 
     public String getAvatarFileType() {
@@ -129,12 +129,12 @@ public class PrayerGroupDTO {
         this.bannerFileName = bannerFileName;
     }
 
-    public String getBannerfileUrl() {
-        return bannerfileUrl;
+    public String getBannerFileUrl() {
+        return bannerFileUrl;
     }
 
-    public void setBannerfileUrl(String bannerfileUrl) {
-        this.bannerfileUrl = bannerfileUrl;
+    public void setBannerFileUrl(String bannerFileUrl) {
+        this.bannerFileUrl = bannerFileUrl;
     }
 
     public String getBannerFileType() {
