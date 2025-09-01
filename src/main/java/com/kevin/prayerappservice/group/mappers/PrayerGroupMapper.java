@@ -7,6 +7,8 @@ import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
 import com.kevin.prayerappservice.group.dtos.PrayerGroupDTO;
 import com.kevin.prayerappservice.group.dtos.PrayerGroupSummaryDTO;
+import com.kevin.prayerappservice.group.dtos.PrayerGroupUserDTO;
+import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.group.models.PrayerGroupModel;
 import com.kevin.prayerappservice.group.models.PrayerGroupSummaryModel;
 import com.kevin.prayerappservice.group.models.PrayerGroupUserModel;
@@ -49,6 +51,12 @@ public interface PrayerGroupMapper {
     @Mapping(source = ".", target = "userJoinStatus")
     PrayerGroupModel prayerGroupDTOToPrayerGroupModel(PrayerGroupDTO prayerGroupDTO);
 
+    @Mapping(source = "imageFileId", target = "image.mediaFileId")
+    @Mapping(source = "fileName", target = "image.fileName")
+    @Mapping(source = "fileUrl", target = "image.fileUrl")
+    @Mapping(source = "fileType", target = "image.fileType")
+    PrayerGroupUserModel prayerGroupUserDTOToPrayerGroupUserModel(PrayerGroupUserDTO prayerGroupUserDTO);
+
     @AfterMapping
     default void setImagesToNull(@MappingTarget PrayerGroupModel prayerGroupModel) {
         MediaFile avatarMediaFile = prayerGroupModel.getAvatarFile();
@@ -69,6 +77,19 @@ public interface PrayerGroupMapper {
 
         if(avatarMediaFile.getMediaFileId() == null){
             prayerGroupSummaryModel.setAvatarFile(null);
+        }
+    }
+
+    @AfterMapping
+    default void setPrayerGroupUserImageToNull(@MappingTarget PrayerGroupUserModel prayerGroupUserModel){
+        MediaFile userImage = prayerGroupUserModel.getImage();
+
+        if(userImage == null){
+            return;
+        }
+
+        if(userImage.getMediaFileId() == null){
+            prayerGroupUserModel.setImage(null);
         }
     }
 
