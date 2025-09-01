@@ -125,6 +125,6 @@ public class PrayerGroupService {
     }
 
     public boolean hasActiveJoinRequests(int prayerGroupId) {
-        return joinRequestRepository.findByPrayerGroupId(prayerGroupId).isPresent()
+        return joinRequestRepository.findByPrayerGroupId(prayerGroupId).isPresent();
     }
 }
