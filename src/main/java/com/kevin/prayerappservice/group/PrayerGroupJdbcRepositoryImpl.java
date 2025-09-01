@@ -1,9 +1,6 @@
 package com.kevin.prayerappservice.group;
 
-import com.kevin.prayerappservice.group.dtos.CreatePrayerGroupRequestDTO;
-import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
-import com.kevin.prayerappservice.group.dtos.PrayerGroupSummaryDTO;
-import com.kevin.prayerappservice.group.dtos.PrayerGroupSummaryQueryDTO;
+import com.kevin.prayerappservice.group.dtos.*;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -36,5 +33,13 @@ public class PrayerGroupJdbcRepositoryImpl implements PrayerGroupJdbcRepository 
        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(new PrayerGroupSummaryQueryDTO(userId));
 
        return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerGroupSummaryDTO.class));
+    }
+
+    public PrayerGroupDTO getPrayerGroup(int prayerGroupId, int userId){
+       String sql = "SELECT * FROM get_prayer_group(:targetPrayerGroupId, :targetUserId);";
+       PrayerGroupGetQuery getQueryParams = new PrayerGroupGetQuery(prayerGroupId, userId);
+       BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(getQueryParams);
+
+       return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(PrayerGroupDTO.class));
     }
 }
