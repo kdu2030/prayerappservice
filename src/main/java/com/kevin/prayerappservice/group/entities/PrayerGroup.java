@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-
 import java.util.List;
 
 @Entity
@@ -48,10 +47,22 @@ public class PrayerGroup {
     @OneToMany(mappedBy = "prayerGroup")
     private List<JoinRequest> joinRequests;
 
-    public PrayerGroup() {}
+    public PrayerGroup() {
+    }
 
     public PrayerGroup(String groupName, String description, String rules, VisibilityLevel visibilityLevel,
                        MediaFile avatarFile, MediaFile bannerFile) {
+        this.groupName = groupName;
+        this.description = description;
+        this.rules = rules;
+        this.visibilityLevel = visibilityLevel;
+        this.avatarFile = avatarFile;
+        this.bannerFile = bannerFile;
+    }
+
+    public PrayerGroup(Integer prayerGroupId, String groupName, String description, String rules,
+                       VisibilityLevel visibilityLevel, MediaFile avatarFile, MediaFile bannerFile) {
+        this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.description = description;
         this.rules = rules;
