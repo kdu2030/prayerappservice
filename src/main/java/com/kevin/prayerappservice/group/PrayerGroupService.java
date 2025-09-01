@@ -1,16 +1,12 @@
 package com.kevin.prayerappservice.group;
 
 import com.kevin.prayerappservice.auth.JwtService;
+import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
-import com.kevin.prayerappservice.group.dtos.CreatePrayerGroupRequestDTO;
-import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
-import com.kevin.prayerappservice.group.dtos.PrayerGroupSummaryDTO;
+import com.kevin.prayerappservice.group.dtos.*;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.mappers.PrayerGroupMapper;
-import com.kevin.prayerappservice.group.models.CreatePrayerGroupRequest;
-import com.kevin.prayerappservice.group.models.GroupNameValidationResponse;
-import com.kevin.prayerappservice.group.models.PrayerGroupModel;
-import com.kevin.prayerappservice.group.models.PrayerGroupSummaryModel;
+import com.kevin.prayerappservice.group.models.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,5 +59,21 @@ public class PrayerGroupService {
         return prayerGroupSummaries.stream()
                 .map(prayerGroupMapper::prayerGroupSummaryDTOToPrayerGroupSummaryModel)
                 .toList();
+    }
+
+    public PrayerGroupModel getPrayerGroup(String authorizationHeader, int prayerGroupId) {
+        String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
+        int userId = jwtService.extractUserId(token);
+
+        PrayerGroupDTO prayerGroupDTO = prayerGroupRepository.getPrayerGroup(prayerGroupId, userId);
+        List<PrayerGroupUserDTO> adminUserDTOs = prayerGroupRepository.getPrayerGroupUsers(prayerGroupId,
+                new PrayerGroupRole[]{PrayerGroupRole.ADMIN});
+
+        PrayerGroupModel prayerGroup = prayerGroupMapper.prayerGroupDTOToPrayerGroupModel(prayerGroupDTO);
+        List<PrayerGroupUserModel> adminUsers =
+                adminUserDTOs.stream().map(prayerGroupMapper::prayerGroupUserDTOToPrayerGroupUserModel).toList();
+
+        prayerGroup.setAdmins(adminUsers);
+        return prayerGroup;
     }
 }
