@@ -97,7 +97,6 @@ public class PrayerGroupServiceTests {
     }
 
     @Test
-    @DirtiesContext
     public void createPrayerGroup_givenPrayerGroupWithNullableFields_returnsGroupModel() {
         CreatedPrayerGroupDTO createdPrayerGroupDTO = new CreatedPrayerGroupDTO(777, "Top Gear", null, null,
                 VisibilityLevel.PUBLIC, null, null, null, null, null, null, 80, "James May", null, null, null);
@@ -175,4 +174,6 @@ public class PrayerGroupServiceTests {
         Assertions.assertThat(admins.getFirst().getUserId()).isEqualTo(prayerGroupUserDTOS[0].getUserId());
         Assertions.assertThat(admins.get(1).getUserId()).isEqualTo(prayerGroupUserDTOS[1].getUserId());
     }
+
+
 }
