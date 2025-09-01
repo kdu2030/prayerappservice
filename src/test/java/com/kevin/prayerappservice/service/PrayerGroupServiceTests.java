@@ -1,10 +1,12 @@
 package com.kevin.prayerappservice.service;
 
 import com.kevin.prayerappservice.auth.JwtService;
+import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.file.entities.FileType;
 import com.kevin.prayerappservice.group.PrayerGroupJdbcRepositoryImpl;
 import com.kevin.prayerappservice.group.PrayerGroupRepository;
 import com.kevin.prayerappservice.group.PrayerGroupService;
+import com.kevin.prayerappservice.group.PrayerGroupUserRepository;
 import com.kevin.prayerappservice.group.constants.JoinStatus;
 import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
@@ -13,12 +15,12 @@ import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
 import com.kevin.prayerappservice.group.dtos.PrayerGroupDTO;
 import com.kevin.prayerappservice.group.dtos.PrayerGroupUserDTO;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
+import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.group.mappers.PrayerGroupMapper;
-import com.kevin.prayerappservice.group.models.CreatePrayerGroupRequest;
-import com.kevin.prayerappservice.group.models.GroupNameValidationResponse;
-import com.kevin.prayerappservice.group.models.PrayerGroupModel;
-import com.kevin.prayerappservice.group.models.PrayerGroupUserModel;
-import org.assertj.core.api.Assert;
+import com.kevin.prayerappservice.group.models.*;
+import com.kevin.prayerappservice.user.UserRepository;
+import com.kevin.prayerappservice.user.entities.Role;
+import com.kevin.prayerappservice.user.entities.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -49,6 +51,12 @@ public class PrayerGroupServiceTests {
 
     @Autowired
     private PrayerGroupService prayerGroupService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PrayerGroupUserRepository prayerGroupUserRepository;
 
     @Test
     @DirtiesContext
@@ -175,5 +183,27 @@ public class PrayerGroupServiceTests {
         Assertions.assertThat(admins.get(1).getUserId()).isEqualTo(prayerGroupUserDTOS[1].getUserId());
     }
 
+    @Test
+    @DirtiesContext
+    public void updatePrayerGroup_calledByNonAdmin_throwsException() {
+        User mockUser = new User("Larry Page", "lpage", "lpage@gmail.com", "mockPasswordHash", Role.USER);
+        userRepository.save(mockUser);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("Google", "Search engine", "No web scrapers",
+                VisibilityLevel.PUBLIC, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(mockUser.getUserId());
+
+        PrayerGroupUser mockPrayerGroupUser = new PrayerGroupUser(mockUser, mockPrayerGroup, PrayerGroupRole.MEMBER);
+        prayerGroupUserRepository.save(mockPrayerGroupUser);
+
+
+        PutPrayerGroupRequest putPrayerGroupRequest = new PutPrayerGroupRequest("Alphabet", "Search engine", "No web " +
+                "scrapers", VisibilityLevel.PUBLIC, null, null);
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class)
+                .isThrownBy(() -> prayerGroupService.updatePrayerGroup("Bearer mockToken", mockPrayerGroup.getPrayerGroupId(), putPrayerGroupRequest));
+    }
 
 }
