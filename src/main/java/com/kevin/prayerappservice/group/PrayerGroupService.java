@@ -96,7 +96,7 @@ public class PrayerGroupService {
         int userId = jwtService.extractUserId(token);
 
         PrayerGroupUser user = prayerGroupUserRepository
-                .findByPrayerGroupIdAndUserId(prayerGroupId, userId)
+                .findByPrayerGroup_prayerGroupIdAndUser_userId(prayerGroupId, userId)
                 .orElseThrow(() -> new DataValidationException("User must be part of prayer group to modify it."));
 
         if (user.getPrayerGroupRole() != PrayerGroupRole.ADMIN) {
@@ -125,6 +125,6 @@ public class PrayerGroupService {
     }
 
     public boolean hasActiveJoinRequests(int prayerGroupId) {
-        return joinRequestRepository.findByPrayerGroupId(prayerGroupId).isPresent();
+        return joinRequestRepository.findByPrayerGroup_prayerGroupId(prayerGroupId).isPresent();
     }
 }

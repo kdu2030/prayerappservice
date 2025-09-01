@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface JoinRequestRepository extends JpaRepository<JoinRequest, Integer> {
-    Optional<JoinRequest> findByPrayerGroupId(int prayerGroupId);
+    Optional<JoinRequest> findByPrayerGroup_prayerGroupId(int prayerGroupId);
 }

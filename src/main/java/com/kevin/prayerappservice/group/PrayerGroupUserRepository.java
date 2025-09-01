@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface PrayerGroupUserRepository extends JpaRepository<PrayerGroupUser, Integer> {
-    Optional<PrayerGroupUser> findByPrayerGroupIdAndUserId(int prayerGroupId, int userId);
+    Optional<PrayerGroupUser> findByPrayerGroup_prayerGroupIdAndUser_userId(int prayerGroupId, int userId);
 }
