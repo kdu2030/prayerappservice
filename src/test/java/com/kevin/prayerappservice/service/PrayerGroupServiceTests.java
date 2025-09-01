@@ -128,4 +128,19 @@ public class PrayerGroupServiceTests {
         Assertions.assertThat(prayerGroupModel.getAvatarFile().getFileUrl()).isEqualTo(mockPrayerGroup.getAvatarFileUrl());
         Assertions.assertThat(prayerGroupModel.getUserJoinStatus()).isEqualTo(JoinStatus.JOINED);
     }
+
+    @Test
+    public void getPrayerGroup_givenJoinRequestId_returnsRequestSubmittedJoinStatus(){
+        PrayerGroupDTO mockPrayerGroup = new PrayerGroupDTO(6116, "Naboo Delegation", "Senator Amidala and " +
+                "Representative Binks", null, VisibilityLevel.PRIVATE.toString(), 34, "naboo.png", "https" +
+                "://prayerappfileservices.pythonanywhere.com/test.png", FileType.IMAGE.toString(), null, null, null,
+                null, null, 1004);
+
+        Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroup(anyInt(), anyInt())).thenReturn(mockPrayerGroup);
+        Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(1409);
+
+        PrayerGroupModel prayerGroupModel = prayerGroupService.getPrayerGroup("Bearer testToken", 6116);
+
+        Assertions.assertThat(prayerGroupModel.getUserJoinStatus()).isEqualTo(JoinStatus.REQUEST_SUBMITTED);
+    }
 }
