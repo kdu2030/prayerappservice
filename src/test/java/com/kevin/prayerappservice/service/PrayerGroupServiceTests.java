@@ -18,6 +18,8 @@ import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.group.mappers.PrayerGroupMapper;
 import com.kevin.prayerappservice.group.models.*;
+import com.kevin.prayerappservice.request.JoinRequest;
+import com.kevin.prayerappservice.request.JoinRequestRepository;
 import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
@@ -30,6 +32,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -57,6 +60,9 @@ public class PrayerGroupServiceTests {
 
     @Autowired
     private PrayerGroupUserRepository prayerGroupUserRepository;
+
+    @Autowired
+    private JoinRequestRepository joinRequestRepository;
 
     @Test
     @DirtiesContext
@@ -198,6 +204,31 @@ public class PrayerGroupServiceTests {
         PrayerGroupUser mockPrayerGroupUser = new PrayerGroupUser(mockUser, mockPrayerGroup, PrayerGroupRole.MEMBER);
         prayerGroupUserRepository.save(mockPrayerGroupUser);
 
+
+        PutPrayerGroupRequest putPrayerGroupRequest = new PutPrayerGroupRequest("Alphabet", "Search engine", "No web " +
+                "scrapers", VisibilityLevel.PUBLIC, null, null);
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class)
+                .isThrownBy(() -> prayerGroupService.updatePrayerGroup("Bearer mockToken", mockPrayerGroup.getPrayerGroupId(), putPrayerGroupRequest));
+    }
+
+    @Test
+    @DirtiesContext
+    public void updatePrayerGroup_changeToPublicWithJoinRequest_ThrowsException() {
+        User mockUser = new User("Larry Page", "lpage", "lpage@gmail.com", "mockPasswordHash", Role.USER);
+        userRepository.save(mockUser);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("Google", "Search engine", "No web scrapers",
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(mockUser.getUserId());
+
+        PrayerGroupUser mockPrayerGroupUser = new PrayerGroupUser(mockUser, mockPrayerGroup, PrayerGroupRole.ADMIN);
+        prayerGroupUserRepository.save(mockPrayerGroupUser);
+
+        JoinRequest joinRequest = new JoinRequest(mockUser, mockPrayerGroup, LocalDate.now());
+        joinRequestRepository.save(joinRequest);
 
         PutPrayerGroupRequest putPrayerGroupRequest = new PutPrayerGroupRequest("Alphabet", "Search engine", "No web " +
                 "scrapers", VisibilityLevel.PUBLIC, null, null);
