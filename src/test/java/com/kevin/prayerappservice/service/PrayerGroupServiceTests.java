@@ -53,9 +53,6 @@ public class PrayerGroupServiceTests {
     private PrayerGroupMapper prayerGroupMapper;
 
     @Autowired
-    private PrayerGroupService prayerGroupService;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -63,6 +60,9 @@ public class PrayerGroupServiceTests {
 
     @Autowired
     private JoinRequestRepository joinRequestRepository;
+
+    @Autowired
+    private PrayerGroupService prayerGroupService;
 
     @Test
     @DirtiesContext
@@ -199,6 +199,7 @@ public class PrayerGroupServiceTests {
                 VisibilityLevel.PUBLIC, null, null);
         prayerGroupRepository.save(mockPrayerGroup);
 
+        Mockito.when(mockJwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(mockUser.getUserId());
 
         PrayerGroupUser mockPrayerGroupUser = new PrayerGroupUser(mockUser, mockPrayerGroup, PrayerGroupRole.MEMBER);
@@ -209,12 +210,13 @@ public class PrayerGroupServiceTests {
                 "scrapers", VisibilityLevel.PUBLIC, null, null);
 
         Assertions.assertThatExceptionOfType(DataValidationException.class)
-                .isThrownBy(() -> prayerGroupService.updatePrayerGroup("Bearer mockToken", mockPrayerGroup.getPrayerGroupId(), putPrayerGroupRequest));
+                .isThrownBy(() -> prayerGroupService.updatePrayerGroup("Bearer mockToken",
+                        mockPrayerGroup.getPrayerGroupId(), putPrayerGroupRequest));
     }
 
     @Test
     @DirtiesContext
-    public void updatePrayerGroup_changeToPublicWithJoinRequest_ThrowsException() {
+    public void updatePrayerGroup_changeToPublicWithJoinRequest_throwsException() {
         User mockUser = new User("Larry Page", "lpage", "lpage@gmail.com", "mockPasswordHash", Role.USER);
         userRepository.save(mockUser);
 
@@ -222,6 +224,7 @@ public class PrayerGroupServiceTests {
                 VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(mockPrayerGroup);
 
+        Mockito.when(mockJwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(mockUser.getUserId());
 
         PrayerGroupUser mockPrayerGroupUser = new PrayerGroupUser(mockUser, mockPrayerGroup, PrayerGroupRole.ADMIN);
@@ -234,7 +237,53 @@ public class PrayerGroupServiceTests {
                 "scrapers", VisibilityLevel.PUBLIC, null, null);
 
         Assertions.assertThatExceptionOfType(DataValidationException.class)
-                .isThrownBy(() -> prayerGroupService.updatePrayerGroup("Bearer mockToken", mockPrayerGroup.getPrayerGroupId(), putPrayerGroupRequest));
+                .isThrownBy(() -> prayerGroupService.updatePrayerGroup("Bearer mockToken",
+                        mockPrayerGroup.getPrayerGroupId(), putPrayerGroupRequest));
+    }
+
+    @Test
+    @DirtiesContext
+    public void updatePrayerGroup_givenValidPrayerGroup_updatesPrayerGroup() {
+        User mockUser = new User("Larry Page", "lpage", "lpage@gmail.com", "mockPasswordHash", Role.USER);
+        userRepository.save(mockUser);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("Google", "Search engine", "No web scrapers",
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        Mockito.when(mockJwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(mockUser.getUserId());
+
+        PrayerGroupUser mockPrayerGroupUser = new PrayerGroupUser(mockUser, mockPrayerGroup, PrayerGroupRole.ADMIN);
+        prayerGroupUserRepository.save(mockPrayerGroupUser);
+
+        PutPrayerGroupRequest putPrayerGroupRequest = new PutPrayerGroupRequest("Alphabet", "Parent company of " +
+                "Google", "No web " +
+                "scrapers", VisibilityLevel.PUBLIC, null, null);
+
+        PrayerGroupDTO mockUpdatedPrayerGroup = new PrayerGroupDTO(mockPrayerGroup.getPrayerGroupId(),
+                putPrayerGroupRequest.getGroupName(), putPrayerGroupRequest.getDescription(),
+                putPrayerGroupRequest.getRules(), VisibilityLevel.PUBLIC.toString());
+
+        PrayerGroupUserDTO[] prayerGroupUserDTOS = new PrayerGroupUserDTO[]{
+                new PrayerGroupUserDTO(320, "Padme Amidala", "pamidala", PrayerGroupRole.ADMIN.toString(), null, null
+                        , null, null),
+                new PrayerGroupUserDTO(mockUser.getUserId(), "Larry Page", "jpage",
+                        PrayerGroupRole.ADMIN.toString(), null, null, null, null)
+        };
+
+        Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroup(anyInt(), anyInt())).thenReturn(mockUpdatedPrayerGroup);
+        Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroupUsers(anyInt(), any(PrayerGroupRole[].class))).thenReturn(List.of(prayerGroupUserDTOS));
+
+        prayerGroupService.updatePrayerGroup("Bearer mockToken", mockPrayerGroup.getPrayerGroupId(),
+                putPrayerGroupRequest);
+
+        PrayerGroup updatedPrayerGroup =
+                prayerGroupRepository.findById(mockPrayerGroup.getPrayerGroupId()).orElseThrow();
+
+        Assertions.assertThat(updatedPrayerGroup.getGroupName()).isEqualTo(putPrayerGroupRequest.getGroupName());
+        Assertions.assertThat(updatedPrayerGroup.getDescription()).isEqualTo(putPrayerGroupRequest.getDescription());
+        Assertions.assertThat(updatedPrayerGroup.getVisibilityLevel()).isEqualTo(putPrayerGroupRequest.getVisibilityLevel());
     }
 
 }

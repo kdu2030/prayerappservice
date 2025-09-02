@@ -41,6 +41,15 @@ public class PrayerGroupDTO {
         this.joinRequestId = joinRequestId;
     }
 
+    public PrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules,
+                          String visibilityLevel) {
+        this.prayerGroupId = prayerGroupId;
+        this.groupName = groupName;
+        this.description = description;
+        this.rules = rules;
+        this.visibilityLevel = visibilityLevel;
+    }
+
     public int getPrayerGroupId() {
         return prayerGroupId;
     }
