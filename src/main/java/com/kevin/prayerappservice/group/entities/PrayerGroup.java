@@ -2,12 +2,12 @@ package com.kevin.prayerappservice.group.entities;
 
 import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
+import com.kevin.prayerappservice.request.JoinRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-
 
 import java.util.List;
 
@@ -44,10 +44,25 @@ public class PrayerGroup {
     @OneToMany(mappedBy = "prayerGroup")
     private List<PrayerGroupUser> prayerGroupUsers;
 
-    public PrayerGroup() {}
+    @OneToMany(mappedBy = "prayerGroup")
+    private List<JoinRequest> joinRequests;
+
+    public PrayerGroup() {
+    }
 
     public PrayerGroup(String groupName, String description, String rules, VisibilityLevel visibilityLevel,
                        MediaFile avatarFile, MediaFile bannerFile) {
+        this.groupName = groupName;
+        this.description = description;
+        this.rules = rules;
+        this.visibilityLevel = visibilityLevel;
+        this.avatarFile = avatarFile;
+        this.bannerFile = bannerFile;
+    }
+
+    public PrayerGroup(Integer prayerGroupId, String groupName, String description, String rules,
+                       VisibilityLevel visibilityLevel, MediaFile avatarFile, MediaFile bannerFile) {
+        this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.description = description;
         this.rules = rules;
@@ -118,5 +133,13 @@ public class PrayerGroup {
 
     public void setPrayerGroupUsers(List<PrayerGroupUser> prayerGroupUsers) {
         this.prayerGroupUsers = prayerGroupUsers;
+    }
+
+    public List<JoinRequest> getJoinRequests() {
+        return joinRequests;
+    }
+
+    public void setJoinRequests(List<JoinRequest> joinRequests) {
+        this.joinRequests = joinRequests;
     }
 }

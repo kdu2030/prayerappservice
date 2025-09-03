@@ -2,6 +2,7 @@ package com.kevin.prayerappservice.user.entities;
 
 import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
+import com.kevin.prayerappservice.request.JoinRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,6 +42,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<PrayerGroupUser> prayerGroupUsers;
+
+    @OneToMany(mappedBy = "user")
+    private List<JoinRequest> joinRequests;
 
     public User(){
         this.fullName = null;
@@ -131,5 +135,13 @@ public class User implements UserDetails {
 
     public void setPrayerGroupUsers(List<PrayerGroupUser> prayerGroupUsers) {
         this.prayerGroupUsers = prayerGroupUsers;
+    }
+
+    public List<JoinRequest> getJoinRequests() {
+        return joinRequests;
+    }
+
+    public void setJoinRequests(List<JoinRequest> joinRequests) {
+        this.joinRequests = joinRequests;
     }
 }

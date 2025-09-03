@@ -1,16 +1,17 @@
 package com.kevin.prayerappservice.group;
 
 import com.kevin.prayerappservice.auth.JwtService;
+import com.kevin.prayerappservice.exceptions.DataValidationException;
+import com.kevin.prayerappservice.file.entities.MediaFile;
+import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
-import com.kevin.prayerappservice.group.dtos.CreatePrayerGroupRequestDTO;
-import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
-import com.kevin.prayerappservice.group.dtos.PrayerGroupSummaryDTO;
+import com.kevin.prayerappservice.group.dtos.*;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
+import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.group.mappers.PrayerGroupMapper;
-import com.kevin.prayerappservice.group.models.CreatePrayerGroupRequest;
-import com.kevin.prayerappservice.group.models.GroupNameValidationResponse;
-import com.kevin.prayerappservice.group.models.PrayerGroupModel;
-import com.kevin.prayerappservice.group.models.PrayerGroupSummaryModel;
+import com.kevin.prayerappservice.group.models.*;
+import com.kevin.prayerappservice.request.JoinRequestRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,12 +22,20 @@ public class PrayerGroupService {
     private final PrayerGroupRepository prayerGroupRepository;
     private final JwtService jwtService;
     private final PrayerGroupMapper prayerGroupMapper;
+    private final PrayerGroupUserRepository prayerGroupUserRepository;
+    private final JoinRequestRepository joinRequestRepository;
+    private final EntityManager entityManager;
 
     public PrayerGroupService(PrayerGroupRepository prayerGroupRepository, JwtService jwtService,
-                              PrayerGroupMapper prayerGroupMapper) {
+                              PrayerGroupMapper prayerGroupMapper,
+                              PrayerGroupUserRepository prayerGroupUserRepository,
+                              JoinRequestRepository joinRequestRepository, EntityManager entityManager) {
         this.prayerGroupRepository = prayerGroupRepository;
         this.jwtService = jwtService;
         this.prayerGroupMapper = prayerGroupMapper;
+        this.prayerGroupUserRepository = prayerGroupUserRepository;
+        this.joinRequestRepository = joinRequestRepository;
+        this.entityManager = entityManager;
     }
 
     public PrayerGroupModel createPrayerGroup(String authorizationHeader, CreatePrayerGroupRequest prayerGroupRequest) {
@@ -63,5 +72,59 @@ public class PrayerGroupService {
         return prayerGroupSummaries.stream()
                 .map(prayerGroupMapper::prayerGroupSummaryDTOToPrayerGroupSummaryModel)
                 .toList();
+    }
+
+    public PrayerGroupModel getPrayerGroup(String authorizationHeader, int prayerGroupId) {
+        String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
+        int userId = jwtService.extractUserId(token);
+
+        PrayerGroupDTO prayerGroupDTO = prayerGroupRepository.getPrayerGroup(prayerGroupId, userId);
+        List<PrayerGroupUserDTO> adminUserDTOs = prayerGroupRepository.getPrayerGroupUsers(prayerGroupId,
+                new PrayerGroupRole[]{PrayerGroupRole.ADMIN});
+
+        PrayerGroupModel prayerGroup = prayerGroupMapper.prayerGroupDTOToPrayerGroupModel(prayerGroupDTO);
+        List<PrayerGroupUserModel> adminUsers =
+                adminUserDTOs.stream().map(prayerGroupMapper::prayerGroupUserDTOToPrayerGroupUserModel).toList();
+
+        prayerGroup.setAdmins(adminUsers);
+        return prayerGroup;
+    }
+
+    public PrayerGroupModel updatePrayerGroup(String authorizationHeader, int prayerGroupId,
+                                              PutPrayerGroupRequest putPrayerGroupRequest) {
+        String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
+        int userId = jwtService.extractUserId(token);
+
+        PrayerGroupUser user = prayerGroupUserRepository
+                .findByPrayerGroup_prayerGroupIdAndUser_userId(prayerGroupId, userId)
+                .orElseThrow(() -> new DataValidationException("User must be part of prayer group to modify it."));
+
+        if (user.getPrayerGroupRole() != PrayerGroupRole.ADMIN) {
+            throw new DataValidationException("User must be an admin to modify the prayer group");
+        }
+
+        VisibilityLevel visibilityLevel =
+                Optional.ofNullable(putPrayerGroupRequest.getVisibilityLevel()).orElse(VisibilityLevel.PUBLIC);
+
+        if (visibilityLevel == VisibilityLevel.PUBLIC && hasActiveJoinRequests(prayerGroupId)) {
+            throw new DataValidationException("Cannot set visibility level to PUBLIC with active join requests.");
+        }
+
+        Integer avatarFileId = putPrayerGroupRequest.getAvatarFileId();
+        MediaFile avatarFile = avatarFileId != null ? entityManager.getReference(MediaFile.class, avatarFileId) : null;
+
+        Integer bannerFileId = putPrayerGroupRequest.getBannerFileId();
+        MediaFile bannerFile = bannerFileId != null ? entityManager.getReference(MediaFile.class, bannerFileId) : null;
+
+        PrayerGroup updatedPrayerGroup = new PrayerGroup(prayerGroupId, putPrayerGroupRequest.getGroupName(),
+                putPrayerGroupRequest.getDescription(), putPrayerGroupRequest.getRules(), visibilityLevel, avatarFile, bannerFile);
+
+        prayerGroupRepository.save(updatedPrayerGroup);
+
+        return getPrayerGroup(authorizationHeader, prayerGroupId);
+    }
+
+    public boolean hasActiveJoinRequests(int prayerGroupId) {
+        return joinRequestRepository.findByPrayerGroup_prayerGroupId(prayerGroupId).isPresent();
     }
 }

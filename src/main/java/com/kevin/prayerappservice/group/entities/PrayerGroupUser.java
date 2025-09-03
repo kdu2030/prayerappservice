@@ -4,6 +4,7 @@ import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class PrayerGroupUser {
@@ -11,19 +12,21 @@ public class PrayerGroupUser {
     @GeneratedValue
     private Integer prayerGroupUserId;
 
-    @NotBlank
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @NotBlank
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "prayer_group_id")
     private PrayerGroup prayerGroup;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private PrayerGroupRole prayerGroupRole;
+
+    public PrayerGroupUser(){}
 
     public PrayerGroupUser(User user, PrayerGroup prayerGroup, PrayerGroupRole prayerGroupRole) {
         this.user = user;
@@ -39,27 +42,27 @@ public class PrayerGroupUser {
         this.prayerGroupUserId = prayerGroupUserId;
     }
 
-    public @NotBlank User getUser() {
+    public @NotNull User getUser() {
         return user;
     }
 
-    public void setUser(@NotBlank User user) {
+    public void setUser(@NotNull User user) {
         this.user = user;
     }
 
-    public @NotBlank PrayerGroup getPrayerGroup() {
+    public @NotNull PrayerGroup getPrayerGroup() {
         return prayerGroup;
     }
 
-    public void setPrayerGroup(@NotBlank PrayerGroup prayerGroup) {
+    public void setPrayerGroup(@NotNull PrayerGroup prayerGroup) {
         this.prayerGroup = prayerGroup;
     }
 
-    public @NotBlank PrayerGroupRole getPrayerGroupRole() {
+    public @NotNull PrayerGroupRole getPrayerGroupRole() {
         return prayerGroupRole;
     }
 
-    public void setPrayerGroupRole(@NotBlank PrayerGroupRole prayerGroupRole) {
+    public void setPrayerGroupRole(@NotNull PrayerGroupRole prayerGroupRole) {
         this.prayerGroupRole = prayerGroupRole;
     }
 }

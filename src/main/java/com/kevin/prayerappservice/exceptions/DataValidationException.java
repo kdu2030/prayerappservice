@@ -6,6 +6,13 @@ public class DataValidationException extends IllegalArgumentException {
     private final String[] dataValidationErrors;
     private final HttpStatus httpStatus;
 
+    public DataValidationException(String dataValidationError){
+        super();
+        httpStatus = HttpStatus.BAD_REQUEST;
+        this.dataValidationErrors = new String[] { dataValidationError };
+    }
+
+
     public DataValidationException(String[] dataValidationErrors){
         super();
         httpStatus = HttpStatus.BAD_REQUEST;

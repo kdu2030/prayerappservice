@@ -2,9 +2,13 @@ package com.kevin.prayerappservice.group.mappers;
 
 import com.kevin.prayerappservice.file.entities.FileType;
 import com.kevin.prayerappservice.file.entities.MediaFile;
+import com.kevin.prayerappservice.group.constants.JoinStatus;
 import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
+import com.kevin.prayerappservice.group.dtos.PrayerGroupDTO;
 import com.kevin.prayerappservice.group.dtos.PrayerGroupSummaryDTO;
+import com.kevin.prayerappservice.group.dtos.PrayerGroupUserDTO;
+import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.group.models.PrayerGroupModel;
 import com.kevin.prayerappservice.group.models.PrayerGroupSummaryModel;
 import com.kevin.prayerappservice.group.models.PrayerGroupUserModel;
@@ -36,6 +40,23 @@ public interface PrayerGroupMapper {
     @Mapping(source = "fileType", target = "avatarFile.fileType")
     PrayerGroupSummaryModel prayerGroupSummaryDTOToPrayerGroupSummaryModel(PrayerGroupSummaryDTO source);
 
+    @Mapping(source = "avatarFileId", target = "avatarFile.mediaFileId")
+    @Mapping(source = "avatarFileName", target = "avatarFile.fileName")
+    @Mapping(source = "avatarFileUrl", target = "avatarFile.fileUrl")
+    @Mapping(source = "avatarFileType", target = "avatarFile.fileType")
+    @Mapping(source = "bannerFileId", target = "bannerFile.mediaFileId")
+    @Mapping(source = "bannerFileName", target = "bannerFile.fileName")
+    @Mapping(source = "bannerFileUrl", target = "bannerFile.fileUrl")
+    @Mapping(source = "bannerFileType", target = "bannerFile.fileType")
+    @Mapping(source = ".", target = "userJoinStatus")
+    PrayerGroupModel prayerGroupDTOToPrayerGroupModel(PrayerGroupDTO prayerGroupDTO);
+
+    @Mapping(source = "imageFileId", target = "image.mediaFileId")
+    @Mapping(source = "fileName", target = "image.fileName")
+    @Mapping(source = "fileUrl", target = "image.fileUrl")
+    @Mapping(source = "fileType", target = "image.fileType")
+    PrayerGroupUserModel prayerGroupUserDTOToPrayerGroupUserModel(PrayerGroupUserDTO prayerGroupUserDTO);
+
     @AfterMapping
     default void setImagesToNull(@MappingTarget PrayerGroupModel prayerGroupModel) {
         MediaFile avatarMediaFile = prayerGroupModel.getAvatarFile();
@@ -59,7 +80,18 @@ public interface PrayerGroupMapper {
         }
     }
 
+    @AfterMapping
+    default void setPrayerGroupUserImageToNull(@MappingTarget PrayerGroupUserModel prayerGroupUserModel){
+        MediaFile userImage = prayerGroupUserModel.getImage();
 
+        if(userImage == null){
+            return;
+        }
+
+        if(userImage.getMediaFileId() == null){
+            prayerGroupUserModel.setImage(null);
+        }
+    }
 
     default List<PrayerGroupUserModel> mapToPrayerGroupUsers(CreatedPrayerGroupDTO source) {
         MediaFile adminImage = null;
@@ -75,5 +107,17 @@ public interface PrayerGroupMapper {
                 new PrayerGroupUserModel[]{new PrayerGroupUserModel(source.getAdminUserId(), null,
                         null, source.getAdminFullName(), null, adminImage, PrayerGroupRole.ADMIN)};
         return List.of(prayerGroupUsers);
+    }
+
+    default JoinStatus mapJoinStatus(PrayerGroupDTO prayerGroupDTO){
+        if(prayerGroupDTO.getPrayerGroupRole() != null){
+            return JoinStatus.JOINED;
+        }
+
+        if(prayerGroupDTO.getJoinRequestId() != null){
+            return JoinStatus.REQUEST_SUBMITTED;
+        }
+
+        return JoinStatus.NOT_JOINED;
     }
 }
