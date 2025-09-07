@@ -14,6 +14,7 @@ import com.kevin.prayerappservice.group.models.*;
 import com.kevin.prayerappservice.request.JoinRequestRepository;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.EntityManager;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -138,21 +139,39 @@ public class PrayerGroupService {
         String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
         int submitterUserId = jwtService.extractUserId(token);
 
-        if (submitterUserId != userId) {
-            PrayerGroupUser submitterUser =
-                    prayerGroupUserRepository.findByPrayerGroup_prayerGroupIdAndUser_userId(prayerGroupId,
-                            submitterUserId).orElseThrow(() -> new DataValidationException(PrayerGroupErrorMessages.MUST_BE_ADMIN_TO_ADD));
-
-            if(submitterUser.getPrayerGroupRole() != PrayerGroupRole.ADMIN){
-                throw new DataValidationException(PrayerGroupErrorMessages.MUST_BE_ADMIN_TO_ADD);
-            }
+        if (submitterUserId != userId && getPrayerGroupRoleForUser(prayerGroupId, submitterUserId) != PrayerGroupRole.ADMIN) {
+            throw new DataValidationException(PrayerGroupErrorMessages.MUST_BE_ADMIN_TO_ADD);
         }
 
         User user = entityManager.getReference(User.class, userId);
         PrayerGroupUser newPrayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER);
 
-       PrayerGroupUser createdPrayerGroupUser =  prayerGroupUserRepository.save(newPrayerGroupUser);
-       return prayerGroupMapper.prayerGroupUserToPrayerGroupUserModel(createdPrayerGroupUser);
+        PrayerGroupUser createdPrayerGroupUser = prayerGroupUserRepository.save(newPrayerGroupUser);
+        return prayerGroupMapper.prayerGroupUserToPrayerGroupUserModel(createdPrayerGroupUser);
+    }
+
+    public void deletePrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId) {
+        String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
+        int submitterUserId = jwtService.extractUserId(token);
+
+        if (submitterUserId != userId && getPrayerGroupRoleForUser(prayerGroupId, submitterUserId) != PrayerGroupRole.ADMIN) {
+            throw new DataValidationException(PrayerGroupErrorMessages.MUST_BE_ADMIN_TO_REMOVE_USER);
+        }
+
+        PrayerGroupUser targetUserToDelete =
+                prayerGroupUserRepository.findByPrayerGroup_prayerGroupIdAndUser_userId(prayerGroupId, userId)
+                        .orElseThrow(() -> new DataValidationException(String.format(PrayerGroupErrorMessages.USER_DOES_NOT_BELONG_TO_PRAYER_GROUP, userId, prayerGroupId)));
+
+        prayerGroupUserRepository.delete(targetUserToDelete);
+
+    }
+
+    private @Nullable PrayerGroupRole getPrayerGroupRoleForUser(int prayerGroupId, int userId) {
+        Optional<PrayerGroupUser> prayerGroupUser =
+                prayerGroupUserRepository.findByPrayerGroup_prayerGroupIdAndUser_userId(prayerGroupId,
+                        userId);
+        return prayerGroupUser.map(PrayerGroupUser::getPrayerGroupRole).orElse(null);
+
     }
 
     private boolean hasActiveJoinRequests(int prayerGroupId) {
