@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS idx_user_prayer_group ON prayer_group_user (user_id, prayer_group_id);
