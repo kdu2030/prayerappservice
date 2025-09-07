@@ -43,4 +43,10 @@ public class PrayerGroupController implements PrayerGroupApi {
         PrayerGroupUserModel prayerGroupUser = prayerGroupService.addPrayerGroupUser(authorizationHeader, prayerGroupId, userId);
         return new ResponseEntity<>(prayerGroupUser, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Void> deletePrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId){
+        prayerGroupService.deletePrayerGroupUser(authorizationHeader, prayerGroupId, userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
