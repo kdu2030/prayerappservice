@@ -57,6 +57,10 @@ public interface PrayerGroupMapper {
     @Mapping(source = "fileType", target = "image.fileType")
     PrayerGroupUserModel prayerGroupUserDTOToPrayerGroupUserModel(PrayerGroupUserDTO prayerGroupUserDTO);
 
+    @Mapping(source = "user.userId", target = "userId")
+    @Mapping(source = "user.fullName", target = "fullName")
+    PrayerGroupUserModel prayerGroupUserToPrayerGroupUserModel(PrayerGroupUser source);
+
     @AfterMapping
     default void setImagesToNull(@MappingTarget PrayerGroupModel prayerGroupModel) {
         MediaFile avatarMediaFile = prayerGroupModel.getAvatarFile();

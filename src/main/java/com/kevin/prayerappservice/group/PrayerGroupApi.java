@@ -1,9 +1,6 @@
 package com.kevin.prayerappservice.group;
 
-import com.kevin.prayerappservice.group.models.CreatePrayerGroupRequest;
-import com.kevin.prayerappservice.group.models.GroupNameValidationResponse;
-import com.kevin.prayerappservice.group.models.PrayerGroupModel;
-import com.kevin.prayerappservice.group.models.PutPrayerGroupRequest;
+import com.kevin.prayerappservice.group.models.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -27,4 +24,8 @@ public interface PrayerGroupApi {
     @PutMapping("/{prayerGroupId}")
     @Operation(summary = "Updates prayer group")
     ResponseEntity<PrayerGroupModel> updatePrayerGroup(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @RequestBody PutPrayerGroupRequest putPrayerGroupRequest);
+
+    @PostMapping("/{prayerGroupId}/user/{userId}")
+    @Operation(summary = "Adds prayer group user")
+    ResponseEntity<PrayerGroupUserModel> addPrayerGroupUser(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @PathVariable int userId);
 }

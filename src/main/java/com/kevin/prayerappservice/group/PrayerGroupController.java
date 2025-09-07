@@ -1,9 +1,7 @@
 package com.kevin.prayerappservice.group;
 
-import com.kevin.prayerappservice.group.models.CreatePrayerGroupRequest;
-import com.kevin.prayerappservice.group.models.GroupNameValidationResponse;
-import com.kevin.prayerappservice.group.models.PrayerGroupModel;
-import com.kevin.prayerappservice.group.models.PutPrayerGroupRequest;
+import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
+import com.kevin.prayerappservice.group.models.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -38,5 +36,11 @@ public class PrayerGroupController implements PrayerGroupApi {
     public ResponseEntity<PrayerGroupModel> updatePrayerGroup(String authorizationHeader, int prayerGroupId, PutPrayerGroupRequest putPrayerGroupRequest){
         PrayerGroupModel prayerGroupModel = prayerGroupService.updatePrayerGroup(authorizationHeader, prayerGroupId, putPrayerGroupRequest);
         return new ResponseEntity<>(prayerGroupModel, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PrayerGroupUserModel> addPrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId){
+        PrayerGroupUserModel prayerGroupUser = prayerGroupService.addPrayerGroupUser(authorizationHeader, prayerGroupId, userId);
+        return new ResponseEntity<>(prayerGroupUser, HttpStatus.OK);
     }
 }

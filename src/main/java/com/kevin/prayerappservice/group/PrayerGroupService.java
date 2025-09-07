@@ -127,7 +127,7 @@ public class PrayerGroupService {
         return getPrayerGroup(authorizationHeader, prayerGroupId);
     }
 
-    public PrayerGroupUser addPrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId) {
+    public PrayerGroupUserModel addPrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId) {
         PrayerGroup prayerGroup = prayerGroupRepository.findById(prayerGroupId)
                 .orElseThrow(() -> new DataValidationException(String.format(PrayerGroupErrorMessages.CANNOT_FIND_PRAYER_GROUP, prayerGroupId)));
 
@@ -151,7 +151,8 @@ public class PrayerGroupService {
         User user = entityManager.getReference(User.class, userId);
         PrayerGroupUser newPrayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER);
 
-        return prayerGroupUserRepository.save(newPrayerGroupUser);
+       PrayerGroupUser createdPrayerGroupUser =  prayerGroupUserRepository.save(newPrayerGroupUser);
+       return prayerGroupMapper.prayerGroupUserToPrayerGroupUserModel(createdPrayerGroupUser);
     }
 
     private boolean hasActiveJoinRequests(int prayerGroupId) {
