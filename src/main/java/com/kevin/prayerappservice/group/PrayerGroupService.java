@@ -18,6 +18,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -166,16 +167,22 @@ public class PrayerGroupService {
 
     }
 
-    public void updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest){
+    public void updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) {
         String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
         int userId = jwtService.extractUserId(token);
 
-        if(getPrayerGroupRoleForUser(prayerGroupId, userId) != PrayerGroupRole.ADMIN){
+        if (!Objects.equals(getPrayerGroupRoleForUser(prayerGroupId, userId), PrayerGroupRole.ADMIN)) {
             throw new DataValidationException(PrayerGroupErrorMessages.MUST_BE_ADMIN_TO_UPDATE_USERS);
         }
 
-       List<PrayerGroupUserUpdateModel> prayerGroupUserUpdateModels = prayerGroupUserUpdateRequest.getPrayerGroupUsers();
+        List<PrayerGroupUserUpdateModel> prayerGroupUserUpdateModels = prayerGroupUserUpdateRequest.getPrayerGroupUsers();
+        Optional<PrayerGroupUserUpdateModel> adminUser = prayerGroupUserUpdateModels.stream()
+                .filter(prayerGroupUser -> prayerGroupUser.getPrayerGroupRole() == PrayerGroupRole.ADMIN)
+                .findFirst();
 
+        if(adminUser.isEmpty()){
+            throw new DataValidationException(PrayerGroupErrorMessages.PRAYER_GROUP_MUST_HAVE_ADMIN);
+        }
 
 
     }
