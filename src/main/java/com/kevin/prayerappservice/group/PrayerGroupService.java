@@ -166,6 +166,20 @@ public class PrayerGroupService {
 
     }
 
+    public void updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest){
+        String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
+        int userId = jwtService.extractUserId(token);
+
+        if(getPrayerGroupRoleForUser(prayerGroupId, userId) != PrayerGroupRole.ADMIN){
+            throw new DataValidationException(PrayerGroupErrorMessages.MUST_BE_ADMIN_TO_UPDATE_USERS);
+        }
+
+       List<PrayerGroupUserUpdateModel> prayerGroupUserUpdateModels = prayerGroupUserUpdateRequest.getPrayerGroupUsers();
+
+
+
+    }
+
     private @Nullable PrayerGroupRole getPrayerGroupRoleForUser(int prayerGroupId, int userId) {
         Optional<PrayerGroupUser> prayerGroupUser =
                 prayerGroupUserRepository.findByPrayerGroup_prayerGroupIdAndUser_userId(prayerGroupId,

@@ -7,15 +7,21 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
 @Repository
 public class PrayerGroupJdbcRepositoryImpl implements PrayerGroupJdbcRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
 
-    public PrayerGroupJdbcRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate) {
+    public PrayerGroupJdbcRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
+        this.dataSource = dataSource;
     }
 
 
@@ -55,5 +61,11 @@ public class PrayerGroupJdbcRepositoryImpl implements PrayerGroupJdbcRepository 
 
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(prayerGroupUserQuery);
         return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerGroupUserDTO.class));
+    }
+
+    public void updatePrayerGroupUsers(PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems) throws SQLException {
+        Connection connection = dataSource.getConnection();
+        Array updateItemsArray = connection.createArrayOf("prayer_group_user_update_item", prayerGroupUserUpdateItems);
+
     }
 }
