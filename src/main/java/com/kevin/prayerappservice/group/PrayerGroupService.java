@@ -17,9 +17,11 @@ import jakarta.persistence.EntityManager;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class PrayerGroupService {
@@ -167,7 +169,7 @@ public class PrayerGroupService {
 
     }
 
-    public void updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) {
+    public void updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException {
         String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
         int userId = jwtService.extractUserId(token);
 
@@ -176,6 +178,7 @@ public class PrayerGroupService {
         }
 
         List<PrayerGroupUserUpdateModel> prayerGroupUserUpdateModels = prayerGroupUserUpdateRequest.getPrayerGroupUsers();
+
         Optional<PrayerGroupUserUpdateModel> adminUser = prayerGroupUserUpdateModels.stream()
                 .filter(prayerGroupUser -> prayerGroupUser.getPrayerGroupRole() == PrayerGroupRole.ADMIN)
                 .findFirst();
@@ -184,7 +187,8 @@ public class PrayerGroupService {
             throw new DataValidationException(PrayerGroupErrorMessages.PRAYER_GROUP_MUST_HAVE_ADMIN);
         }
 
-
+        PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems = mapPrayerGroupUserUpdateModelsToUpdateItems(prayerGroupId, prayerGroupUserUpdateModels);
+        prayerGroupRepository.updatePrayerGroupUsers(prayerGroupUserUpdateItems);
     }
 
     private @Nullable PrayerGroupRole getPrayerGroupRoleForUser(int prayerGroupId, int userId) {
@@ -193,6 +197,16 @@ public class PrayerGroupService {
                         userId);
         return prayerGroupUser.map(PrayerGroupUser::getPrayerGroupRole).orElse(null);
 
+    }
+
+    private PrayerGroupUserUpdateItem[] mapPrayerGroupUserUpdateModelsToUpdateItems(int prayerGroupId, List<PrayerGroupUserUpdateModel> prayerGroupUserUpdateModels){
+        return (PrayerGroupUserUpdateItem[]) prayerGroupUserUpdateModels.stream().map(userUpdateModel -> {
+            try {
+                return new PrayerGroupUserUpdateItem(userUpdateModel.getUserId(), prayerGroupId, userUpdateModel.getPrayerGroupRole().toString());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }).toArray();
     }
 
     private boolean hasActiveJoinRequests(int prayerGroupId) {
