@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.group;
 
 import com.kevin.prayerappservice.auth.JwtService;
+import com.kevin.prayerappservice.common.SortConfig;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.constants.PrayerGroupErrorMessages;
@@ -14,6 +15,8 @@ import com.kevin.prayerappservice.group.models.*;
 import com.kevin.prayerappservice.request.JoinRequestRepository;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.EntityManager;
+import jdk.jshell.spi.ExecutionControl;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -86,7 +89,7 @@ public class PrayerGroupService {
 
         PrayerGroupDTO prayerGroupDTO = prayerGroupRepository.getPrayerGroup(prayerGroupId, userId);
         List<PrayerGroupUserDTO> adminUserDTOs = prayerGroupRepository.getPrayerGroupUsers(prayerGroupId,
-                new PrayerGroupRole[]{PrayerGroupRole.ADMIN});
+                List.of(new PrayerGroupRole[]{PrayerGroupRole.ADMIN}));
 
         PrayerGroupModel prayerGroup = prayerGroupMapper.prayerGroupDTOToPrayerGroupModel(prayerGroupDTO);
         List<PrayerGroupUserModel> adminUsers =
@@ -169,7 +172,11 @@ public class PrayerGroupService {
 
     }
 
-    
+    public PrayerGroupUsersGetResponse getPrayerGroupUsers(int prayerGroupId, PrayerGroupUsersGetRequest request){
+        List<PrayerGroupUserDTO> prayerGroupUsers = prayerGroupRepository.getPrayerGroupUsers(prayerGroupId, request.getPrayerGroupRoles());
+        List<PrayerGroupUserModel> prayerGroupUserModels = prayerGroupUsers.stream().map(prayerGroupMapper::prayerGroupUserDTOToPrayerGroupUserModel).toList();
+        return new PrayerGroupUsersGetResponse(prayerGroupUserModels);
+    }
 
     public void updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException {
         String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
@@ -213,5 +220,9 @@ public class PrayerGroupService {
 
     private boolean hasActiveJoinRequests(int prayerGroupId) {
         return joinRequestRepository.findByPrayerGroup_prayerGroupId(prayerGroupId).isPresent();
+    }
+
+    private int comparePrayerGroupUsers(PrayerGroupUserModel userModelA, PrayerGroupUserModel userModelB, SortConfig sortConfig){
+        return 0;
     }
 }

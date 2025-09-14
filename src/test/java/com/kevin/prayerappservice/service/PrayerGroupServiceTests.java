@@ -178,7 +178,7 @@ public class PrayerGroupServiceTests {
         };
 
         Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroup(anyInt(), anyInt())).thenReturn(mockPrayerGroup);
-        Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroupUsers(anyInt(), any(PrayerGroupRole[].class))).thenReturn(List.of(prayerGroupUserDTOS));
+        Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroupUsers(anyInt(), anyList())).thenReturn(List.of(prayerGroupUserDTOS));
         Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(1409);
 
         PrayerGroupModel prayerGroupModel = prayerGroupService.getPrayerGroup("Bearer testToken", 6116);
@@ -273,7 +273,7 @@ public class PrayerGroupServiceTests {
         };
 
         Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroup(anyInt(), anyInt())).thenReturn(mockUpdatedPrayerGroup);
-        Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroupUsers(anyInt(), any(PrayerGroupRole[].class))).thenReturn(List.of(prayerGroupUserDTOS));
+        Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroupUsers(anyInt(), anyList())).thenReturn(List.of(prayerGroupUserDTOS));
 
         prayerGroupService.updatePrayerGroup("Bearer mockToken", mockPrayerGroup.getPrayerGroupId(),
                 putPrayerGroupRequest);

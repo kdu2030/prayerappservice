@@ -54,9 +54,9 @@ public class PrayerGroupJdbcRepositoryImpl implements PrayerGroupJdbcRepository 
         return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(PrayerGroupDTO.class));
     }
 
-    public List<PrayerGroupUserDTO> getPrayerGroupUsers(int prayerGroupId, PrayerGroupRole[] prayerGroupRoles) {
+    public List<PrayerGroupUserDTO> getPrayerGroupUsers(int prayerGroupId, List<PrayerGroupRole> prayerGroupRoles) {
         String sql = "SELECT * FROM get_prayer_group_users(:groupId, :prayerGroupRoles);";
-        String[] rawPrayerGroupRoles = Arrays.stream(prayerGroupRoles).map(Enum::toString).toArray(String[]::new);
+        String[] rawPrayerGroupRoles = prayerGroupRoles.stream().map(Enum::toString).toArray(String[]::new);
         PrayerGroupUserQuery prayerGroupUserQuery = new PrayerGroupUserQuery(prayerGroupId,
                 rawPrayerGroupRoles.length > 0 ? rawPrayerGroupRoles : null);
 
