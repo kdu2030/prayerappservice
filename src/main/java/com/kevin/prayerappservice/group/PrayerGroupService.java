@@ -200,13 +200,13 @@ public class PrayerGroupService {
     }
 
     private PrayerGroupUserUpdateItem[] mapPrayerGroupUserUpdateModelsToUpdateItems(int prayerGroupId, List<PrayerGroupUserUpdateModel> prayerGroupUserUpdateModels){
-        return (PrayerGroupUserUpdateItem[]) prayerGroupUserUpdateModels.stream().map(userUpdateModel -> {
+        return prayerGroupUserUpdateModels.stream().map(userUpdateModel -> {
             try {
                 return new PrayerGroupUserUpdateItem(userUpdateModel.getUserId(), prayerGroupId, userUpdateModel.getPrayerGroupRole().toString());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        }).toArray();
+        }).toArray(PrayerGroupUserUpdateItem[]::new);
     }
 
     private boolean hasActiveJoinRequests(int prayerGroupId) {

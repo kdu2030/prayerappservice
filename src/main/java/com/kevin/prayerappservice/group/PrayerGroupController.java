@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
+import java.sql.SQLException;
+
 @Controller
 public class PrayerGroupController implements PrayerGroupApi {
     private final PrayerGroupService prayerGroupService;
@@ -47,6 +49,12 @@ public class PrayerGroupController implements PrayerGroupApi {
     @Override
     public ResponseEntity<Void> deletePrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId){
         prayerGroupService.deletePrayerGroupUser(authorizationHeader, prayerGroupId, userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public ResponseEntity<Void> updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException {
+        prayerGroupService.updatePrayerGroupUsers(authorizationHeader, prayerGroupId, prayerGroupUserUpdateRequest);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

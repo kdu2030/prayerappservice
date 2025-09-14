@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+
 @Tag(name = "PrayerGroup API", description = "The PrayerGroup API")
 @RequestMapping("/api/prayergroup")
 public interface PrayerGroupApi {
@@ -32,4 +34,8 @@ public interface PrayerGroupApi {
     @DeleteMapping("/{prayerGroupId}/user/{userId}")
     @Operation(summary = "Removes a prayer group user")
     ResponseEntity<Void> deletePrayerGroupUser(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @PathVariable int userId);
+
+    @PutMapping("/{prayerGroupId}/users")
+    @Operation(summary = "Updates prayer group users")
+    ResponseEntity<Void> updatePrayerGroupUsers(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @RequestBody PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException;
 }
