@@ -4,6 +4,7 @@ import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.dtos.*;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -66,6 +67,10 @@ public class PrayerGroupJdbcRepositoryImpl implements PrayerGroupJdbcRepository 
     public void updatePrayerGroupUsers(PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems) throws SQLException {
         Connection connection = dataSource.getConnection();
         Array updateItemsArray = connection.createArrayOf("prayer_group_user_update_item", prayerGroupUserUpdateItems);
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("updated_users", updateItemsArray);
 
+        String sql = "CALL update_prayer_group_users(:updated_users);";
+        jdbcTemplate.update(sql, params);
     }
 }
