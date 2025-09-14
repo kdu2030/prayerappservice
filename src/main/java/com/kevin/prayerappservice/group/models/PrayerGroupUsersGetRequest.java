@@ -2,16 +2,17 @@ package com.kevin.prayerappservice.group.models;
 
 import com.kevin.prayerappservice.common.SortConfig;
 import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
+import com.kevin.prayerappservice.group.constants.PrayerGroupUserSortField;
 
 import java.util.List;
 
 public class PrayerGroupUsersGetRequest {
     private List<PrayerGroupRole> prayerGroupRoles;
-    private SortConfig sortConfig;
+    private SortConfig<PrayerGroupUserSortField> sortConfig;
 
     public PrayerGroupUsersGetRequest(){}
 
-    public PrayerGroupUsersGetRequest(List<PrayerGroupRole> prayerGroupRoles, SortConfig sortConfig) {
+    public PrayerGroupUsersGetRequest(List<PrayerGroupRole> prayerGroupRoles, SortConfig<PrayerGroupUserSortField> sortConfig) {
         this.prayerGroupRoles = prayerGroupRoles;
         this.sortConfig = sortConfig;
     }
@@ -24,11 +25,11 @@ public class PrayerGroupUsersGetRequest {
         this.prayerGroupRoles = prayerGroupRoles;
     }
 
-    public SortConfig getSortConfig() {
+    public SortConfig<PrayerGroupUserSortField> getSortConfig() {
         return sortConfig;
     }
 
-    public void setSortConfig(SortConfig sortConfig) {
+    public void setSortConfig(SortConfig<PrayerGroupUserSortField> sortConfig) {
         this.sortConfig = sortConfig;
     }
 }

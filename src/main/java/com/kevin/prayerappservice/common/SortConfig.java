@@ -2,25 +2,25 @@ package com.kevin.prayerappservice.common;
 
 import jakarta.validation.constraints.NotNull;
 
-public class SortConfig {
+public class SortConfig<T> {
     @NotNull
-    private String sortField;
+    private T sortField;
 
     @NotNull
     private SortDirection sortDirection;
 
     public SortConfig(){}
 
-    public SortConfig(String sortField, SortDirection sortDirection) {
+    public SortConfig(T sortField, SortDirection sortDirection) {
         this.sortField = sortField;
         this.sortDirection = sortDirection;
     }
 
-    public String getSortField() {
+    public T getSortField() {
         return sortField;
     }
 
-    public void setSortField(String sortField) {
+    public void setSortField(T sortField) {
         this.sortField = sortField;
     }
 
