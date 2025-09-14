@@ -11,7 +11,7 @@ public class PrayerGroupUserUpdateItem extends PGobject {
 
     public PrayerGroupUserUpdateItem(int userId, int prayerGroupId, String prayerGroupRole) throws SQLException {
         setType("prayer_group_user_update_item");
-        String rawValue = String.format("(%d, %d, %s)", userId, prayerGroupId, prayerGroupRole);
+        String rawValue = String.format("(%d,%d,%s)", userId, prayerGroupId, prayerGroupRole);
         setValue(rawValue);
 
         this.userId = userId;
