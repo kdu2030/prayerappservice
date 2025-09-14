@@ -169,6 +169,8 @@ public class PrayerGroupService {
 
     }
 
+    
+
     public void updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException {
         String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
         int userId = jwtService.extractUserId(token);
