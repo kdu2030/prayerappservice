@@ -2,10 +2,12 @@ package com.kevin.prayerappservice.group;
 
 import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.common.SortConfig;
+import com.kevin.prayerappservice.common.SortDirection;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.constants.PrayerGroupErrorMessages;
 import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
+import com.kevin.prayerappservice.group.constants.PrayerGroupUserSortField;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import com.kevin.prayerappservice.group.dtos.*;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
@@ -21,6 +23,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -175,7 +178,9 @@ public class PrayerGroupService {
     public PrayerGroupUsersGetResponse getPrayerGroupUsers(int prayerGroupId, PrayerGroupUsersGetRequest request){
         List<PrayerGroupUserDTO> prayerGroupUsers = prayerGroupRepository.getPrayerGroupUsers(prayerGroupId, request.getPrayerGroupRoles());
         List<PrayerGroupUserModel> prayerGroupUserModels = prayerGroupUsers.stream().map(prayerGroupMapper::prayerGroupUserDTOToPrayerGroupUserModel).toList();
-        return new PrayerGroupUsersGetResponse(prayerGroupUserModels);
+        List<PrayerGroupUserModel> sortedPrayerGroupUsers = prayerGroupUserModels.stream().sorted((userA, userB) -> comparePrayerGroupUsers(userA, userB, request.getSortConfig())).toList();
+
+        return new PrayerGroupUsersGetResponse(sortedPrayerGroupUsers);
     }
 
     public void updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException {
@@ -222,7 +227,14 @@ public class PrayerGroupService {
         return joinRequestRepository.findByPrayerGroup_prayerGroupId(prayerGroupId).isPresent();
     }
 
-    private int comparePrayerGroupUsers(PrayerGroupUserModel userModelA, PrayerGroupUserModel userModelB, SortConfig sortConfig){
-        return 0;
+    private int comparePrayerGroupUsers(PrayerGroupUserModel userModelA, PrayerGroupUserModel userModelB, SortConfig<PrayerGroupUserSortField> sortConfig){
+        int sortCoefficient = sortConfig.getSortDirection() == SortDirection.ASCENDING ? 1 : -1;
+
+        return switch (sortConfig.getSortField()) {
+            case PrayerGroupUserSortField.USERNAME ->
+                    userModelA.getUsername().compareTo(userModelB.getUsername()) * sortCoefficient;
+            case PrayerGroupUserSortField.FULL_NAME ->
+                    userModelA.getFullName().compareTo(userModelB.getFullName()) * sortCoefficient;
+        };
     }
 }

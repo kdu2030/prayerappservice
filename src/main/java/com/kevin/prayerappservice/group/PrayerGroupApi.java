@@ -35,6 +35,10 @@ public interface PrayerGroupApi {
     @Operation(summary = "Removes a prayer group user")
     ResponseEntity<Void> deletePrayerGroupUser(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @PathVariable int userId);
 
+    @PostMapping("/{prayerGroupId}/users")
+    @Operation(summary = "Gets prayer group users")
+    ResponseEntity<PrayerGroupUsersGetResponse> getPrayerGroupUsers(@PathVariable int prayerGroupId, @RequestBody PrayerGroupUsersGetRequest request);
+
     @PutMapping("/{prayerGroupId}/users")
     @Operation(summary = "Updates prayer group users")
     ResponseEntity<Void> updatePrayerGroupUsers(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @RequestBody PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException;
