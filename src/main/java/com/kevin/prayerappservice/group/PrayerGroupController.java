@@ -59,8 +59,8 @@ public class PrayerGroupController implements PrayerGroupApi {
     }
 
     @Override
-    public ResponseEntity<Void> updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException {
-        prayerGroupService.updatePrayerGroupUsers(authorizationHeader, prayerGroupId, prayerGroupUserUpdateRequest);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<PrayerGroupUsersGetResponse> updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException {
+        PrayerGroupUsersGetResponse response = prayerGroupService.updatePrayerGroupUsers(authorizationHeader, prayerGroupId, prayerGroupUserUpdateRequest);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

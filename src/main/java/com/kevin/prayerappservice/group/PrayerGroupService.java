@@ -17,17 +17,13 @@ import com.kevin.prayerappservice.group.models.*;
 import com.kevin.prayerappservice.request.JoinRequestRepository;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.EntityManager;
-import jdk.jshell.spi.ExecutionControl;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 public class PrayerGroupService {
@@ -183,7 +179,7 @@ public class PrayerGroupService {
         return new PrayerGroupUsersGetResponse(sortedPrayerGroupUsers);
     }
 
-    public void updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException {
+    public PrayerGroupUsersGetResponse updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException {
         String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
         int userId = jwtService.extractUserId(token);
 
@@ -203,6 +199,12 @@ public class PrayerGroupService {
 
         PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems = mapPrayerGroupUserUpdateModelsToUpdateItems(prayerGroupId, prayerGroupUserUpdateModels);
         prayerGroupRepository.updatePrayerGroupUsers(prayerGroupUserUpdateItems);
+
+        SortConfig<PrayerGroupUserSortField> sortConfig = new SortConfig<>(PrayerGroupUserSortField.USERNAME, SortDirection.ASCENDING);
+        List<PrayerGroupRole>  prayerGroupRoles = List.of(new PrayerGroupRole[] {PrayerGroupRole.ADMIN, PrayerGroupRole.MEMBER});
+
+        PrayerGroupUsersGetRequest queryUsersRequest = new PrayerGroupUsersGetRequest(prayerGroupRoles, sortConfig);
+        return getPrayerGroupUsers(prayerGroupId, queryUsersRequest);
     }
 
     private @Nullable PrayerGroupRole getPrayerGroupRoleForUser(int prayerGroupId, int userId) {

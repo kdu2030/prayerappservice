@@ -41,5 +41,5 @@ public interface PrayerGroupApi {
 
     @PutMapping("/{prayerGroupId}/users")
     @Operation(summary = "Updates prayer group users")
-    ResponseEntity<Void> updatePrayerGroupUsers(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @RequestBody PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException;
+    ResponseEntity<PrayerGroupUsersGetResponse> updatePrayerGroupUsers(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @RequestBody PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException;
 }
