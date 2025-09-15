@@ -1,13 +1,12 @@
 package com.kevin.prayerappservice.group;
 
-import com.kevin.prayerappservice.group.models.CreatePrayerGroupRequest;
-import com.kevin.prayerappservice.group.models.GroupNameValidationResponse;
-import com.kevin.prayerappservice.group.models.PrayerGroupModel;
-import com.kevin.prayerappservice.group.models.PutPrayerGroupRequest;
+import com.kevin.prayerappservice.group.models.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
 
 @Tag(name = "PrayerGroup API", description = "The PrayerGroup API")
 @RequestMapping("/api/prayergroup")
@@ -27,4 +26,20 @@ public interface PrayerGroupApi {
     @PutMapping("/{prayerGroupId}")
     @Operation(summary = "Updates prayer group")
     ResponseEntity<PrayerGroupModel> updatePrayerGroup(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @RequestBody PutPrayerGroupRequest putPrayerGroupRequest);
+
+    @PostMapping("/{prayerGroupId}/user/{userId}")
+    @Operation(summary = "Adds prayer group user")
+    ResponseEntity<PrayerGroupUserModel> addPrayerGroupUser(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @PathVariable int userId);
+
+    @DeleteMapping("/{prayerGroupId}/user/{userId}")
+    @Operation(summary = "Removes a prayer group user")
+    ResponseEntity<Void> deletePrayerGroupUser(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @PathVariable int userId);
+
+    @PostMapping("/{prayerGroupId}/users")
+    @Operation(summary = "Gets prayer group users")
+    ResponseEntity<PrayerGroupUsersGetResponse> getPrayerGroupUsers(@PathVariable int prayerGroupId, @RequestBody PrayerGroupUsersGetRequest request);
+
+    @PutMapping("/{prayerGroupId}/users")
+    @Operation(summary = "Updates prayer group users")
+    ResponseEntity<PrayerGroupUsersGetResponse> updatePrayerGroupUsers(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @RequestBody PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException;
 }
