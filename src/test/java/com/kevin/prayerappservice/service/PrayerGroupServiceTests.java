@@ -296,4 +296,22 @@ public class PrayerGroupServiceTests {
                 .isThrownBy(() -> prayerGroupService.addPrayerGroupUser("mockToken", prayerGroup.getPrayerGroupId(), 2));
     }
 
+    @Test
+    @DirtiesContext
+    public void addPrayerGroupUser_givenNonAdmin_preventsAddOtherUser(){
+        User user  = new User("Leslie Knope", "lknope", "lknope@parksandrec.gov", "mockPassword", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Parks and Recreation Department", "Pawnee Parks and Recreation department", null, VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER);
+        prayerGroupUserRepository.save(prayerGroupUser);
+
+        Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(user.getUserId());
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class)
+                .isThrownBy(() -> prayerGroupService.addPrayerGroupUser("mockToken", prayerGroup.getPrayerGroupId(), user.getUserId() + 1));
+    }
+
 }
