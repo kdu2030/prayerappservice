@@ -341,4 +341,29 @@ public class PrayerGroupServiceTests {
         Assertions.assertThat(addedUser.getPrayerGroupRole()).isEqualTo(PrayerGroupRole.MEMBER);
     }
 
+    @Test
+    @Transactional
+    @DirtiesContext
+    public void addPrayerGroupUser_givenAdminAndValidUser_AddsOtherUser(){
+        User user  = new User("Leslie Knope", "lknope", "lknope@parksandrec.gov", "mockPassword", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Parks and Recreation Department", "Pawnee Parks and Recreation department", null, VisibilityLevel.PUBLIC, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.ADMIN);
+        prayerGroupUserRepository.save(prayerGroupUser);
+
+        Mockito.when(mockJwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(user.getUserId());
+
+        User user2 = new User("Tom Haverford", "thaverford", "thaverford@parksandrec.gov", "mockPassword", Role.USER);
+        userRepository.save(user2);
+
+        PrayerGroupUserModel prayerGroupUserModel = prayerGroupService.addPrayerGroupUser("mockToken", 1, user2.getUserId());
+
+        Assertions.assertThat(prayerGroupUserModel.getUserId()).isEqualTo(user2.getUserId());
+        Assertions.assertThat(prayerGroupUserModel.getPrayerGroupRole()).isEqualTo(PrayerGroupRole.MEMBER);
+    }
+
 }
