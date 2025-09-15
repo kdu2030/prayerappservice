@@ -286,4 +286,14 @@ public class PrayerGroupServiceTests {
         Assertions.assertThat(updatedPrayerGroup.getVisibilityLevel()).isEqualTo(putPrayerGroupRequest.getVisibilityLevel());
     }
 
+    @Test
+    @DirtiesContext
+    public void addPrayerGroupUser_givenPrivatePrayerGroup_PreventsAddUser(){
+        PrayerGroup prayerGroup = new PrayerGroup("Parks and Recreation Department", "Pawnee Parks and Recreation department", null, VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class)
+                .isThrownBy(() -> prayerGroupService.addPrayerGroupUser("mockToken", prayerGroup.getPrayerGroupId(), 2));
+    }
+
 }
