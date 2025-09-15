@@ -23,6 +23,9 @@ import com.kevin.prayerappservice.request.JoinRequestRepository;
 import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -62,7 +65,11 @@ public class PrayerGroupServiceTests {
     private JoinRequestRepository joinRequestRepository;
 
     @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
     private PrayerGroupService prayerGroupService;
+
 
     @Test
     @DirtiesContext
@@ -302,16 +309,36 @@ public class PrayerGroupServiceTests {
         User user  = new User("Leslie Knope", "lknope", "lknope@parksandrec.gov", "mockPassword", Role.USER);
         userRepository.save(user);
 
-        PrayerGroup prayerGroup = new PrayerGroup("Parks and Recreation Department", "Pawnee Parks and Recreation department", null, VisibilityLevel.PRIVATE, null, null);
+        PrayerGroup prayerGroup = new PrayerGroup("Parks and Recreation Department", "Pawnee Parks and Recreation department", null, VisibilityLevel.PUBLIC, null, null);
         prayerGroupRepository.save(prayerGroup);
 
         PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER);
         prayerGroupUserRepository.save(prayerGroupUser);
 
+        Mockito.when(mockJwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(user.getUserId());
 
         Assertions.assertThatExceptionOfType(DataValidationException.class)
                 .isThrownBy(() -> prayerGroupService.addPrayerGroupUser("mockToken", prayerGroup.getPrayerGroupId(), user.getUserId() + 1));
+    }
+
+    @Test
+    @Transactional
+    @DirtiesContext
+    public void addPrayerGroupUser_givenValidUserAndPrayerGroup_addsUser(){
+        User user  = new User("Leslie Knope", "lknope", "lknope@parksandrec.gov", "mockPassword", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Parks and Recreation Department", "Pawnee Parks and Recreation department", null, VisibilityLevel.PUBLIC, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        Mockito.when(mockJwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(user.getUserId());
+
+        PrayerGroupUserModel addedUser = prayerGroupService.addPrayerGroupUser("Bearer mockToken", prayerGroup.getPrayerGroupId(), user.getUserId());
+
+        Assertions.assertThat(addedUser.getUserId()).isEqualTo(user.getUserId());
+        Assertions.assertThat(addedUser.getPrayerGroupRole()).isEqualTo(PrayerGroupRole.MEMBER);
     }
 
 }

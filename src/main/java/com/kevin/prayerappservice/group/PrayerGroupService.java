@@ -137,15 +137,17 @@ public class PrayerGroupService {
         PrayerGroup prayerGroup = prayerGroupRepository.findById(prayerGroupId)
                 .orElseThrow(() -> new DataValidationException(String.format(PrayerGroupErrorMessages.CANNOT_FIND_PRAYER_GROUP, prayerGroupId)));
 
-        if (prayerGroup.getVisibilityLevel() == VisibilityLevel.PRIVATE) {
-            throw new DataValidationException(PrayerGroupErrorMessages.CANNOT_ADD_TO_PRIVATE_GROUP);
-        }
-
         String token = jwtService.extractTokenFromAuthHeader(authorizationHeader);
         int submitterUserId = jwtService.extractUserId(token);
 
-        if (submitterUserId != userId && getPrayerGroupRoleForUser(prayerGroupId, submitterUserId) != PrayerGroupRole.ADMIN) {
+        PrayerGroupRole submitterRole = getPrayerGroupRoleForUser(prayerGroupId, submitterUserId);
+
+        if (submitterUserId != userId && submitterRole != PrayerGroupRole.ADMIN) {
             throw new DataValidationException(PrayerGroupErrorMessages.MUST_BE_ADMIN_TO_ADD);
+        }
+
+        if (prayerGroup.getVisibilityLevel() == VisibilityLevel.PRIVATE && submitterRole != PrayerGroupRole.ADMIN) {
+            throw new DataValidationException(PrayerGroupErrorMessages.CANNOT_ADD_TO_PRIVATE_GROUP);
         }
 
         User user = entityManager.getReference(User.class, userId);
