@@ -42,4 +42,8 @@ public interface PrayerGroupApi {
     @PutMapping("/{prayerGroupId}/users")
     @Operation(summary = "Updates prayer group users")
     ResponseEntity<PrayerGroupUsersGetResponse> updatePrayerGroupUsers(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @RequestBody PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException;
+
+    @PostMapping("/search")
+    @Operation(summary = "Search prayer groups by group name")
+    ResponseEntity<PrayerGroupSearchResponse> searchPrayerGroups(@RequestBody PrayerGroupSearchRequest prayerGroupSearchRequest);
 }

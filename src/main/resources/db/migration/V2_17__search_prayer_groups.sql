@@ -22,7 +22,7 @@ BEGIN
             f.file_type
         FROM
             prayer_group g
-        INNER JOIN
+        LEFT JOIN
             media_file f ON f.media_file_id = g.avatar_file_id
         WHERE
             g.group_name % group_name_query
