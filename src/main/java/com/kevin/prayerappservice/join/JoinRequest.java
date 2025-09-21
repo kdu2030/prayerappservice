@@ -1,4 +1,4 @@
-package com.kevin.prayerappservice.request;
+package com.kevin.prayerappservice.join;
 
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.user.entities.User;

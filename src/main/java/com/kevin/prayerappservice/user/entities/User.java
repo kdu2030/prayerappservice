@@ -2,7 +2,7 @@ package com.kevin.prayerappservice.user.entities;
 
 import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
-import com.kevin.prayerappservice.request.JoinRequest;
+import com.kevin.prayerappservice.join.JoinRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;

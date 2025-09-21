@@ -14,7 +14,7 @@ import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.group.mappers.PrayerGroupMapper;
 import com.kevin.prayerappservice.group.models.*;
-import com.kevin.prayerappservice.request.JoinRequestRepository;
+import com.kevin.prayerappservice.join.JoinRequestRepository;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.EntityManager;
 import org.springframework.lang.Nullable;
