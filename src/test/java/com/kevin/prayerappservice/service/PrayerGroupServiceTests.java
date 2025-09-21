@@ -18,7 +18,7 @@ import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.group.mappers.PrayerGroupMapper;
 import com.kevin.prayerappservice.group.models.*;
-import com.kevin.prayerappservice.join.JoinRequest;
+import com.kevin.prayerappservice.join.entities.JoinRequest;
 import com.kevin.prayerappservice.join.JoinRequestRepository;
 import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;

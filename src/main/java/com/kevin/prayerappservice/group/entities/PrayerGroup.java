@@ -2,7 +2,7 @@ package com.kevin.prayerappservice.group.entities;
 
 import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
-import com.kevin.prayerappservice.join.JoinRequest;
+import com.kevin.prayerappservice.join.entities.JoinRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
