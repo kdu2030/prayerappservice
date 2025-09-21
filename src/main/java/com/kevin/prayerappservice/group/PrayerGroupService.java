@@ -173,7 +173,7 @@ public class PrayerGroupService {
 
     }
 
-    public PrayerGroupUsersGetResponse getPrayerGroupUsers(int prayerGroupId, PrayerGroupUsersGetRequest request){
+    public PrayerGroupUsersGetResponse getPrayerGroupUsers(int prayerGroupId, PrayerGroupUsersGetRequest request) {
         List<PrayerGroupUserDTO> prayerGroupUsers = prayerGroupRepository.getPrayerGroupUsers(prayerGroupId, request.getPrayerGroupRoles());
         List<PrayerGroupUserModel> prayerGroupUserModels = prayerGroupUsers.stream().map(prayerGroupMapper::prayerGroupUserDTOToPrayerGroupUserModel).toList();
         List<PrayerGroupUserModel> sortedPrayerGroupUsers = prayerGroupUserModels.stream().sorted((userA, userB) -> comparePrayerGroupUsers(userA, userB, request.getSortConfig())).toList();
@@ -195,7 +195,7 @@ public class PrayerGroupService {
                 .filter(prayerGroupUser -> prayerGroupUser.getPrayerGroupRole() == PrayerGroupRole.ADMIN)
                 .findFirst();
 
-        if(adminUser.isEmpty()){
+        if (adminUser.isEmpty()) {
             throw new DataValidationException(PrayerGroupErrorMessages.PRAYER_GROUP_MUST_HAVE_ADMIN);
         }
 
@@ -203,10 +203,17 @@ public class PrayerGroupService {
         prayerGroupRepository.updatePrayerGroupUsers(prayerGroupUserUpdateItems);
 
         SortConfig<PrayerGroupUserSortField> sortConfig = new SortConfig<>(PrayerGroupUserSortField.USERNAME, SortDirection.ASCENDING);
-        List<PrayerGroupRole>  prayerGroupRoles = List.of(new PrayerGroupRole[] {PrayerGroupRole.ADMIN, PrayerGroupRole.MEMBER});
+        List<PrayerGroupRole> prayerGroupRoles = List.of(new PrayerGroupRole[]{PrayerGroupRole.ADMIN, PrayerGroupRole.MEMBER});
 
         PrayerGroupUsersGetRequest queryUsersRequest = new PrayerGroupUsersGetRequest(prayerGroupRoles, sortConfig);
         return getPrayerGroupUsers(prayerGroupId, queryUsersRequest);
+    }
+
+    public PrayerGroupSearchResponse searchPrayerGroups(PrayerGroupSearchRequest searchRequest) {
+        int maxNumResults = Optional.ofNullable(searchRequest.getMaxNumResults()).orElse(20);
+        List<PrayerGroupSummaryDTO> prayerGroupSummaryDTOS = prayerGroupRepository.searchPrayerGroups(searchRequest.getGroupNameQuery(), maxNumResults);
+        List<PrayerGroupSummaryModel> prayerGroups = prayerGroupSummaryDTOS.stream().map(prayerGroupMapper::prayerGroupSummaryDTOToPrayerGroupSummaryModel).toList();
+        return new PrayerGroupSearchResponse(prayerGroups);
     }
 
     private @Nullable PrayerGroupRole getPrayerGroupRoleForUser(int prayerGroupId, int userId) {
@@ -217,7 +224,7 @@ public class PrayerGroupService {
 
     }
 
-    private PrayerGroupUserUpdateItem[] mapPrayerGroupUserUpdateModelsToUpdateItems(int prayerGroupId, List<PrayerGroupUserUpdateModel> prayerGroupUserUpdateModels){
+    private PrayerGroupUserUpdateItem[] mapPrayerGroupUserUpdateModelsToUpdateItems(int prayerGroupId, List<PrayerGroupUserUpdateModel> prayerGroupUserUpdateModels) {
         return prayerGroupUserUpdateModels.stream().map(userUpdateModel -> {
             try {
                 return new PrayerGroupUserUpdateItem(userUpdateModel.getUserId(), prayerGroupId, userUpdateModel.getPrayerGroupRole().toString());
@@ -231,7 +238,7 @@ public class PrayerGroupService {
         return joinRequestRepository.findByPrayerGroup_prayerGroupId(prayerGroupId).isPresent();
     }
 
-    private int comparePrayerGroupUsers(PrayerGroupUserModel userModelA, PrayerGroupUserModel userModelB, SortConfig<PrayerGroupUserSortField> sortConfig){
+    private int comparePrayerGroupUsers(PrayerGroupUserModel userModelA, PrayerGroupUserModel userModelB, SortConfig<PrayerGroupUserSortField> sortConfig) {
         int sortCoefficient = sortConfig.getSortDirection() == SortDirection.ASCENDING ? 1 : -1;
 
         return switch (sortConfig.getSortField()) {
