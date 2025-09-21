@@ -1,5 +1,6 @@
 CREATE OR REPLACE FUNCTION search_prayer_groups (
-    group_name_query VARCHAR(255)
+    group_name_query VARCHAR(255),
+    max_num_results INT DEFAULT 20
 ) RETURNS TABLE (
     prayer_group_id INT,
     group_name VARCHAR(255),
@@ -26,7 +27,8 @@ BEGIN
         WHERE
             g.group_name % group_name_query
         ORDER BY
-            similarity(g.group_name, group_name_query) DESC;
+            similarity(g.group_name, group_name_query) DESC
+        LIMIT max_num_results;
 END;
 $$
 LANGUAGE plpgsql;
