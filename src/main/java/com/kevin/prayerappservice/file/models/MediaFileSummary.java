@@ -4,19 +4,35 @@ import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.file.entities.FileType;
 
 public class MediaFileSummary {
-    private int mediaFileId;
+    private Integer mediaFileId;
     private String fileName;
     private String fileUrl;
     private FileType fileType;
 
-    public MediaFileSummary(int mediaFileId, String fileName, String fileUrl, FileType fileType) {
+    public MediaFileSummary(Integer mediaFileId, String fileName, String fileUrl, FileType fileType) {
         this.mediaFileId = mediaFileId;
         this.fileName = fileName;
         this.fileUrl = fileUrl;
         this.fileType = fileType;
     }
 
-    public int getMediaFileId() {
+    public void setMediaFileId(Integer mediaFileId) {
+        this.mediaFileId = mediaFileId;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    public void setFileType(FileType fileType) {
+        this.fileType = fileType;
+    }
+
+    public Integer getMediaFileId() {
         return mediaFileId;
     }
 
