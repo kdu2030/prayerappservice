@@ -3,17 +3,18 @@ package com.kevin.prayerappservice.join.models;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class JoinRequestCreateRequest {
     @NotNull
     private int userId;
 
     @NotNull
-    private LocalDate submittedDate;
+    private LocalDateTime submittedDate;
 
     public JoinRequestCreateRequest(){}
 
-    public JoinRequestCreateRequest(int userId, LocalDate submittedDate) {
+    public JoinRequestCreateRequest(int userId, LocalDateTime submittedDate) {
         this.userId = userId;
         this.submittedDate = submittedDate;
     }
@@ -26,11 +27,11 @@ public class JoinRequestCreateRequest {
         this.userId = userId;
     }
 
-    public LocalDate getSubmittedDate() {
+    public LocalDateTime getSubmittedDate() {
         return submittedDate;
     }
 
-    public void setSubmittedDate(LocalDate submittedDate) {
+    public void setSubmittedDate(LocalDateTime submittedDate) {
         this.submittedDate = submittedDate;
     }
 }
