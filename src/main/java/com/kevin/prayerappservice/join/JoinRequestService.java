@@ -10,9 +10,11 @@ import com.kevin.prayerappservice.join.models.JoinRequestCreateRequest;
 import com.kevin.prayerappservice.join.models.JoinRequestModel;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.EntityManager;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class JoinRequestService {
     private final JoinRequestRepository joinRequestRepository;
     private final PrayerGroupRepository prayerGroupRepository;
