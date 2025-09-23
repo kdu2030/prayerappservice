@@ -1,0 +1,9 @@
+package com.kevin.prayerappservice.join;
+
+import com.kevin.prayerappservice.join.dtos.JoinRequestDTO;
+
+import java.util.List;
+
+public interface JoinRequestJdbcRepository {
+    List<JoinRequestDTO> getJoinRequests(int prayerGroupId);
+}

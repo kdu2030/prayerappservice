@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface JoinRequestRepository extends JpaRepository<JoinRequest, Integer> {
+public interface JoinRequestRepository extends JpaRepository<JoinRequest, Integer>, JoinRequestJdbcRepository {
     Optional<JoinRequest> findByPrayerGroup_prayerGroupId(int prayerGroupId);
 }
