@@ -11,6 +11,8 @@ import com.kevin.prayerappservice.join.entities.JoinRequest;
 import com.kevin.prayerappservice.join.mappers.JoinRequestMapper;
 import com.kevin.prayerappservice.join.models.JoinRequestCreateRequest;
 import com.kevin.prayerappservice.join.models.JoinRequestModel;
+import com.kevin.prayerappservice.join.models.JoinRequestsGetRequest;
+import com.kevin.prayerappservice.join.models.JoinRequestsGetResponse;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
@@ -48,5 +50,9 @@ public class JoinRequestService {
         JoinRequest joinRequest = new JoinRequest(user, prayerGroupResponse.get(), joinRequestCreateRequest.getSubmittedDate());
         joinRequestRepository.save(joinRequest);
         return joinRequestMapper.joinRequestToJoinRequestModel(joinRequest);
+    }
+
+    public JoinRequestsGetRequest getJoinRequests(int prayerGroupId, JoinRequestsGetRequest getRequest){
+
     }
 }
