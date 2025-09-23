@@ -1,8 +1,11 @@
 package com.kevin.prayerappservice.join.dtos;
 
+import java.time.LocalDateTime;
+
 public class JoinRequestDTO {
     private int joinRequestId;
     private int prayerGroupId;
+    private LocalDateTime submittedDate;
     private int userId;
     private String fullName;
     private String username;
