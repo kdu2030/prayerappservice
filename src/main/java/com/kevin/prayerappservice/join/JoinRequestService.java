@@ -53,6 +53,6 @@ public class JoinRequestService {
     }
 
     public JoinRequestsGetRequest getJoinRequests(int prayerGroupId, JoinRequestsGetRequest getRequest){
-
+        throw new RuntimeException("Not implemented");
     }
 }
