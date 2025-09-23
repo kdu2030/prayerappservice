@@ -1,19 +1,21 @@
 package com.kevin.prayerappservice.join.models;
 
+import java.util.List;
+
 public class JoinRequestsGetResponse {
-    private JoinRequestModel joinRequests;
+    private List<JoinRequestModel> joinRequests;
 
     public JoinRequestsGetResponse(){}
 
-    public JoinRequestsGetResponse(JoinRequestModel joinRequests) {
+    public JoinRequestsGetResponse(List<JoinRequestModel> joinRequests) {
         this.joinRequests = joinRequests;
     }
 
-    public JoinRequestModel getJoinRequests() {
+    public List<JoinRequestModel> getJoinRequests() {
         return joinRequests;
     }
 
-    public void setJoinRequests(JoinRequestModel joinRequests) {
+    public void setJoinRequests(List<JoinRequestModel> joinRequests) {
         this.joinRequests = joinRequests;
     }
 }
