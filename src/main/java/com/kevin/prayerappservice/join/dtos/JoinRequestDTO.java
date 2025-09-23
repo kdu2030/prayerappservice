@@ -16,9 +16,10 @@ public class JoinRequestDTO {
 
     public JoinRequestDTO(){}
 
-    public JoinRequestDTO(int joinRequestId, int prayerGroupId, int userId, String fullName, String username, Integer mediaFileId, String fileName, String fileUrl, String fileType) {
+    public JoinRequestDTO(int joinRequestId, int prayerGroupId, LocalDateTime submittedDate, int userId, String fullName, String username, Integer mediaFileId, String fileName, String fileUrl, String fileType) {
         this.joinRequestId = joinRequestId;
         this.prayerGroupId = prayerGroupId;
+        this.submittedDate = submittedDate;
         this.userId = userId;
         this.fullName = fullName;
         this.username = username;
@@ -98,5 +99,13 @@ public class JoinRequestDTO {
 
     public void setFileType(String fileType) {
         this.fileType = fileType;
+    }
+
+    public LocalDateTime getSubmittedDate() {
+        return submittedDate;
+    }
+
+    public void setSubmittedDate(LocalDateTime submittedDate) {
+        this.submittedDate = submittedDate;
     }
 }
