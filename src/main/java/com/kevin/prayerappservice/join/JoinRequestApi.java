@@ -15,7 +15,7 @@ public interface JoinRequestApi {
     @Operation(summary = "Create a prayer group join request")
     ResponseEntity<JoinRequestModel> createJoinRequest(@PathVariable int prayerGroupId, @RequestBody JoinRequestCreateRequest createRequest);
 
-    @PostMapping("/api/prayergroup/{prayerGroupId}/joinrequests")
+    @PostMapping("/api/prayergroup/{prayerGroupId}/joinrequests/search")
     @Operation(summary = "Get prayer group join requests")
     ResponseEntity<JoinRequestsGetResponse> getJoinRequests(@PathVariable int prayerGroupId, @RequestBody JoinRequestsGetRequest getRequest);
 
