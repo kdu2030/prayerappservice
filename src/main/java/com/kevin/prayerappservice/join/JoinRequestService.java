@@ -1,11 +1,14 @@
 package com.kevin.prayerappservice.join;
 
+import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.common.SortConfig;
 import com.kevin.prayerappservice.common.SortDirection;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.group.PrayerGroupRepository;
+import com.kevin.prayerappservice.group.PrayerGroupService;
 import com.kevin.prayerappservice.group.PrayerGroupUserRepository;
 import com.kevin.prayerappservice.group.constants.PrayerGroupErrorMessages;
+import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.join.constants.JoinRequestErrorMessages;
@@ -13,10 +16,7 @@ import com.kevin.prayerappservice.join.constants.JoinRequestSortField;
 import com.kevin.prayerappservice.join.dtos.JoinRequestDTO;
 import com.kevin.prayerappservice.join.entities.JoinRequest;
 import com.kevin.prayerappservice.join.mappers.JoinRequestMapper;
-import com.kevin.prayerappservice.join.models.JoinRequestCreateRequest;
-import com.kevin.prayerappservice.join.models.JoinRequestModel;
-import com.kevin.prayerappservice.join.models.JoinRequestsGetRequest;
-import com.kevin.prayerappservice.join.models.JoinRequestsGetResponse;
+import com.kevin.prayerappservice.join.models.*;
 import com.kevin.prayerappservice.user.entities.User;
 import com.kevin.prayerappservice.user.models.UserSummary;
 import jakarta.persistence.EntityManager;
@@ -32,13 +32,17 @@ public class JoinRequestService {
     private final PrayerGroupUserRepository prayerGroupUserRepository;
     private final EntityManager entityManager;
     private final JoinRequestMapper joinRequestMapper;
+    private final JwtService jwtService;
+    private final PrayerGroupService prayerGroupService;
 
-    public JoinRequestService(JoinRequestRepository joinRequestRepository, PrayerGroupRepository prayerGroupRepository, EntityManager entityManager, JoinRequestMapper joinRequestMapper, PrayerGroupUserRepository prayerGroupUserRepository) {
+    public JoinRequestService(JoinRequestRepository joinRequestRepository, PrayerGroupRepository prayerGroupRepository, EntityManager entityManager, JoinRequestMapper joinRequestMapper, PrayerGroupUserRepository prayerGroupUserRepository, JwtService jwtService, PrayerGroupService prayerGroupService) {
         this.joinRequestRepository = joinRequestRepository;
         this.prayerGroupRepository = prayerGroupRepository;
         this.entityManager = entityManager;
         this.joinRequestMapper = joinRequestMapper;
         this.prayerGroupUserRepository = prayerGroupUserRepository;
+        this.jwtService = jwtService;
+        this.prayerGroupService = prayerGroupService;
     }
 
     public JoinRequestModel createJoinRequest(int prayerGroupId, JoinRequestCreateRequest joinRequestCreateRequest) {
@@ -66,6 +70,17 @@ public class JoinRequestService {
                 .toList();
 
         return new JoinRequestsGetResponse(joinRequests);
+    }
+
+    public void deleteJoinRequests (String authToken, int prayerGroupId, JoinRequestDeleteRequest deleteRequest){
+        String token = jwtService.extractTokenFromAuthHeader(authToken);
+        int userId = jwtService.extractUserId(token);
+
+        PrayerGroupRole submitterRole =  prayerGroupService.getPrayerGroupRoleForUser(prayerGroupId, userId);
+        if(submitterRole != PrayerGroupRole.ADMIN){
+            throw new DataValidationException(JoinRequestErrorMessages.NON_ADMIN_CANNOT_DELETE_JOIN_REQUEST);
+        }
+
     }
 
 

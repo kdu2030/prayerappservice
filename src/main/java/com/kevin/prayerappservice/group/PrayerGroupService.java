@@ -216,7 +216,7 @@ public class PrayerGroupService {
         return new PrayerGroupSearchResponse(prayerGroups);
     }
 
-    private @Nullable PrayerGroupRole getPrayerGroupRoleForUser(int prayerGroupId, int userId) {
+    public @Nullable PrayerGroupRole getPrayerGroupRoleForUser(int prayerGroupId, int userId) {
         Optional<PrayerGroupUser> prayerGroupUser =
                 prayerGroupUserRepository.findByPrayerGroup_prayerGroupIdAndUser_userId(prayerGroupId,
                         userId);
