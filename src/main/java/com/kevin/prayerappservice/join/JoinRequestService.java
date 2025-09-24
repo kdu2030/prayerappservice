@@ -81,6 +81,7 @@ public class JoinRequestService {
             throw new DataValidationException(JoinRequestErrorMessages.NON_ADMIN_CANNOT_DELETE_JOIN_REQUEST);
         }
 
+        joinRequestRepository.deleteJoinRequests(prayerGroupId, deleteRequest.getJoinRequestIds());
     }
 
 
