@@ -1,9 +1,6 @@
 package com.kevin.prayerappservice.join;
 
-import com.kevin.prayerappservice.join.models.JoinRequestCreateRequest;
-import com.kevin.prayerappservice.join.models.JoinRequestModel;
-import com.kevin.prayerappservice.join.models.JoinRequestsGetRequest;
-import com.kevin.prayerappservice.join.models.JoinRequestsGetResponse;
+import com.kevin.prayerappservice.join.models.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,5 +21,10 @@ public class JoinRequestController implements JoinRequestApi {
     public ResponseEntity<JoinRequestsGetResponse> getJoinRequests(int prayerGroupId, JoinRequestsGetRequest getRequest){
         JoinRequestsGetResponse joinRequestsGetResponse = joinRequestService.getJoinRequests(prayerGroupId, getRequest);
         return new ResponseEntity<>(joinRequestsGetResponse, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Void> deleteJoinRequests(String authToken, int prayerGroupId, JoinRequestDeleteRequest deleteRequest){
+        joinRequestService.deleteJoinRequests(authToken, prayerGroupId, deleteRequest);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
