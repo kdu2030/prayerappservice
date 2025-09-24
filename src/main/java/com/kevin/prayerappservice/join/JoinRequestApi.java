@@ -2,6 +2,8 @@ package com.kevin.prayerappservice.join;
 
 import com.kevin.prayerappservice.join.models.JoinRequestCreateRequest;
 import com.kevin.prayerappservice.join.models.JoinRequestModel;
+import com.kevin.prayerappservice.join.models.JoinRequestsGetRequest;
+import com.kevin.prayerappservice.join.models.JoinRequestsGetResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -14,4 +16,8 @@ public interface JoinRequestApi {
     @PostMapping("/api/prayergroup/{prayerGroupId}/joinrequest")
     @Operation(summary = "Create a prayer group join request")
     ResponseEntity<JoinRequestModel> createJoinRequest(@PathVariable int prayerGroupId, @RequestBody JoinRequestCreateRequest createRequest);
+
+    @PostMapping("/api/prayergroup/{prayerGroupId}/joinrequests")
+    @Operation(summary = "Get prayer group join requests")
+    ResponseEntity<JoinRequestsGetResponse> getJoinRequests(@PathVariable int prayerGroupId, @RequestBody JoinRequestsGetRequest getRequest);
 }
