@@ -4,10 +4,7 @@ import com.kevin.prayerappservice.join.models.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "JoinRequest API", description = "The JoinRequest API")
 public interface JoinRequestApi {
@@ -21,5 +18,9 @@ public interface JoinRequestApi {
 
     @DeleteMapping("/api/prayergroup/{prayerGroupId}/joinrequests")
     @Operation(summary = "Delete join requests")
-    ResponseEntity<Void> deleteJoinRequests(String authToken, @PathVariable int prayerGroupId, @RequestBody JoinRequestDeleteRequest deleteRequest);
+    ResponseEntity<Void> deleteJoinRequests(@RequestHeader("Authorization") String authToken, @PathVariable int prayerGroupId, @RequestBody JoinRequestDeleteRequest deleteRequest);
+
+    @PostMapping("/api/prayergroup/{prayerGroupId}/joinrequests")
+    @Operation(summary = "Approve prayer group join requests")
+    ResponseEntity<Void> approveJoinRequests(@RequestHeader("Authorization") String authToken, @PathVariable int prayerGroupId, @RequestBody JoinRequestApproveRequest approveRequest);
 }

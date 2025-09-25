@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.join;
 
+import com.kevin.prayerappservice.join.dtos.JoinRequestApproveQuery;
 import com.kevin.prayerappservice.join.dtos.JoinRequestDTO;
 import com.kevin.prayerappservice.join.dtos.JoinRequestDeleteQuery;
 import com.kevin.prayerappservice.join.dtos.JoinRequestQuery;
@@ -30,6 +31,14 @@ public class JoinRequestJdbcRepositoryImpl implements JoinRequestJdbcRepository 
         int[] joinRequestIdsArr = joinRequestIds.stream().mapToInt(Integer::intValue).toArray();
         JoinRequestDeleteQuery joinRequestDeleteQuery = new JoinRequestDeleteQuery(prayerGroupId, joinRequestIdsArr);
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(joinRequestDeleteQuery);
+        jdbcTemplate.update(sql, params);
+    }
+
+    public void approveJoinRequests(int prayerGroupId, List<Integer> joinRequestIds){
+        String sql = "CALL approve_join_requests(:targetPrayerGroupId, :joinRequestIds);";
+        int[] joinRequestIdsArr = joinRequestIds.stream().mapToInt(Integer::intValue).toArray();
+        JoinRequestApproveQuery joinRequestApproveQuery = new JoinRequestApproveQuery(prayerGroupId, joinRequestIdsArr);
+        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(joinRequestApproveQuery);
         jdbcTemplate.update(sql, params);
     }
 }

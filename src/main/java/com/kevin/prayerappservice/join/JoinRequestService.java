@@ -84,6 +84,18 @@ public class JoinRequestService {
         joinRequestRepository.deleteJoinRequests(prayerGroupId, deleteRequest.getJoinRequestIds());
     }
 
+    public void approveJoinRequests(String authToken, int prayerGroupId, JoinRequestApproveRequest approveRequest){
+        String token = jwtService.extractTokenFromAuthHeader(authToken);
+        int userId = jwtService.extractUserId(token);
+
+        PrayerGroupRole submitterRole =  prayerGroupService.getPrayerGroupRoleForUser(prayerGroupId, userId);
+        if(submitterRole != PrayerGroupRole.ADMIN){
+            throw new DataValidationException(JoinRequestErrorMessages.NON_ADMIN_CANNOT_DELETE_JOIN_REQUEST);
+        }
+
+        joinRequestRepository.approveJoinRequests(prayerGroupId, approveRequest.getJoinRequestIds());
+    }
+
 
     private int compareJoinRequests(JoinRequestModel joinRequestA, JoinRequestModel joinRequestB, SortConfig<JoinRequestSortField> sortConfig) {
         int sortCoefficient = sortConfig.getSortDirection() == SortDirection.ASCENDING ? 1 : -1;

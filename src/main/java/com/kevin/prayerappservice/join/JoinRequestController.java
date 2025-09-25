@@ -27,4 +27,9 @@ public class JoinRequestController implements JoinRequestApi {
         joinRequestService.deleteJoinRequests(authToken, prayerGroupId, deleteRequest);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    public ResponseEntity<Void> approveJoinRequests(String authToken, int prayerGroupId, JoinRequestApproveRequest approveRequest){
+        joinRequestService.approveJoinRequests(authToken, prayerGroupId, approveRequest);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
