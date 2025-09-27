@@ -20,10 +20,11 @@ public class PrayerGroupModel {
     private VisibilityLevel visibilityLevel;
     private JoinStatus userJoinStatus;
     private PrayerGroupRole prayerGroupRole;
+    private Integer joinRequestCount;
 
     public PrayerGroupModel(){}
 
-    public PrayerGroupModel(Integer prayerGroupId, String groupName, String description, String rules, MediaFile avatarFile, MediaFile bannerFile, List<PrayerGroupUserModel> admins, VisibilityLevel visibilityLevel, JoinStatus userJoinStatus, PrayerGroupRole prayerGroupRole) {
+    public PrayerGroupModel(Integer prayerGroupId, String groupName, String description, String rules, MediaFile avatarFile, MediaFile bannerFile, List<PrayerGroupUserModel> admins, VisibilityLevel visibilityLevel, JoinStatus userJoinStatus, PrayerGroupRole prayerGroupRole, Integer joinRequestCount) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.description = description;
@@ -34,6 +35,7 @@ public class PrayerGroupModel {
         this.visibilityLevel = visibilityLevel;
         this.userJoinStatus = userJoinStatus;
         this.prayerGroupRole = prayerGroupRole;
+        this.joinRequestCount = joinRequestCount;
     }
 
     public Integer getPrayerGroupId() {
@@ -114,5 +116,13 @@ public class PrayerGroupModel {
 
     public void setPrayerGroupRole(PrayerGroupRole prayerGroupRole) {
         this.prayerGroupRole = prayerGroupRole;
+    }
+
+    public Integer getJoinRequestCount() {
+        return joinRequestCount;
+    }
+
+    public void setJoinRequestCount(Integer joinRequestCount) {
+        this.joinRequestCount = joinRequestCount;
     }
 }

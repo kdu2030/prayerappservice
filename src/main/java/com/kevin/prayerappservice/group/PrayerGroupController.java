@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Controller
 public class PrayerGroupController implements PrayerGroupApi {
@@ -62,5 +63,11 @@ public class PrayerGroupController implements PrayerGroupApi {
     public ResponseEntity<PrayerGroupUsersGetResponse> updatePrayerGroupUsers(String authorizationHeader, int prayerGroupId, PrayerGroupUserUpdateRequest prayerGroupUserUpdateRequest) throws SQLException {
         PrayerGroupUsersGetResponse response = prayerGroupService.updatePrayerGroupUsers(authorizationHeader, prayerGroupId, prayerGroupUserUpdateRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<PrayerGroupSearchResponse> searchPrayerGroups(PrayerGroupSearchRequest prayerGroupSearchRequest){
+        PrayerGroupSearchResponse searchResponse = prayerGroupService.searchPrayerGroups(prayerGroupSearchRequest);
+        return new ResponseEntity<>(searchResponse, HttpStatus.OK);
+
     }
 }

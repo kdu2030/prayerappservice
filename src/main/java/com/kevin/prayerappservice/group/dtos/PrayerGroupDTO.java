@@ -16,14 +16,12 @@ public class PrayerGroupDTO {
     private String bannerFileType;
     private String prayerGroupRole;
     private Integer joinRequestId;
+    private Integer joinRequestCount;
 
     public PrayerGroupDTO() {
     }
 
-    public PrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules,
-                          String visibilityLevel, Integer avatarFileId, String avatarFileName, String avatarFileUrl,
-                          String avatarFileType, Integer bannerFileId, String bannerFileName, String bannerFileUrl,
-                          String bannerFileType, String prayerGroupRole, Integer joinRequestId) {
+    public PrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules, String visibilityLevel, Integer avatarFileId, String avatarFileName, String avatarFileUrl, String avatarFileType, Integer bannerFileId, String bannerFileName, String bannerFileUrl, String bannerFileType, String prayerGroupRole, Integer joinRequestId, Integer joinRequestCount) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.description = description;
@@ -39,6 +37,7 @@ public class PrayerGroupDTO {
         this.bannerFileType = bannerFileType;
         this.prayerGroupRole = prayerGroupRole;
         this.joinRequestId = joinRequestId;
+        this.joinRequestCount = joinRequestCount;
     }
 
     public PrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules,
@@ -168,5 +167,13 @@ public class PrayerGroupDTO {
 
     public void setJoinRequestId(Integer joinRequestId) {
         this.joinRequestId = joinRequestId;
+    }
+
+    public Integer getJoinRequestCount() {
+        return joinRequestCount;
+    }
+
+    public void setJoinRequestCount(Integer joinRequestCount) {
+        this.joinRequestCount = joinRequestCount;
     }
 }

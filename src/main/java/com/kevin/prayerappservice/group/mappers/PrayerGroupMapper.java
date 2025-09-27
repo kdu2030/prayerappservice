@@ -2,6 +2,7 @@ package com.kevin.prayerappservice.group.mappers;
 
 import com.kevin.prayerappservice.file.entities.FileType;
 import com.kevin.prayerappservice.file.entities.MediaFile;
+import com.kevin.prayerappservice.file.models.MediaFileSummary;
 import com.kevin.prayerappservice.group.constants.JoinStatus;
 import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.dtos.CreatedPrayerGroupDTO;
@@ -86,7 +87,7 @@ public interface PrayerGroupMapper {
 
     @AfterMapping
     default void setPrayerGroupUserImageToNull(@MappingTarget PrayerGroupUserModel prayerGroupUserModel){
-        MediaFile userImage = prayerGroupUserModel.getImage();
+        MediaFileSummary userImage = prayerGroupUserModel.getImage();
 
         if(userImage == null){
             return;
@@ -98,12 +99,10 @@ public interface PrayerGroupMapper {
     }
 
     default List<PrayerGroupUserModel> mapToPrayerGroupUsers(CreatedPrayerGroupDTO source) {
-        MediaFile adminImage = null;
+        MediaFileSummary adminImage = null;
 
         if (source.getAdminImageFileId() != null) {
-            adminImage = new MediaFile(source.getAdminImageFileName(), FileType.IMAGE,
-                    source.getAdminImageFileUrl());
-            adminImage.setMediaFileId(source.getAdminImageFileId());
+            adminImage = new MediaFileSummary(source.getAdminImageFileId(), source.getAdminImageFileName(), source.getAdminImageFileUrl(), FileType.IMAGE);
         }
 
 

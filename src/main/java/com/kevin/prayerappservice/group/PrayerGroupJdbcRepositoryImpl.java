@@ -73,4 +73,12 @@ public class PrayerGroupJdbcRepositoryImpl implements PrayerGroupJdbcRepository 
         String sql = "CALL update_prayer_group_users(:updated_users);";
         jdbcTemplate.update(sql, params);
     }
+
+    public List<PrayerGroupSummaryDTO> searchPrayerGroups(String groupNameQuery, int maxNumResults){
+        String sql = "SELECT * FROM search_prayer_groups (:groupNameQuery, :maxNumResults);";
+        PrayerGroupSearchQuery prayerGroupSearchQuery = new PrayerGroupSearchQuery(groupNameQuery, maxNumResults);
+        BeanPropertySqlParameterSource params =  new BeanPropertySqlParameterSource(prayerGroupSearchQuery);
+        return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerGroupSummaryDTO.class));
+    }
+
 }

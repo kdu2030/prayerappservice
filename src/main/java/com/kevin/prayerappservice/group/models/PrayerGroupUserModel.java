@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.group.models;
 
 import com.kevin.prayerappservice.file.entities.MediaFile;
+import com.kevin.prayerappservice.file.models.MediaFileSummary;
 import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.user.models.UserSummary;
 import com.kevin.prayerappservice.user.models.UserTokenPair;
@@ -12,7 +13,7 @@ public class PrayerGroupUserModel extends UserSummary {
         super();
     }
 
-    public PrayerGroupUserModel(int userId, String username, String emailAddress, String fullName, UserTokenPair tokens, MediaFile image, PrayerGroupRole prayerGroupRole) {
+    public PrayerGroupUserModel(int userId, String username, String emailAddress, String fullName, UserTokenPair tokens, MediaFileSummary image, PrayerGroupRole prayerGroupRole) {
         super(userId, username, emailAddress, fullName, tokens, image, null);
         this.prayerGroupRole = prayerGroupRole;
     }
