@@ -22,6 +22,7 @@ import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.transaction.Transactional;
+import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -68,15 +69,14 @@ public class JoinRequestServiceTests {
     private JoinRequestService joinRequestService;
 
     @Test
-    public void createJoinRequest_unableToFindPrayerGroup_throwsException(){
+    public void createJoinRequest_unableToFindPrayerGroup_throwsException() {
         JoinRequestCreateRequest joinRequestCreateRequest = new JoinRequestCreateRequest(99, LocalDateTime.now());
-        Assertions.assertThatExceptionOfType(DataValidationException.class)
-                .isThrownBy(() -> joinRequestService.createJoinRequest(122, joinRequestCreateRequest));
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> joinRequestService.createJoinRequest(122, joinRequestCreateRequest));
     }
 
     @Test
     @DirtiesContext
-    public void createJoinRequest_userAlreadyJoined_throwsException(){
+    public void createJoinRequest_userAlreadyJoined_throwsException() {
         User user = new User("Ben Wyatt", "bwyatt", "bwyatt@indiana.gov", "mockPasswordHash", Role.USER);
         userRepository.save(user);
 
@@ -93,7 +93,7 @@ public class JoinRequestServiceTests {
     @Test
     @DirtiesContext
     @Transactional
-    public void createJoinRequest_givenValidValues_savesJoinRequest(){
+    public void createJoinRequest_givenValidValues_savesJoinRequest() {
         User user = new User("Ben Wyatt", "bwyatt", "bwyatt@indiana.gov", "mockPasswordHash", Role.USER);
         userRepository.save(user);
 
@@ -108,7 +108,7 @@ public class JoinRequestServiceTests {
     }
 
     @Test
-    public void getJoinRequests_sortByDateConfig_isSorted(){
+    public void getJoinRequests_sortByDateConfig_isSorted() {
         JoinRequestDTO joinRequestDTO1 = new JoinRequestDTO(320, 350, LocalDateTime.parse("2023-05-04T03:00:00"), 380, "Tom Haverford", "thaverford", 56, "tom_haverford.png", "https://fileservices.pythonanywhere.com/static/tom_haverford.png", FileType.IMAGE.toString());
         JoinRequestDTO joinRequestDTO2 = new JoinRequestDTO(342, 122, LocalDateTime.parse("2022-03-14T09:00:00"), 423, "Ann Perkins", "aperkins", null, null, null, null);
         JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, LocalDateTime.parse("2025-02-02T07:00:00"), 912, "Ron Swanson", "rswanson", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
@@ -129,7 +129,7 @@ public class JoinRequestServiceTests {
     }
 
     @Test
-    public void getJoinRequests_sortByUsernameConfig_isSorted(){
+    public void getJoinRequests_sortByUsernameConfig_isSorted() {
         JoinRequestDTO joinRequestDTO1 = new JoinRequestDTO(320, 350, LocalDateTime.parse("2023-05-04T03:00:00"), 380, "mockFullName", "thaverford", 56, "tom_haverford.png", "https://fileservices.pythonanywhere.com/static/tom_haverford.png", FileType.IMAGE.toString());
         JoinRequestDTO joinRequestDTO2 = new JoinRequestDTO(342, 122, LocalDateTime.parse("2023-05-04T03:00:00"), 423, "mockFullName", "aperkins", null, null, null, null);
         JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, LocalDateTime.parse("2023-05-04T03:00:00"), 912, "mockFullName", "rswanson", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
@@ -149,7 +149,7 @@ public class JoinRequestServiceTests {
     }
 
     @Test
-    public void getJoinRequests_sortByFullNameConfig_isSorted(){
+    public void getJoinRequests_sortByFullNameConfig_isSorted() {
         JoinRequestDTO joinRequestDTO1 = new JoinRequestDTO(320, 350, LocalDateTime.parse("2023-05-04T03:00:00"), 380, "Tom Haverford", "mockUsername", 56, "tom_haverford.png", "https://fileservices.pythonanywhere.com/static/tom_haverford.png", FileType.IMAGE.toString());
         JoinRequestDTO joinRequestDTO2 = new JoinRequestDTO(342, 122, LocalDateTime.parse("2023-05-04T03:00:00"), 423, "Ann Perkins", "mockUsername", null, null, null, null);
         JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, LocalDateTime.parse("2023-05-04T03:00:00"), 912, "Ron Swanson", "mockUsername", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
@@ -170,8 +170,8 @@ public class JoinRequestServiceTests {
 
     @Test
     @DirtiesContext
-    public void deleteJoinRequests_submittedByNonAdmin_preventsDeletion(){
-        User user  = new User("Donna Meagle", "dmeagle", "dmeagle@parksandrecreation.gov", "mockPasswordHash", Role.USER);
+    public void deleteJoinRequests_submittedByNonAdmin_preventsDeletion() {
+        User user = new User("Donna Meagle", "dmeagle", "dmeagle@parksandrecreation.gov", "mockPasswordHash", Role.USER);
         userRepository.save(user);
 
         PrayerGroup prayerGroup = new PrayerGroup("Pawnee Prayer Group", "Pawnee prayer group", "Prayer group rules", VisibilityLevel.PRIVATE, null, null);
@@ -191,13 +191,13 @@ public class JoinRequestServiceTests {
     @Test
     @DirtiesContext
     @Transactional
-    public void deleteJoinRequests_givenValidUser_successfullyDeletesRequests(){
+    public void deleteJoinRequests_givenValidUser_successfullyDeletesRequests() {
         List<Integer> joinRequestIdsToDelete = List.of(434, 123, 976);
 
         ArgumentCaptor<Integer> targetPrayerGroupCaptor = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<List<Integer>> targetJoinRequestIds = ArgumentCaptor.forClass((Class) List.class);
 
-        User user  = new User("Donna Meagle", "dmeagle", "dmeagle@parksandrecreation.gov", "mockPasswordHash", Role.USER);
+        User user = new User("Donna Meagle", "dmeagle", "dmeagle@parksandrecreation.gov", "mockPasswordHash", Role.USER);
         userRepository.save(user);
 
         PrayerGroup prayerGroup = new PrayerGroup("Pawnee Prayer Group", "Pawnee prayer group", "Prayer group rules", VisibilityLevel.PRIVATE, null, null);
@@ -228,7 +228,7 @@ public class JoinRequestServiceTests {
     @Test
     @Transactional
     @DirtiesContext
-    public void approveJoinRequests_submittedByNonAdmin_preventsApproval(){
+    public void approveJoinRequests_submittedByNonAdmin_preventsApproval() {
         User user = new User("Joan Callamezzo", "jcallamezzo", "jcallamezzo@pawneetoday.com", "mockPasswordHash", Role.USER);
         userRepository.save(user);
 
@@ -240,7 +240,41 @@ public class JoinRequestServiceTests {
 
         JoinRequestApproveRequest request = new JoinRequestApproveRequest(List.of(717, 727, 737));
 
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(user.getUserId());
+
         Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> joinRequestService.approveJoinRequests("mockToken", prayerGroup.getPrayerGroupId(), request));
+    }
+
+    @Test
+    @Transactional
+    @DirtiesContext
+    public void approveJoinRequests_givenValidData_approvesJoinRequest() {
+        User user = new User("Joan Callamezzo", "jcallamezzo", "jcallamezzo@pawneetoday.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Pawnee Today Prayer Group", "A prayer group for Pawnee's favorite talk show Pawnee Today", "Pawnee Today rules", VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.ADMIN);
+        prayerGroupUserRepository.save(prayerGroupUser);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(user.getUserId());
+
+        Mockito.doNothing().when(mockJoinRequestJdbcRepository).approveJoinRequests(anyInt(), Mockito.anyList());
+
+        ArgumentCaptor<Integer> targetPrayerGroupCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<List<Integer>> targetJoinRequestIds = ArgumentCaptor.forClass((Class) List.class);
+
+        JoinRequestApproveRequest request = new JoinRequestApproveRequest(List.of(717, 727, 737));
+        joinRequestService.approveJoinRequests("mockToken", prayerGroup.getPrayerGroupId(), request);
+
+        Mockito.verify(mockJoinRequestJdbcRepository).approveJoinRequests(targetPrayerGroupCaptor.capture(), targetJoinRequestIds.capture());
+
+        Assertions.assertThat(targetPrayerGroupCaptor.getValue()).isEqualTo(prayerGroup.getPrayerGroupId());
+        Assertions.assertThat(targetJoinRequestIds.getValue()).isEqualTo(request.getJoinRequestIds());
+
     }
 
 }
