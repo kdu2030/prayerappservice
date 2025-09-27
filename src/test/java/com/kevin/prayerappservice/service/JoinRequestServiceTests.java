@@ -25,6 +25,8 @@ import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -188,13 +190,12 @@ public class JoinRequestServiceTests {
 
     @Test
     @DirtiesContext
+    @Transactional
     public void deleteJoinRequests_givenValidUser_successfullyDeletesRequests(){
         List<Integer> joinRequestIdsToDelete = List.of(434, 123, 976);
 
         ArgumentCaptor<Integer> targetPrayerGroupCaptor = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<List<Integer>> targetJoinRequestIds = ArgumentCaptor.forClass((Class) List.class);
-
-        Mockito.verify(mockJoinRequestJdbcRepository).deleteJoinRequests(targetPrayerGroupCaptor.capture(), targetJoinRequestIds.capture());
 
         User user  = new User("Donna Meagle", "dmeagle", "dmeagle@parksandrecreation.gov", "mockPasswordHash", Role.USER);
         userRepository.save(user);
@@ -210,11 +211,15 @@ public class JoinRequestServiceTests {
 
         JoinRequestDeleteRequest joinRequestDeleteRequest = new JoinRequestDeleteRequest(joinRequestIdsToDelete);
 
-        int targetPrayerGroupId = 42;
+        Mockito.doNothing().when(mockJoinRequestJdbcRepository).deleteJoinRequests(anyInt(), Mockito.anyList());
+
+        int targetPrayerGroupId = prayerGroup.getPrayerGroupId();
         joinRequestService.deleteJoinRequests("mockAuthToken", targetPrayerGroupId, joinRequestDeleteRequest);
 
-        int calledPrayerGroupId = targetPrayerGroupCaptor.capture();
-        List<Integer> calledJoinRequestIds = targetJoinRequestIds.capture();
+        Mockito.verify(mockJoinRequestJdbcRepository).deleteJoinRequests(targetPrayerGroupCaptor.capture(), targetJoinRequestIds.capture());
+
+        int calledPrayerGroupId = targetPrayerGroupCaptor.getValue();
+        List<Integer> calledJoinRequestIds = targetJoinRequestIds.getValue();
 
         Assertions.assertThat(calledPrayerGroupId).isEqualTo(targetPrayerGroupId);
         Assertions.assertThat(calledJoinRequestIds).isEqualTo(joinRequestIdsToDelete);
