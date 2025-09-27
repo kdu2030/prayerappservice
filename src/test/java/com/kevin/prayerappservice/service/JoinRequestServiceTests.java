@@ -1,6 +1,9 @@
 package com.kevin.prayerappservice.service;
 
+import com.kevin.prayerappservice.common.SortConfig;
+import com.kevin.prayerappservice.common.SortDirection;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
+import com.kevin.prayerappservice.file.entities.FileType;
 import com.kevin.prayerappservice.group.PrayerGroupRepository;
 import com.kevin.prayerappservice.group.PrayerGroupService;
 import com.kevin.prayerappservice.group.PrayerGroupUserRepository;
@@ -8,16 +11,22 @@ import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
+import com.kevin.prayerappservice.join.JoinRequestJdbcRepositoryImpl;
 import com.kevin.prayerappservice.join.JoinRequestRepository;
 import com.kevin.prayerappservice.join.JoinRequestService;
+import com.kevin.prayerappservice.join.constants.JoinRequestSortField;
+import com.kevin.prayerappservice.join.dtos.JoinRequestDTO;
 import com.kevin.prayerappservice.join.entities.JoinRequest;
 import com.kevin.prayerappservice.join.models.JoinRequestCreateRequest;
 import com.kevin.prayerappservice.join.models.JoinRequestModel;
+import com.kevin.prayerappservice.join.models.JoinRequestsGetRequest;
+import com.kevin.prayerappservice.join.models.JoinRequestsGetResponse;
 import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
+import org.hibernate.grammars.hql.HqlParser;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +36,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -44,6 +55,9 @@ public class JoinRequestServiceTests {
 
     @Autowired
     private PrayerGroupUserRepository prayerGroupUserRepository;
+
+    @MockBean
+    private JoinRequestJdbcRepositoryImpl joinRequestJdbcRepository;
 
     @Autowired
     private JoinRequestRepository joinRequestRepository;
@@ -89,6 +103,27 @@ public class JoinRequestServiceTests {
 
         Assertions.assertThat(joinRequestModel.getUser().getUserId()).isEqualTo(user.getUserId());
         Assertions.assertThat(joinRequestModel.getPrayerGroupId()).isEqualTo(prayerGroup.getPrayerGroupId());
+    }
+
+    @Test
+    public void getJoinRequests_sortByDateConfig_isSorted(){
+        JoinRequestDTO joinRequestDTO1 = new JoinRequestDTO(320, 350, LocalDateTime.parse("2023-05-04T03:00:00"), 380, "Tom Haverford", "thaverford", 56, "tom_haverford.png", "https://fileservices.pythonanywhere.com/static/tom_haverford.png", FileType.IMAGE.toString());
+        JoinRequestDTO joinRequestDTO2 = new JoinRequestDTO(342, 122, LocalDateTime.parse("2022-03-14T09:00:00"), 423, "Ann Perkins", "aperkins", null, null, null, null);
+        JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, LocalDateTime.parse("2025-02-02T07:00:00"), 912, "Ron Swanson", "rswanson", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
+
+        List<JoinRequestDTO> mockJoinRequests = List.of(joinRequestDTO1, joinRequestDTO2, joinRequestDTO3);
+
+        Mockito.when(joinRequestJdbcRepository.getJoinRequests(anyInt())).thenReturn(mockJoinRequests);
+
+        SortConfig<JoinRequestSortField> sortConfig = new SortConfig<>(JoinRequestSortField.SUBMITTED_DATE, SortDirection.DESCENDING);
+        JoinRequestsGetRequest getRequest = new JoinRequestsGetRequest(sortConfig);
+
+        JoinRequestsGetResponse response = joinRequestService.getJoinRequests(42, getRequest);
+
+        List<Integer> receivedJoinRequestIds = response.getJoinRequests().stream().map(JoinRequestModel::getJoinRequestId).toList();
+        List<Integer> expectedJoinRequestIds = List.of(joinRequestDTO3.getJoinRequestId(), joinRequestDTO1.getJoinRequestId(), joinRequestDTO2.getJoinRequestId());
+
+        Assertions.assertThat(receivedJoinRequestIds).isEqualTo(expectedJoinRequestIds);
     }
 
 }
