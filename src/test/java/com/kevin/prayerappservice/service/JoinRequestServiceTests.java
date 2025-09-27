@@ -225,4 +225,22 @@ public class JoinRequestServiceTests {
         Assertions.assertThat(calledJoinRequestIds).isEqualTo(joinRequestIdsToDelete);
     }
 
+    @Test
+    @Transactional
+    @DirtiesContext
+    public void approveJoinRequests_submittedByNonAdmin_preventsApproval(){
+        User user = new User("Joan Callamezzo", "jcallamezzo", "jcallamezzo@pawneetoday.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Pawnee Today Prayer Group", "A prayer group for Pawnee's favorite talk show Pawnee Today", "Pawnee Today rules", VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER);
+        prayerGroupUserRepository.save(prayerGroupUser);
+
+        JoinRequestApproveRequest request = new JoinRequestApproveRequest(List.of(717, 727, 737));
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> joinRequestService.approveJoinRequests("mockToken", prayerGroup.getPrayerGroupId(), request));
+    }
+
 }
