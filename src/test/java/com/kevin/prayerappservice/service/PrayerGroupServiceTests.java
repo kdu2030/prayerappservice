@@ -35,6 +35,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -141,7 +142,7 @@ public class PrayerGroupServiceTests {
         PrayerGroupDTO mockPrayerGroup = new PrayerGroupDTO(6116, "Naboo Delegation", "Senator Amidala and " +
                 "Representative Binks", null, VisibilityLevel.PRIVATE.toString(), 34, "naboo.png", "https" +
                 "://prayerappfileservices.pythonanywhere.com/test.png", FileType.IMAGE.toString(), null, null, null,
-                null, PrayerGroupRole.MEMBER.toString(), null);
+                null, PrayerGroupRole.MEMBER.toString(), null, null);
 
         Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroup(anyInt(), anyInt())).thenReturn(mockPrayerGroup);
         Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(1409);
@@ -158,7 +159,7 @@ public class PrayerGroupServiceTests {
         PrayerGroupDTO mockPrayerGroup = new PrayerGroupDTO(6116, "Naboo Delegation", "Senator Amidala and " +
                 "Representative Binks", null, VisibilityLevel.PRIVATE.toString(), 34, "naboo.png", "https" +
                 "://prayerappfileservices.pythonanywhere.com/test.png", FileType.IMAGE.toString(), null, null, null,
-                null, null, 1004);
+                null, null, 1004, null);
 
         Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroup(anyInt(), anyInt())).thenReturn(mockPrayerGroup);
         Mockito.when(mockJwtService.extractUserId(anyString())).thenReturn(1409);
@@ -173,7 +174,7 @@ public class PrayerGroupServiceTests {
         PrayerGroupDTO mockPrayerGroup = new PrayerGroupDTO(6116, "Naboo Delegation", "Senator Amidala and " +
                 "Representative Binks", null, VisibilityLevel.PRIVATE.toString(), 34, "naboo.png", "https" +
                 "://prayerappfileservices.pythonanywhere.com/test.png", FileType.IMAGE.toString(), null, null, null,
-                null, null, 1004);
+                null, null, 1004, null);
 
         PrayerGroupUserDTO[] prayerGroupUserDTOS = new PrayerGroupUserDTO[]{
                 new PrayerGroupUserDTO(320, "Padme Amidala", "pamidala", PrayerGroupRole.ADMIN.toString(), null, null
@@ -236,7 +237,7 @@ public class PrayerGroupServiceTests {
         PrayerGroupUser mockPrayerGroupUser = new PrayerGroupUser(mockUser, mockPrayerGroup, PrayerGroupRole.ADMIN);
         prayerGroupUserRepository.save(mockPrayerGroupUser);
 
-        JoinRequest joinRequest = new JoinRequest(mockUser, mockPrayerGroup, LocalDate.now());
+        JoinRequest joinRequest = new JoinRequest(mockUser, mockPrayerGroup, LocalDateTime.now());
         joinRequestRepository.save(joinRequest);
 
         PutPrayerGroupRequest putPrayerGroupRequest = new PutPrayerGroupRequest("Alphabet", "Search engine", "No web " +
