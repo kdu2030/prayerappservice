@@ -104,7 +104,7 @@ public class JoinRequestService {
 
         return switch (sortConfig.getSortField()) {
             case JoinRequestSortField.USERNAME -> userA.getUsername().compareTo(userB.getUsername()) * sortCoefficient;
-            case JoinRequestSortField.FULL_NAME -> userA.getFullName().compareTo(userB.getUsername()) * sortCoefficient;
+            case JoinRequestSortField.FULL_NAME -> userA.getFullName().compareTo(userB.getFullName()) * sortCoefficient;
             case JoinRequestSortField.SUBMITTED_DATE ->
                     joinRequestA.getSubmittedDate().compareTo(joinRequestB.getSubmittedDate()) * sortCoefficient;
         };

@@ -16,7 +16,6 @@ import com.kevin.prayerappservice.join.JoinRequestRepository;
 import com.kevin.prayerappservice.join.JoinRequestService;
 import com.kevin.prayerappservice.join.constants.JoinRequestSortField;
 import com.kevin.prayerappservice.join.dtos.JoinRequestDTO;
-import com.kevin.prayerappservice.join.entities.JoinRequest;
 import com.kevin.prayerappservice.join.models.JoinRequestCreateRequest;
 import com.kevin.prayerappservice.join.models.JoinRequestModel;
 import com.kevin.prayerappservice.join.models.JoinRequestsGetRequest;
@@ -136,6 +135,26 @@ public class JoinRequestServiceTests {
         Mockito.when(joinRequestJdbcRepository.getJoinRequests(anyInt())).thenReturn(mockJoinRequests);
 
         SortConfig<JoinRequestSortField> sortConfig = new SortConfig<>(JoinRequestSortField.USERNAME, SortDirection.ASCENDING);
+        JoinRequestsGetRequest getRequest = new JoinRequestsGetRequest(sortConfig);
+
+        JoinRequestsGetResponse response = joinRequestService.getJoinRequests(42, getRequest);
+
+        List<Integer> receivedJoinRequestIds = response.getJoinRequests().stream().map(JoinRequestModel::getJoinRequestId).toList();
+        List<Integer> expectedJoinRequestIds = List.of(joinRequestDTO2.getJoinRequestId(), joinRequestDTO3.getJoinRequestId(), joinRequestDTO1.getJoinRequestId());
+
+        Assertions.assertThat(receivedJoinRequestIds).isEqualTo(expectedJoinRequestIds);
+    }
+
+    @Test
+    public void getJoinRequests_sortByFullNameConfig_isSorted(){
+        JoinRequestDTO joinRequestDTO1 = new JoinRequestDTO(320, 350, LocalDateTime.parse("2023-05-04T03:00:00"), 380, "Tom Haverford", "mockUsername", 56, "tom_haverford.png", "https://fileservices.pythonanywhere.com/static/tom_haverford.png", FileType.IMAGE.toString());
+        JoinRequestDTO joinRequestDTO2 = new JoinRequestDTO(342, 122, LocalDateTime.parse("2023-05-04T03:00:00"), 423, "Ann Perkins", "mockUsername", null, null, null, null);
+        JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, LocalDateTime.parse("2023-05-04T03:00:00"), 912, "Ron Swanson", "mockUsername", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
+
+        List<JoinRequestDTO> mockJoinRequests = List.of(joinRequestDTO1, joinRequestDTO2, joinRequestDTO3);
+        Mockito.when(joinRequestJdbcRepository.getJoinRequests(anyInt())).thenReturn(mockJoinRequests);
+
+        SortConfig<JoinRequestSortField> sortConfig = new SortConfig<>(JoinRequestSortField.FULL_NAME, SortDirection.ASCENDING);
         JoinRequestsGetRequest getRequest = new JoinRequestsGetRequest(sortConfig);
 
         JoinRequestsGetResponse response = joinRequestService.getJoinRequests(42, getRequest);
