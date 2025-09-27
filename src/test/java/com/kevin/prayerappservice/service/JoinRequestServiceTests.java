@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.service;
 
+import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.common.SortConfig;
 import com.kevin.prayerappservice.common.SortDirection;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
@@ -16,14 +17,12 @@ import com.kevin.prayerappservice.join.JoinRequestRepository;
 import com.kevin.prayerappservice.join.JoinRequestService;
 import com.kevin.prayerappservice.join.constants.JoinRequestSortField;
 import com.kevin.prayerappservice.join.dtos.JoinRequestDTO;
-import com.kevin.prayerappservice.join.models.JoinRequestCreateRequest;
-import com.kevin.prayerappservice.join.models.JoinRequestModel;
-import com.kevin.prayerappservice.join.models.JoinRequestsGetRequest;
-import com.kevin.prayerappservice.join.models.JoinRequestsGetResponse;
+import com.kevin.prayerappservice.join.models.*;
 import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.transaction.Transactional;
+import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -37,10 +36,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @SpringBootTest
 @ActiveProfiles("test")
 public class JoinRequestServiceTests {
+    @MockBean
+    private JwtService jwtService;
+
     @Autowired
     private PrayerGroupService prayerGroupService;
 
@@ -161,6 +164,23 @@ public class JoinRequestServiceTests {
         List<Integer> expectedJoinRequestIds = List.of(joinRequestDTO2.getJoinRequestId(), joinRequestDTO3.getJoinRequestId(), joinRequestDTO1.getJoinRequestId());
 
         Assertions.assertThat(receivedJoinRequestIds).isEqualTo(expectedJoinRequestIds);
+    }
+
+    @Test
+    @DirtiesContext
+    public void deleteJoinRequests_submittedByNonAdmin_preventsDeletion(){
+        User user  = new User("Donna Meagle", "dmeagle", "dmeagle@parksandrecreation.gov", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Pawnee Prayer Group", "Pawnee prayer group", "Prayer group rules", VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(user.getUserId());
+
+        JoinRequestDeleteRequest joinRequestDeleteRequest = new JoinRequestDeleteRequest(List.of(23));
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> joinRequestService.deleteJoinRequests("mockAuthToken", prayerGroup.getPrayerGroupId(), joinRequestDeleteRequest));
     }
 
 }
