@@ -22,9 +22,9 @@ import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.transaction.Transactional;
-import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,10 +33,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -57,7 +57,7 @@ public class JoinRequestServiceTests {
     private PrayerGroupUserRepository prayerGroupUserRepository;
 
     @MockBean
-    private JoinRequestJdbcRepositoryImpl joinRequestJdbcRepository;
+    private JoinRequestJdbcRepositoryImpl mockJoinRequestJdbcRepository;
 
     @Autowired
     private JoinRequestRepository joinRequestRepository;
@@ -113,7 +113,7 @@ public class JoinRequestServiceTests {
 
         List<JoinRequestDTO> mockJoinRequests = List.of(joinRequestDTO1, joinRequestDTO2, joinRequestDTO3);
 
-        Mockito.when(joinRequestJdbcRepository.getJoinRequests(anyInt())).thenReturn(mockJoinRequests);
+        Mockito.when(mockJoinRequestJdbcRepository.getJoinRequests(anyInt())).thenReturn(mockJoinRequests);
 
         SortConfig<JoinRequestSortField> sortConfig = new SortConfig<>(JoinRequestSortField.SUBMITTED_DATE, SortDirection.DESCENDING);
         JoinRequestsGetRequest getRequest = new JoinRequestsGetRequest(sortConfig);
@@ -133,7 +133,7 @@ public class JoinRequestServiceTests {
         JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, LocalDateTime.parse("2023-05-04T03:00:00"), 912, "mockFullName", "rswanson", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
 
         List<JoinRequestDTO> mockJoinRequests = List.of(joinRequestDTO1, joinRequestDTO2, joinRequestDTO3);
-        Mockito.when(joinRequestJdbcRepository.getJoinRequests(anyInt())).thenReturn(mockJoinRequests);
+        Mockito.when(mockJoinRequestJdbcRepository.getJoinRequests(anyInt())).thenReturn(mockJoinRequests);
 
         SortConfig<JoinRequestSortField> sortConfig = new SortConfig<>(JoinRequestSortField.USERNAME, SortDirection.ASCENDING);
         JoinRequestsGetRequest getRequest = new JoinRequestsGetRequest(sortConfig);
@@ -153,7 +153,7 @@ public class JoinRequestServiceTests {
         JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, LocalDateTime.parse("2023-05-04T03:00:00"), 912, "Ron Swanson", "mockUsername", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
 
         List<JoinRequestDTO> mockJoinRequests = List.of(joinRequestDTO1, joinRequestDTO2, joinRequestDTO3);
-        Mockito.when(joinRequestJdbcRepository.getJoinRequests(anyInt())).thenReturn(mockJoinRequests);
+        Mockito.when(mockJoinRequestJdbcRepository.getJoinRequests(anyInt())).thenReturn(mockJoinRequests);
 
         SortConfig<JoinRequestSortField> sortConfig = new SortConfig<>(JoinRequestSortField.FULL_NAME, SortDirection.ASCENDING);
         JoinRequestsGetRequest getRequest = new JoinRequestsGetRequest(sortConfig);
@@ -175,12 +175,49 @@ public class JoinRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Pawnee Prayer Group", "Pawnee prayer group", "Prayer group rules", VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
+        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER);
+        prayerGroupUserRepository.save(prayerGroupUser);
+
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(user.getUserId());
 
         JoinRequestDeleteRequest joinRequestDeleteRequest = new JoinRequestDeleteRequest(List.of(23));
 
         Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> joinRequestService.deleteJoinRequests("mockAuthToken", prayerGroup.getPrayerGroupId(), joinRequestDeleteRequest));
+    }
+
+    @Test
+    @DirtiesContext
+    public void deleteJoinRequests_givenValidUser_successfullyDeletesRequests(){
+        List<Integer> joinRequestIdsToDelete = List.of(434, 123, 976);
+
+        ArgumentCaptor<Integer> targetPrayerGroupCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<List<Integer>> targetJoinRequestIds = ArgumentCaptor.forClass((Class) List.class);
+
+        Mockito.verify(mockJoinRequestJdbcRepository).deleteJoinRequests(targetPrayerGroupCaptor.capture(), targetJoinRequestIds.capture());
+
+        User user  = new User("Donna Meagle", "dmeagle", "dmeagle@parksandrecreation.gov", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Pawnee Prayer Group", "Pawnee prayer group", "Prayer group rules", VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(user.getUserId());
+
+        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.ADMIN);
+        prayerGroupUserRepository.save(prayerGroupUser);
+
+        JoinRequestDeleteRequest joinRequestDeleteRequest = new JoinRequestDeleteRequest(joinRequestIdsToDelete);
+
+        int targetPrayerGroupId = 42;
+        joinRequestService.deleteJoinRequests("mockAuthToken", targetPrayerGroupId, joinRequestDeleteRequest);
+
+        int calledPrayerGroupId = targetPrayerGroupCaptor.capture();
+        List<Integer> calledJoinRequestIds = targetJoinRequestIds.capture();
+
+        Assertions.assertThat(calledPrayerGroupId).isEqualTo(targetPrayerGroupId);
+        Assertions.assertThat(calledJoinRequestIds).isEqualTo(joinRequestIdsToDelete);
     }
 
 }
