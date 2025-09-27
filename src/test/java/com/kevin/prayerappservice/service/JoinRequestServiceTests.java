@@ -22,7 +22,6 @@ import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.transaction.Transactional;
-import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -36,7 +35,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
