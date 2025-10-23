@@ -4,6 +4,8 @@ import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.join.entities.JoinRequest;
 import com.kevin.prayerappservice.request.entities.PrayerRequest;
+import com.kevin.prayerappservice.request.entities.PrayerRequestComment;
+import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
@@ -49,6 +51,12 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<PrayerRequest> prayerRequests;
+
+    @OneToMany(mappedBy = "user")
+    private List<PrayerRequestLike> prayerRequestLikes;
+
+    @OneToMany(mappedBy = "user")
+    private List<PrayerRequestComment> prayerRequestComments;
 
     public User(){
         this.fullName = null;
@@ -155,5 +163,21 @@ public class User implements UserDetails {
 
     public void setPrayerRequests(List<PrayerRequest> prayerRequests) {
         this.prayerRequests = prayerRequests;
+    }
+
+    public List<PrayerRequestLike> getPrayerRequestLikes() {
+        return prayerRequestLikes;
+    }
+
+    public void setPrayerRequestLikes(List<PrayerRequestLike> prayerRequestLikes) {
+        this.prayerRequestLikes = prayerRequestLikes;
+    }
+
+    public List<PrayerRequestComment> getPrayerRequestComments() {
+        return prayerRequestComments;
+    }
+
+    public void setPrayerRequestComments(List<PrayerRequestComment> prayerRequestComments) {
+        this.prayerRequestComments = prayerRequestComments;
     }
 }

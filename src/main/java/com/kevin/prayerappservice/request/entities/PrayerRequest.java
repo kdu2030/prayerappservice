@@ -21,6 +21,7 @@ public class PrayerRequest {
     private String requestTitle;
 
     @Lob
+    @NotNull
     @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String requestDescription;
 
@@ -47,6 +48,9 @@ public class PrayerRequest {
 
     @OneToMany(mappedBy = "prayerRequest")
     private List<PrayerRequestLike> prayerRequestLikes;
+
+    @OneToMany(mappedBy = "prayerRequest")
+    private List<PrayerRequestComment> prayerRequestComments;
 
     public PrayerRequest(){}
 
@@ -148,5 +152,13 @@ public class PrayerRequest {
 
     public void setPrayerRequestLikes(List<PrayerRequestLike> prayerRequestLikes) {
         this.prayerRequestLikes = prayerRequestLikes;
+    }
+
+    public List<PrayerRequestComment> getPrayerRequestComments() {
+        return prayerRequestComments;
+    }
+
+    public void setPrayerRequestComments(List<PrayerRequestComment> prayerRequestComments) {
+        this.prayerRequestComments = prayerRequestComments;
     }
 }
