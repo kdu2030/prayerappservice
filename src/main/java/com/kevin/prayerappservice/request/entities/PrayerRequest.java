@@ -52,6 +52,9 @@ public class PrayerRequest {
     @OneToMany(mappedBy = "prayerRequest")
     private List<PrayerRequestComment> prayerRequestComments;
 
+    @OneToMany(mappedBy = "prayerRequest")
+    private List<PrayerRequestBookmark> prayerRequestBookmarks;
+
     public PrayerRequest(){}
 
     public PrayerRequest(String requestTitle, String requestDescription, LocalDateTime createdDate, int likeCount, int commentCount, int prayedCount, LocalDateTime expirationDate, PrayerGroup prayerGroup, User user) {
@@ -160,5 +163,13 @@ public class PrayerRequest {
 
     public void setPrayerRequestComments(List<PrayerRequestComment> prayerRequestComments) {
         this.prayerRequestComments = prayerRequestComments;
+    }
+
+    public List<PrayerRequestBookmark> getPrayerRequestBookmarks() {
+        return prayerRequestBookmarks;
+    }
+
+    public void setPrayerRequestBookmarks(List<PrayerRequestBookmark> prayerRequestBookmarks) {
+        this.prayerRequestBookmarks = prayerRequestBookmarks;
     }
 }

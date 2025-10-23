@@ -4,6 +4,7 @@ import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.join.entities.JoinRequest;
 import com.kevin.prayerappservice.request.entities.PrayerRequest;
+import com.kevin.prayerappservice.request.entities.PrayerRequestBookmark;
 import com.kevin.prayerappservice.request.entities.PrayerRequestComment;
 import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
 import jakarta.persistence.*;
@@ -57,6 +58,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<PrayerRequestComment> prayerRequestComments;
+
+    @OneToMany(mappedBy = "user")
+    private List<PrayerRequestBookmark> prayerRequestBookmarks;
 
     public User(){
         this.fullName = null;
@@ -179,5 +183,13 @@ public class User implements UserDetails {
 
     public void setPrayerRequestComments(List<PrayerRequestComment> prayerRequestComments) {
         this.prayerRequestComments = prayerRequestComments;
+    }
+
+    public List<PrayerRequestBookmark> getPrayerRequestBookmarks() {
+        return prayerRequestBookmarks;
+    }
+
+    public void setPrayerRequestBookmarks(List<PrayerRequestBookmark> prayerRequestBookmarks) {
+        this.prayerRequestBookmarks = prayerRequestBookmarks;
     }
 }
