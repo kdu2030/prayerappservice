@@ -9,6 +9,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class PrayerRequest {
@@ -43,6 +44,9 @@ public class PrayerRequest {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "prayerRequest")
+    private List<PrayerRequestLike> prayerRequestLikes;
 
     public PrayerRequest(){}
 
@@ -136,5 +140,13 @@ public class PrayerRequest {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<PrayerRequestLike> getPrayerRequestLikes() {
+        return prayerRequestLikes;
+    }
+
+    public void setPrayerRequestLikes(List<PrayerRequestLike> prayerRequestLikes) {
+        this.prayerRequestLikes = prayerRequestLikes;
     }
 }
