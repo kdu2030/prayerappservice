@@ -4,7 +4,7 @@ import com.kevin.prayerappservice.file.entities.FileType;
 
 import java.time.LocalDateTime;
 
-public class PrayerRequestDTO {
+public class PrayerRequestCreateResult {
     private int prayerRequestId;
     private String requestTitle;
     private String requestDescription;
@@ -24,9 +24,9 @@ public class PrayerRequestDTO {
     private String userFileUrl;
     private FileType userFileType;
 
-    public PrayerRequestDTO(){}
+    public PrayerRequestCreateResult(){}
 
-    public PrayerRequestDTO(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, int prayerGroupId, String groupName, int avatarFileId, String avatarFileName, String avatarFileUrl, FileType avatarFileType, int userId, String username, String fullName, int userFileId, String userFileName, String userFileUrl, FileType userFileType) {
+    public PrayerRequestCreateResult(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, int prayerGroupId, String groupName, int avatarFileId, String avatarFileName, String avatarFileUrl, FileType avatarFileType, int userId, String username, String fullName, int userFileId, String userFileName, String userFileUrl, FileType userFileType) {
         this.prayerRequestId = prayerRequestId;
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
