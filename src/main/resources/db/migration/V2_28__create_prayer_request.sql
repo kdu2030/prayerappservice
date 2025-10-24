@@ -31,9 +31,9 @@ DECLARE
     new_prayer_request_id INT;
 BEGIN
     INSERT INTO
-        prayer_request (request_title, request_description, created_date, expiration_date, prayer_group_id, user_id)
+        prayer_request (request_title, request_description, created_date, expiration_date, prayer_group_id, user_id, like_count, comment_count, prayed_count)
     VALUES
-        (p_request_title, p_request_description, p_created_date, p_expiration_date, p_prayer_group_id, p_user_id)
+        (p_request_title, p_request_description, p_created_date, p_expiration_date, p_prayer_group_id, p_user_id, 0, 0, 0)
     RETURNING prayer_request.prayer_request_id INTO new_prayer_request_id;
 
     RETURN QUERY
