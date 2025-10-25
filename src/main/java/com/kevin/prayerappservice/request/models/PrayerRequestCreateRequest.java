@@ -1,6 +1,5 @@
 package com.kevin.prayerappservice.request.models;
 
-import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateResult;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
