@@ -3,8 +3,12 @@ package com.kevin.prayerappservice.request.mappers;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateResult;
 import com.kevin.prayerappservice.request.models.PrayerRequestCreateRequest;
 import com.kevin.prayerappservice.request.models.PrayerRequestModel;
+import com.kevin.prayerappservice.request.models.PrayerRequestPrayerGroupSummary;
+import com.kevin.prayerappservice.request.models.PrayerRequestUserSummary;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface PrayerRequestMapper {
@@ -28,4 +32,18 @@ public interface PrayerRequestMapper {
     @Mapping(constant = "0", target = "prayedCount")
     @Mapping(constant = "0", target = "commentCount")
     PrayerRequestModel prayerRequestCreateResultToPrayerRequestModel(PrayerRequestCreateResult source);
+
+    @AfterMapping
+    default void setImagesToNull(@MappingTarget PrayerRequestModel prayerRequestModel){
+        PrayerRequestPrayerGroupSummary prayerGroupSummary = prayerRequestModel.getPrayerGroup();
+        PrayerRequestUserSummary prayerRequestUserSummary = prayerRequestModel.getUser();
+
+        if(prayerGroupSummary.getAvatarFile().getMediaFileId() == null){
+            prayerGroupSummary.setAvatarFile(null);
+        }
+
+        if(prayerRequestUserSummary.getImage().getMediaFileId() == null){
+            prayerRequestUserSummary.setImage(null);
+        }
+    }
 }
