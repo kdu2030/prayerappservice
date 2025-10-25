@@ -12,21 +12,21 @@ public class PrayerRequestCreateResult {
     private LocalDateTime expirationDate;
     private int prayerGroupId;
     private String groupName;
-    private int avatarFileId;
+    private Integer avatarFileId;
     private String avatarFileName;
     private String avatarFileUrl;
     private FileType avatarFileType;
     private int userId;
     private String username;
     private String fullName;
-    private int userFileId;
+    private Integer userFileId;
     private String userFileName;
     private String userFileUrl;
     private FileType userFileType;
 
     public PrayerRequestCreateResult(){}
 
-    public PrayerRequestCreateResult(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, int prayerGroupId, String groupName, int avatarFileId, String avatarFileName, String avatarFileUrl, FileType avatarFileType, int userId, String username, String fullName, int userFileId, String userFileName, String userFileUrl, FileType userFileType) {
+    public PrayerRequestCreateResult(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, int prayerGroupId, String groupName, Integer avatarFileId, String avatarFileName, String avatarFileUrl, FileType avatarFileType, int userId, String username, String fullName, Integer userFileId, String userFileName, String userFileUrl, FileType userFileType) {
         this.prayerRequestId = prayerRequestId;
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
@@ -103,11 +103,11 @@ public class PrayerRequestCreateResult {
         this.groupName = groupName;
     }
 
-    public int getAvatarFileId() {
+    public Integer getAvatarFileId() {
         return avatarFileId;
     }
 
-    public void setAvatarFileId(int avatarFileId) {
+    public void setAvatarFileId(Integer avatarFileId) {
         this.avatarFileId = avatarFileId;
     }
 
@@ -159,11 +159,11 @@ public class PrayerRequestCreateResult {
         this.fullName = fullName;
     }
 
-    public int getUserFileId() {
+    public Integer getUserFileId() {
         return userFileId;
     }
 
-    public void setUserFileId(int userFileId) {
+    public void setUserFileId(Integer userFileId) {
         this.userFileId = userFileId;
     }
 
