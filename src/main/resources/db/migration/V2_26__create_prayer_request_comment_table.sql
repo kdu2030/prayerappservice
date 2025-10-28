@@ -3,7 +3,7 @@ START 1
 INCREMENT 50;
 
 CREATE TABLE IF NOT EXISTS prayer_request_comment(
-    prayer_request_comment_id INT NOT NULL DEFAULT nextval('prayer_request_comment_seq'),
+    prayer_request_comment_id INT PRIMARY KEY NOT NULL DEFAULT nextval('prayer_request_comment_seq'),
     comment TEXT NOT NULL,
     prayer_request_id INT NOT NULL,
     user_id INT NOT NULL,

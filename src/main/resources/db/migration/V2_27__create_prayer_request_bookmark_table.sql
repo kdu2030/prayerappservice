@@ -3,7 +3,7 @@ START 1
 INCREMENT 50;
 
 CREATE TABLE IF NOT EXISTS prayer_request_bookmark (
-    prayer_request_bookmark_id INT NOT NULL DEFAULT nextval('prayer_request_bookmark_seq'),
+    prayer_request_bookmark_id INT PRIMARY KEY NOT NULL DEFAULT nextval('prayer_request_bookmark_seq'),
     prayer_request_id INT NOT NULL,
     user_id INT NOT NULL,
     submitted_date TIMESTAMPTZ NOT NULL,
