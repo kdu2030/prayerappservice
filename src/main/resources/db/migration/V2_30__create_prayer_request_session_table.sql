@@ -1,4 +1,4 @@
-CREATE SEQUENCE prayer_request_session_seq
+CREATE SEQUENCE IF NOT EXISTS prayer_request_session_seq
 START 1
 INCREMENT 50;
 
