@@ -16,6 +16,7 @@ public class PrayerRequestModel {
     private boolean isUserPrayed;
     private boolean isUserCommented;
     private boolean isUserLiked;
+    private boolean isUserBookmarked;
 
     public PrayerRequestModel(){}
 
@@ -137,5 +138,13 @@ public class PrayerRequestModel {
 
     public void setUserLiked(boolean userLiked) {
         isUserLiked = userLiked;
+    }
+
+    public boolean isUserBookmarked() {
+        return isUserBookmarked;
+    }
+
+    public void setUserBookmarked(boolean userBookmarked) {
+        isUserBookmarked = userBookmarked;
     }
 }

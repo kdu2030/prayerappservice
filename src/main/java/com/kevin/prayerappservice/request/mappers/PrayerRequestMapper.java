@@ -28,6 +28,7 @@ public interface PrayerRequestMapper {
     @Mapping(constant = "false", target = "userPrayed")
     @Mapping(constant = "false", target = "userCommented")
     @Mapping(constant = "false", target = "userLiked")
+    @Mapping(constant = "false", target = "userBookmarked")
     @Mapping(constant = "0", target = "likeCount")
     @Mapping(constant = "0", target = "prayedCount")
     @Mapping(constant = "0", target = "commentCount")
