@@ -25,6 +25,7 @@ public class PrayerRequestGetResult {
     private FileType avatarFileType;
     private int userId;
     private String username;
+    private String fullName;
     private Integer userFileId;
     private String userFileName;
     private String userFileUrl;
@@ -249,5 +250,13 @@ public class PrayerRequestGetResult {
 
     public void setUserFileType(FileType userFileType) {
         this.userFileType = userFileType;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }
