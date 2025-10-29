@@ -6,7 +6,7 @@ public class PrayerRequestGetQuery {
     private int targetUserId;
     private List<Integer> prayerGroupIds;
     private List<Integer> creatorUserIds;
-    private int bookmarkedUserId;
+    private Integer bookmarkedUserId;
     private boolean includeExpired;
     private String sortField;
     private String sortDirection;
@@ -15,7 +15,7 @@ public class PrayerRequestGetQuery {
 
     public PrayerRequestGetQuery(){}
 
-    public PrayerRequestGetQuery(int targetUserId, List<Integer> prayerGroupIds, List<Integer> creatorUserIds, int bookmarkedUserId, boolean includeExpired, String sortField, String sortDirection, int skip, int take) {
+    public PrayerRequestGetQuery(int targetUserId, List<Integer> prayerGroupIds, List<Integer> creatorUserIds, Integer bookmarkedUserId, boolean includeExpired, String sortField, String sortDirection, int skip, int take) {
         this.targetUserId = targetUserId;
         this.prayerGroupIds = prayerGroupIds;
         this.creatorUserIds = creatorUserIds;
@@ -51,11 +51,11 @@ public class PrayerRequestGetQuery {
         this.creatorUserIds = creatorUserIds;
     }
 
-    public int getBookmarkedUserId() {
+    public Integer getBookmarkedUserId() {
         return bookmarkedUserId;
     }
 
-    public void setBookmarkedUserId(int bookmarkedUserId) {
+    public void setBookmarkedUserId(Integer bookmarkedUserId) {
         this.bookmarkedUserId = bookmarkedUserId;
     }
 
