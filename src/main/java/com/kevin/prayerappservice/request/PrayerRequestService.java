@@ -22,14 +22,17 @@ public class PrayerRequestService {
     private final PrayerRequestRepository prayerRequestRepository;
     private final PrayerRequestMapper prayerRequestMapper;
 
-    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper){
+    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository,
+                                PrayerRequestRepository prayerRequestRepository,
+                                PrayerRequestMapper prayerRequestMapper) {
         this.jwtService = jwtService;
         this.prayerGroupUserRepository = prayerGroupUserRepository;
         this.prayerRequestRepository = prayerRequestRepository;
         this.prayerRequestMapper = prayerRequestMapper;
     }
 
-    public PrayerRequestModel createPrayerRequest(String authHeader, int prayerGroupId, PrayerRequestCreateRequest createRequest){
+    public PrayerRequestModel createPrayerRequest(String authHeader, int prayerGroupId,
+                                                  PrayerRequestCreateRequest createRequest) {
         String token = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(token);
 
@@ -47,7 +50,7 @@ public class PrayerRequestService {
         return prayerRequestMapper.prayerRequestCreateResultToPrayerRequestModel(createResult);
     }
 
-    public PrayerRequestGetResponse getPrayerRequests(String authHeader, PrayerRequestFilterCriteria filterCriteria){
+    public PrayerRequestGetResponse getPrayerRequests(String authHeader, PrayerRequestFilterCriteria filterCriteria) {
         try {
             String token = jwtService.extractTokenFromAuthHeader(authHeader);
             int userId = jwtService.extractUserId(token);
@@ -57,23 +60,29 @@ public class PrayerRequestService {
 
             int[] prayerGroupIds = filterCriteria.getPrayerGroupIds().stream().mapToInt(Integer::valueOf).toArray();
 
-            PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests());
+            PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(userId, prayerGroupIds, null, null,
+                    filterCriteria.isIncludeExpiredPrayerRequests());
             PrayerRequestCountResult countResult = prayerRequestRepository.getPrayerRequestsCount(countQuery);
 
-            PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests(), filterCriteria.getSortConfig().getSortField().toString(), filterCriteria.getSortConfig().getSortDirection().toString(), pageIndex * pageSize,  pageSize);
+            PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(userId, prayerGroupIds, null, null,
+                    filterCriteria.isIncludeExpiredPrayerRequests(),
+                    filterCriteria.getSortConfig().getSortField().toString(),
+                    filterCriteria.getSortConfig().getSortDirection().toString(), pageIndex * pageSize, pageSize);
+
             List<PrayerRequestGetResult> getResults = prayerRequestRepository.getPrayerRequests(getQuery);
 
-            List<PrayerRequestModel> prayerRequests = getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList();
+            List<PrayerRequestModel> prayerRequests =
+                    getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList();
 
             int prayerRequestsCount = countResult.getPrayerRequestCount();
-            int numberOfPages = (int) Math.ceil(prayerRequestsCount / (double)pageSize);
+            int numberOfPages = (int) Math.ceil(prayerRequestsCount / (double) pageSize);
 
             return new PrayerRequestGetResponse(prayerRequests, prayerRequestsCount, numberOfPages, pageIndex);
-        } catch(UncategorizedSQLException exception){
+        } catch (UncategorizedSQLException exception) {
             Throwable cause = exception.getCause();
             String exceptionMessage = cause != null ? cause.getMessage() : null;
 
-            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)){
+            if (exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)) {
                 throw new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW);
             }
             throw exception;
