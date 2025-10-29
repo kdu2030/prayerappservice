@@ -2,10 +2,7 @@ package com.kevin.prayerappservice.request;
 
 import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
-import com.kevin.prayerappservice.group.PrayerGroupRepository;
 import com.kevin.prayerappservice.group.PrayerGroupUserRepository;
-import com.kevin.prayerappservice.group.constants.VisibilityLevel;
-import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateQuery;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateResult;
@@ -23,14 +20,12 @@ import java.util.List;
 @Service
 public class PrayerRequestService {
     private final JwtService jwtService;
-    private final PrayerGroupRepository prayerGroupRepository;
     private final PrayerGroupUserRepository prayerGroupUserRepository;
     private final PrayerRequestRepository prayerRequestRepository;
     private final PrayerRequestMapper prayerRequestMapper;
 
-    public PrayerRequestService(JwtService jwtService, PrayerGroupRepository prayerGroupRepository, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper){
+    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper){
         this.jwtService = jwtService;
-        this.prayerGroupRepository = prayerGroupRepository;
         this.prayerGroupUserRepository = prayerGroupUserRepository;
         this.prayerRequestRepository = prayerRequestRepository;
         this.prayerRequestMapper = prayerRequestMapper;
