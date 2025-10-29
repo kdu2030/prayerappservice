@@ -38,6 +38,38 @@ CREATE OR REPLACE FUNCTION get_prayer_requests (
 AS
 $$
 BEGIN
+    DROP TABLE IF EXISTS target_prayer_group_users;
+
+    CREATE TEMPORARY TABLE target_prayer_group_users (
+        prayer_group_user_id INT,
+        prayer_group_id INT,
+        user_id INT
+    );
+
+    INSERT INTO
+        target_prayer_group_users (prayer_group_user_id, prayer_group_id, user_id)
+    SELECT
+        u.prayer_group_user_id, u.prayer_group_id, u.user_id
+    FROM
+        prayer_group_user u
+    WHERE
+        u.user_id = p_target_user_id;
+
+
+    IF EXISTS (
+        SELECT
+            1
+        FROM
+            prayer_group g
+        LEFT JOIN
+            target_prayer_group_users t ON t.prayer_group_id = g.prayer_group_id
+        WHERE
+            g.prayer_group_id = ANY(p_prayer_group_ids) AND g.visibility_level = 'PRIVATE' AND t.user_id IS NULL
+    )
+    THEN
+        RAISE EXCEPTION 'Cannot view prayer requests from private prayer groups without membership.';
+    END IF;
+
     RETURN QUERY
         WITH user_prayer_request_sessions AS (
             SELECT
@@ -113,6 +145,13 @@ BEGIN
             p_skip
         LIMIT
             p_take;
+
+    DROP TABLE IF EXISTS target_prayer_group_users;
+    RETURN;
+EXCEPTION
+    WHEN OTHERS THEN
+        DROP TABLE IF EXISTS target_prayer_group_users;
+        RAISE;
 END;
 $$
 LANGUAGE plpgsql;
