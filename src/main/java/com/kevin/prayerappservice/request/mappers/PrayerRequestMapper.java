@@ -23,10 +23,10 @@ public interface PrayerRequestMapper {
     @Mapping(source = "userFileName", target = "user.image.fileName")
     @Mapping(source = "userFileUrl", target = "user.image.fileUrl")
     @Mapping(source = "userFileType", target = "user.image.fileType")
-    @Mapping(constant = "false", target = "userPrayed")
-    @Mapping(constant = "false", target = "userCommented")
-    @Mapping(constant = "false", target = "userLiked")
-    @Mapping(constant = "false", target = "userBookmarked")
+    @Mapping(ignore = true, target = "userLikeId")
+    @Mapping(ignore = true, target = "userCommentId")
+    @Mapping(ignore = true, target = "userBookmarkId")
+    @Mapping(ignore = true, target = "userPrayerSessionId")
     @Mapping(constant = "0", target = "likeCount")
     @Mapping(constant = "0", target = "prayedCount")
     @Mapping(constant = "0", target = "commentCount")
@@ -45,10 +45,6 @@ public interface PrayerRequestMapper {
     @Mapping(source = "userFileName", target = "user.image.fileName")
     @Mapping(source = "userFileUrl", target = "user.image.fileUrl")
     @Mapping(source = "userFileType", target = "user.image.fileType")
-    @Mapping(source = "userLikeId", target = "userLiked", qualifiedByName = "mapIntegerToBoolean")
-    @Mapping(source = "userCommentId", target = "userCommented", qualifiedByName = "mapIntegerToBoolean")
-    @Mapping(source = "userBookmarkId", target = "userBookmarked", qualifiedByName = "mapIntegerToBoolean")
-    @Mapping(source = "userPrayerSessionId", target = "userPrayed", qualifiedByName = "mapIntegerToBoolean")
     PrayerRequestModel prayerRequestGetResultToPrayerRequestModel(PrayerRequestGetResult source);
 
     @AfterMapping
@@ -63,10 +59,5 @@ public interface PrayerRequestMapper {
         if(prayerRequestUserSummary.getImage().getMediaFileId() == null){
             prayerRequestUserSummary.setImage(null);
         }
-    }
-
-    @Named("mapIntegerToBoolean")
-    default boolean mapIntegerToBoolean(Integer value){
-        return value != null;
     }
 }

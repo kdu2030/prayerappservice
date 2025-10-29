@@ -13,14 +13,14 @@ public class PrayerRequestModel {
     private int likeCount;
     private int commentCount;
     private int prayedCount;
-    private boolean isUserPrayed;
-    private boolean isUserCommented;
-    private boolean isUserLiked;
-    private boolean isUserBookmarked;
+    private Integer userLikeId;
+    private Integer userCommentId;
+    private Integer userBookmarkId;
+    private Integer userPrayerSessionId;
 
     public PrayerRequestModel(){}
 
-    public PrayerRequestModel(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, boolean isUserPrayed, boolean isUserCommented, boolean isUserLiked) {
+    public PrayerRequestModel(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, Integer userCommentId, Integer userBookmarkId, Integer userPrayerSessionId) {
         this.prayerRequestId = prayerRequestId;
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
@@ -31,9 +31,10 @@ public class PrayerRequestModel {
         this.likeCount = likeCount;
         this.commentCount = commentCount;
         this.prayedCount = prayedCount;
-        this.isUserPrayed = isUserPrayed;
-        this.isUserCommented = isUserCommented;
-        this.isUserLiked = isUserLiked;
+        this.userLikeId = userLikeId;
+        this.userCommentId = userCommentId;
+        this.userBookmarkId = userBookmarkId;
+        this.userPrayerSessionId = userPrayerSessionId;
     }
 
     public int getPrayerRequestId() {
@@ -116,35 +117,35 @@ public class PrayerRequestModel {
         this.prayedCount = prayedCount;
     }
 
-    public boolean isUserPrayed() {
-        return isUserPrayed;
+    public Integer getUserLikeId() {
+        return userLikeId;
     }
 
-    public void setUserPrayed(boolean userPrayed) {
-        isUserPrayed = userPrayed;
+    public void setUserLikeId(Integer userLikeId) {
+        this.userLikeId = userLikeId;
     }
 
-    public boolean isUserCommented() {
-        return isUserCommented;
+    public Integer getUserCommentId() {
+        return userCommentId;
     }
 
-    public void setUserCommented(boolean userCommented) {
-        isUserCommented = userCommented;
+    public void setUserCommentId(Integer userCommentId) {
+        this.userCommentId = userCommentId;
     }
 
-    public boolean isUserLiked() {
-        return isUserLiked;
+    public Integer getUserBookmarkId() {
+        return userBookmarkId;
     }
 
-    public void setUserLiked(boolean userLiked) {
-        isUserLiked = userLiked;
+    public void setUserBookmarkId(Integer userBookmarkId) {
+        this.userBookmarkId = userBookmarkId;
     }
 
-    public boolean isUserBookmarked() {
-        return isUserBookmarked;
+    public Integer getUserPrayerSessionId() {
+        return userPrayerSessionId;
     }
 
-    public void setUserBookmarked(boolean userBookmarked) {
-        isUserBookmarked = userBookmarked;
+    public void setUserPrayerSessionId(Integer userPrayerSessionId) {
+        this.userPrayerSessionId = userPrayerSessionId;
     }
 }
