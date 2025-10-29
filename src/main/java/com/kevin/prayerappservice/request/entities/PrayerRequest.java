@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.request.entities;
 
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
+import com.kevin.prayerappservice.session.entities.PrayerSession;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class PrayerRequest {
@@ -54,6 +56,9 @@ public class PrayerRequest {
 
     @OneToMany(mappedBy = "prayerRequest")
     private List<PrayerRequestBookmark> prayerRequestBookmarks;
+
+    @ManyToMany(mappedBy = "prayerRequests")
+    private Set<PrayerSession> prayerSessions;
 
     public PrayerRequest(){}
 
@@ -171,5 +176,13 @@ public class PrayerRequest {
 
     public void setPrayerRequestBookmarks(List<PrayerRequestBookmark> prayerRequestBookmarks) {
         this.prayerRequestBookmarks = prayerRequestBookmarks;
+    }
+
+    public Set<PrayerSession> getPrayerSessions() {
+        return prayerSessions;
+    }
+
+    public void setPrayerSessions(Set<PrayerSession> prayerSessions) {
+        this.prayerSessions = prayerSessions;
     }
 }
