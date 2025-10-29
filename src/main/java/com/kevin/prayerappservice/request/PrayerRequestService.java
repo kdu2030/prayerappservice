@@ -10,6 +10,7 @@ import com.kevin.prayerappservice.request.models.PrayerRequestCreateRequest;
 import com.kevin.prayerappservice.request.models.PrayerRequestFilterCriteria;
 import com.kevin.prayerappservice.request.models.PrayerRequestGetResponse;
 import com.kevin.prayerappservice.request.models.PrayerRequestModel;
+import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,27 +48,35 @@ public class PrayerRequestService {
     }
 
     public PrayerRequestGetResponse getPrayerRequests(String authHeader, PrayerRequestFilterCriteria filterCriteria){
-        String token = jwtService.extractTokenFromAuthHeader(authHeader);
-        int userId = jwtService.extractUserId(token);
+        try {
+            String token = jwtService.extractTokenFromAuthHeader(authHeader);
+            int userId = jwtService.extractUserId(token);
 
-        // TODO: Add Permission Check
+            int pageIndex = filterCriteria.getPageIndex();
+            int pageSize = filterCriteria.getPageSize();
 
-        int pageIndex = filterCriteria.getPageIndex();
-        int pageSize = filterCriteria.getPageSize();
+            int[] prayerGroupIds = filterCriteria.getPrayerGroupIds().stream().mapToInt(Integer::valueOf).toArray();
 
-        int[] prayerGroupIds = filterCriteria.getPrayerGroupIds().stream().mapToInt(Integer::valueOf).toArray();
+            PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests());
+            PrayerRequestCountResult countResult = prayerRequestRepository.getPrayerRequestsCount(countQuery);
 
-        PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests());
-        PrayerRequestCountResult countResult = prayerRequestRepository.getPrayerRequestsCount(countQuery);
+            PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests(), filterCriteria.getSortConfig().getSortField().toString(), filterCriteria.getSortConfig().getSortDirection().toString(), pageIndex * pageSize,  pageSize);
+            List<PrayerRequestGetResult> getResults = prayerRequestRepository.getPrayerRequests(getQuery);
 
-        PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests(), filterCriteria.getSortConfig().getSortField().toString(), filterCriteria.getSortConfig().getSortDirection().toString(), pageIndex * pageSize,  pageSize);
-        List<PrayerRequestGetResult> getResults = prayerRequestRepository.getPrayerRequests(getQuery);
+            List<PrayerRequestModel> prayerRequests = getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList();
 
-        List<PrayerRequestModel> prayerRequests = getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList();
+            int prayerRequestsCount = countResult.getPrayerRequestCount();
+            int numberOfPages = (int) Math.ceil(prayerRequestsCount / (double)pageSize);
 
-        int prayerRequestsCount = countResult.getPrayerRequestCount();
-        int numberOfPages = (int) Math.ceil(prayerRequestsCount / (double)pageSize);
+            return new PrayerRequestGetResponse(prayerRequests, prayerRequestsCount, numberOfPages, pageIndex);
+        } catch(UncategorizedSQLException exception){
+            Throwable cause = exception.getCause();
+            String exceptionMessage = cause != null ? cause.getMessage() : null;
 
-        return new PrayerRequestGetResponse(prayerRequests, prayerRequestsCount, numberOfPages, pageIndex);
+            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)){
+                throw new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW);
+            }
+            throw exception;
+        }
     }
 }
