@@ -33,6 +33,14 @@ public class PrayerRequestGetResult {
 
     public PrayerRequestGetResult(){}
 
+    public PrayerRequestGetResult(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate) {
+        this.prayerRequestId = prayerRequestId;
+        this.requestTitle = requestTitle;
+        this.requestDescription = requestDescription;
+        this.createdDate = createdDate;
+        this.expirationDate = expirationDate;
+    }
+
     public PrayerRequestGetResult(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, int likeCount, int commentCount, int prayedCount, Integer userLikeId, Integer userCommentId, Integer userBookmarkId, Integer userPrayerSessionId, int prayerGroupId, String groupName, Integer avatarFileId, String avatarFileName, String avatarFileUrl, FileType avatarFileType, int userId, String username, Integer userFileId, String userFileName, String userFileUrl, FileType userFileType) {
         this.prayerRequestId = prayerRequestId;
         this.requestTitle = requestTitle;
