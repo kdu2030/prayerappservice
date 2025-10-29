@@ -1,17 +1,24 @@
 package com.kevin.prayerappservice.service;
 
 import com.kevin.prayerappservice.auth.JwtService;
+import com.kevin.prayerappservice.common.SortConfig;
+import com.kevin.prayerappservice.common.SortDirection;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.group.PrayerGroupRepository;
 import com.kevin.prayerappservice.group.PrayerGroupUserRepository;
 import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
+import com.kevin.prayerappservice.group.constants.PrayerGroupUserSortField;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.request.PrayerRequestJdbcRepositoryImpl;
 import com.kevin.prayerappservice.request.PrayerRequestService;
+import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
+import com.kevin.prayerappservice.request.constants.PrayerRequestSortField;
+import com.kevin.prayerappservice.request.dtos.PrayerRequestCountResult;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateResult;
 import com.kevin.prayerappservice.request.models.PrayerRequestCreateRequest;
+import com.kevin.prayerappservice.request.models.PrayerRequestFilterCriteria;
 import com.kevin.prayerappservice.request.models.PrayerRequestModel;
 import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
@@ -22,10 +29,15 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -98,6 +110,22 @@ public class PrayerRequestServiceTests {
 
         Assertions.assertThat(prayerRequestModel.getPrayerRequestId()).isEqualTo(prayerRequestCreateResult.getPrayerRequestId());
         Assertions.assertThat(prayerRequestModel.getRequestTitle()).isEqualTo(prayerRequestCreateResult.getRequestTitle());
+    }
+
+    @Test
+    public void getPrayerRequests_nonMemberQueriesPrayerRequests_throwsException(){
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(1);
+
+        List<Integer> prayerGroupIds = Arrays.asList(747, 777);
+        SortConfig<PrayerRequestSortField> sortConfig = new SortConfig<>(PrayerRequestSortField.CREATED_DATE, SortDirection.DESCENDING);
+
+        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20, sortConfig, false);
+
+        Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
+        Mockito.when(prayerRequestJdbcRepository.getPrayerRequests(any())).thenThrow(new UncategorizedSQLException(null, null, new SQLException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)));
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.getPrayerRequests("mockAuthHeader", filterCriteria));
     }
 
 }
