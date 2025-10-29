@@ -4,10 +4,7 @@ import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.group.PrayerGroupUserRepository;
 import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
-import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateQuery;
-import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateResult;
-import com.kevin.prayerappservice.request.dtos.PrayerRequestGetQuery;
-import com.kevin.prayerappservice.request.dtos.PrayerRequestGetResult;
+import com.kevin.prayerappservice.request.dtos.*;
 import com.kevin.prayerappservice.request.mappers.PrayerRequestMapper;
 import com.kevin.prayerappservice.request.models.PrayerRequestCreateRequest;
 import com.kevin.prayerappservice.request.models.PrayerRequestFilterCriteria;
@@ -60,10 +57,17 @@ public class PrayerRequestService {
 
         int[] prayerGroupIds = filterCriteria.getPrayerGroupIds().stream().mapToInt(Integer::valueOf).toArray();
 
+        PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests());
+        PrayerRequestCountResult countResult = prayerRequestRepository.getPrayerRequestsCount(countQuery);
+
         PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests(), filterCriteria.getSortConfig().getSortField().toString(), filterCriteria.getSortConfig().getSortDirection().toString(), pageIndex * pageSize,  pageSize);
         List<PrayerRequestGetResult> getResults = prayerRequestRepository.getPrayerRequests(getQuery);
 
         List<PrayerRequestModel> prayerRequests = getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList();
-        return new PrayerRequestGetResponse(prayerRequests);
+
+        int prayerRequestsCount = countResult.getPrayerRequestCount();
+        int numberOfPages = (int) Math.ceil(prayerRequestsCount / (double)pageSize);
+
+        return new PrayerRequestGetResponse(prayerRequests, prayerRequestsCount, numberOfPages, pageIndex);
     }
 }
