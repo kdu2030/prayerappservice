@@ -1,6 +1,8 @@
 package com.kevin.prayerappservice.request;
 
 import com.kevin.prayerappservice.request.models.PrayerRequestCreateRequest;
+import com.kevin.prayerappservice.request.models.PrayerRequestFilterCriteria;
+import com.kevin.prayerappservice.request.models.PrayerRequestGetResponse;
 import com.kevin.prayerappservice.request.models.PrayerRequestModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,4 +18,8 @@ public interface PrayerRequestApi {
     @PostMapping("/api/prayergroup/{prayerGroupId}/prayerrequest")
     @Operation(summary = "Creates a prayer request")
     ResponseEntity<PrayerRequestModel> createPrayerRequest(@RequestHeader("Authorization") String authToken, @PathVariable int prayerGroupId, @Valid @RequestBody PrayerRequestCreateRequest prayerRequestCreateRequest);
+
+    @PostMapping("/api/prayergroup/prayerrequests/filter")
+    @Operation(summary =  "Gets prayer requests")
+    ResponseEntity<PrayerRequestGetResponse> getPrayerRequests(@RequestHeader("Authorization") String authHeader, @Valid @RequestBody PrayerRequestFilterCriteria prayerRequestFilterCriteria);
 }

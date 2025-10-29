@@ -4,8 +4,8 @@ import java.util.List;
 
 public class PrayerRequestGetQuery {
     private int targetUserId;
-    private List<Integer> prayerGroupIds;
-    private List<Integer> creatorUserIds;
+    private int[] prayerGroupIds;
+    private int[] creatorUserIds;
     private Integer bookmarkedUserId;
     private boolean includeExpired;
     private String sortField;
@@ -15,7 +15,7 @@ public class PrayerRequestGetQuery {
 
     public PrayerRequestGetQuery(){}
 
-    public PrayerRequestGetQuery(int targetUserId, List<Integer> prayerGroupIds, List<Integer> creatorUserIds, Integer bookmarkedUserId, boolean includeExpired, String sortField, String sortDirection, int skip, int take) {
+    public PrayerRequestGetQuery(int targetUserId, int[] prayerGroupIds, int[] creatorUserIds, Integer bookmarkedUserId, boolean includeExpired, String sortField, String sortDirection, int skip, int take) {
         this.targetUserId = targetUserId;
         this.prayerGroupIds = prayerGroupIds;
         this.creatorUserIds = creatorUserIds;
@@ -35,19 +35,19 @@ public class PrayerRequestGetQuery {
         this.targetUserId = targetUserId;
     }
 
-    public List<Integer> getPrayerGroupIds() {
+    public int[] getPrayerGroupIds() {
         return prayerGroupIds;
     }
 
-    public void setPrayerGroupIds(List<Integer> prayerGroupIds) {
+    public void setPrayerGroupIds(int[] prayerGroupIds) {
         this.prayerGroupIds = prayerGroupIds;
     }
 
-    public List<Integer> getCreatorUserIds() {
+    public int[] getCreatorUserIds() {
         return creatorUserIds;
     }
 
-    public void setCreatorUserIds(List<Integer> creatorUserIds) {
+    public void setCreatorUserIds(int[] creatorUserIds) {
         this.creatorUserIds = creatorUserIds;
     }
 
