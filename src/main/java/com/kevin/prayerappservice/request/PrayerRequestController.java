@@ -19,8 +19,8 @@ public class PrayerRequestController implements PrayerRequestApi {
     }
 
     @Override
-    public ResponseEntity<PrayerRequestModel> createPrayerRequest(String authToken, int prayerGroupId, PrayerRequestCreateRequest prayerRequestCreateRequest){
-        PrayerRequestModel prayerRequestModel = prayerRequestService.createPrayerRequest(authToken, prayerGroupId, prayerRequestCreateRequest);
+    public ResponseEntity<PrayerRequestModel> createPrayerRequest(String authToken, PrayerRequestCreateRequest prayerRequestCreateRequest){
+        PrayerRequestModel prayerRequestModel = prayerRequestService.createPrayerRequest(authToken, prayerRequestCreateRequest);
         return new ResponseEntity<>(prayerRequestModel, HttpStatus.OK);
     }
 

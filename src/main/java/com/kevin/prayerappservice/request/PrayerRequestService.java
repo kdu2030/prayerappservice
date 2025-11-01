@@ -31,8 +31,10 @@ public class PrayerRequestService {
         this.prayerRequestMapper = prayerRequestMapper;
     }
 
-    public PrayerRequestModel createPrayerRequest(String authHeader, int prayerGroupId,
+    public PrayerRequestModel createPrayerRequest(String authHeader,
                                                   PrayerRequestCreateRequest createRequest) {
+        int prayerGroupId = createRequest.getPrayerGroupId();
+        
         String token = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(token);
 

@@ -73,10 +73,10 @@ public class PrayerRequestServiceTests {
                 VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(mockPrayerGroup);
 
-        PrayerRequestCreateRequest createRequest = new PrayerRequestCreateRequest(1, "Suffering from headaches",
+        PrayerRequestCreateRequest createRequest = new PrayerRequestCreateRequest(1, mockPrayerGroup.getPrayerGroupId(), "Suffering from headaches",
                 "Getting headaches, pray for healing", LocalDateTime.now().plusMonths(1), LocalDateTime.now());
 
-        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.createPrayerRequest("mockAuthHeader", mockPrayerGroup.getPrayerGroupId(), createRequest));
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.createPrayerRequest("mockAuthHeader", createRequest));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class PrayerRequestServiceTests {
         PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, mockPrayerGroup, PrayerGroupRole.ADMIN);
         prayerGroupUserRepository.save(prayerGroupUser);
 
-        PrayerRequestCreateRequest createRequest = new PrayerRequestCreateRequest(1, "Suffering from headaches",
+        PrayerRequestCreateRequest createRequest = new PrayerRequestCreateRequest(1, mockPrayerGroup.getPrayerGroupId(), "Suffering from headaches",
                 "Getting headaches, pray for healing", LocalDateTime.now().plusMonths(1), LocalDateTime.now());
 
         PrayerRequestCreateResult prayerRequestCreateResult = new PrayerRequestCreateResult(787,
@@ -106,8 +106,7 @@ public class PrayerRequestServiceTests {
 
         Mockito.when(prayerRequestJdbcRepository.createPrayerRequest(any())).thenReturn(prayerRequestCreateResult);
 
-        PrayerRequestModel prayerRequestModel = prayerRequestService.createPrayerRequest("mockAuthHeader",
-                mockPrayerGroup.getPrayerGroupId(), createRequest);
+        PrayerRequestModel prayerRequestModel = prayerRequestService.createPrayerRequest("mockAuthHeader", createRequest);
 
         Assertions.assertThat(prayerRequestModel.getPrayerRequestId()).isEqualTo(prayerRequestCreateResult.getPrayerRequestId());
         Assertions.assertThat(prayerRequestModel.getRequestTitle()).isEqualTo(prayerRequestCreateResult.getRequestTitle());
