@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 public class PrayerRequestCreateRequest {
     private int userId;
+    private int prayerGroupId;
 
     @NotBlank
     @Size(max = 255)
@@ -21,8 +22,9 @@ public class PrayerRequestCreateRequest {
 
     public PrayerRequestCreateRequest(){}
 
-    public PrayerRequestCreateRequest(int userId, String requestTitle, String requestDescription, LocalDateTime expirationDate, LocalDateTime createdDate) {
+    public PrayerRequestCreateRequest(int userId, int prayerGroupId, String requestTitle, String requestDescription, LocalDateTime expirationDate, LocalDateTime createdDate) {
         this.userId = userId;
+        this.prayerGroupId = prayerGroupId;
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
         this.expirationDate = expirationDate;
@@ -67,5 +69,13 @@ public class PrayerRequestCreateRequest {
 
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public int getPrayerGroupId() {
+        return prayerGroupId;
+    }
+
+    public void setPrayerGroupId(int prayerGroupId) {
+        this.prayerGroupId = prayerGroupId;
     }
 }
