@@ -6,16 +6,14 @@ import java.sql.SQLException;
 
 public class PrayerGroupUserUpdateItem extends PGobject {
     private int userId;
-    private int prayerGroupId;
     private String prayerGroupRole;
 
-    public PrayerGroupUserUpdateItem(int userId, int prayerGroupId, String prayerGroupRole) throws SQLException {
+    public PrayerGroupUserUpdateItem(int userId, String prayerGroupRole) throws SQLException {
         setType("prayer_group_user_update_item");
-        String rawValue = String.format("(%d,%d,%s)", userId, prayerGroupId, prayerGroupRole);
+        String rawValue = String.format("(%d,%s)", userId, prayerGroupRole);
         setValue(rawValue);
 
         this.userId = userId;
-        this.prayerGroupId = prayerGroupId;
         this.prayerGroupRole = prayerGroupRole;
     }
 
@@ -25,14 +23,6 @@ public class PrayerGroupUserUpdateItem extends PGobject {
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public int getPrayerGroupId() {
-        return prayerGroupId;
-    }
-
-    public void setPrayerGroupId(int prayerGroupId) {
-        this.prayerGroupId = prayerGroupId;
     }
 
     public String getPrayerGroupRole() {
