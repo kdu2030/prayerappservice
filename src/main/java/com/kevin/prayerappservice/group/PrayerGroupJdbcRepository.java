@@ -11,6 +11,6 @@ public interface PrayerGroupJdbcRepository {
     List<PrayerGroupSummaryDTO> getPrayerGroupSummariesByUserId(int userId);
     PrayerGroupDTO getPrayerGroup(int prayerGroupId, int userId);
     List<PrayerGroupUserDTO> getPrayerGroupUsers(int prayerGroupId, List<PrayerGroupRole> prayerGroupRoles);
-    void updatePrayerGroupUsers(PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems) throws SQLException;
+    void updatePrayerGroupUsers(int prayerGroupId, PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems) throws SQLException;
     List<PrayerGroupSummaryDTO> searchPrayerGroups(String groupNameQuery, int maxNumResults);
 }

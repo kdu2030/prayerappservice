@@ -200,7 +200,7 @@ public class PrayerGroupService {
         }
 
         PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems = mapPrayerGroupUserUpdateModelsToUpdateItems(prayerGroupId, prayerGroupUserUpdateModels);
-        prayerGroupRepository.updatePrayerGroupUsers(prayerGroupUserUpdateItems);
+        prayerGroupRepository.updatePrayerGroupUsers(prayerGroupId, prayerGroupUserUpdateItems);
 
         SortConfig<PrayerGroupUserSortField> sortConfig = new SortConfig<>(PrayerGroupUserSortField.USERNAME, SortDirection.ASCENDING);
         List<PrayerGroupRole> prayerGroupRoles = List.of(new PrayerGroupRole[]{PrayerGroupRole.ADMIN, PrayerGroupRole.MEMBER});
@@ -227,7 +227,7 @@ public class PrayerGroupService {
     private PrayerGroupUserUpdateItem[] mapPrayerGroupUserUpdateModelsToUpdateItems(int prayerGroupId, List<PrayerGroupUserUpdateModel> prayerGroupUserUpdateModels) {
         return prayerGroupUserUpdateModels.stream().map(userUpdateModel -> {
             try {
-                return new PrayerGroupUserUpdateItem(userUpdateModel.getUserId(), prayerGroupId, userUpdateModel.getPrayerGroupRole().toString());
+                return new PrayerGroupUserUpdateItem(userUpdateModel.getUserId(), userUpdateModel.getPrayerGroupRole().toString());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

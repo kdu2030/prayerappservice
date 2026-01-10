@@ -64,13 +64,15 @@ public class PrayerGroupJdbcRepositoryImpl implements PrayerGroupJdbcRepository 
         return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerGroupUserDTO.class));
     }
 
-    public void updatePrayerGroupUsers(PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems) throws SQLException {
+    public void updatePrayerGroupUsers(int prayerGroupId, PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems) throws SQLException {
         Connection connection = dataSource.getConnection();
         Array updateItemsArray = connection.createArrayOf("prayer_group_user_update_item", prayerGroupUserUpdateItems);
+
         MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("prayer_group_id", prayerGroupId);
         params.addValue("updated_users", updateItemsArray);
 
-        String sql = "CALL update_prayer_group_users(:updated_users);";
+        String sql = "CALL update_prayer_group_users(:prayer_group_id, :updated_users);";
         jdbcTemplate.update(sql, params);
     }
 
