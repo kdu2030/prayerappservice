@@ -124,5 +124,22 @@ public class PrayerRequestService {
         return prayerRequestMapper.prayerRequestLikeToPrayerRequestLikeModel(prayerRequestLike);
     }
 
+    public void deletePrayerRequestLike(String authHeader, int prayerRequestLikeId){
+        PrayerRequestLike prayerRequestLike = prayerRequestLikeRepository.findById(prayerRequestLikeId)
+                .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST_LIKE));
+
+        String token = jwtService.extractTokenFromAuthHeader(authHeader);
+        int userId = jwtService.extractUserId(token);
+
+        if(prayerRequestLike.getUser().getUserId() != userId){
+            throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_DELETE_LIKE);
+        }
+
+        PrayerRequest prayerRequest = prayerRequestLike.getPrayerRequest();
+        prayerRequest.setLikeCount(prayerRequest.getLikeCount() - 1);
+
+        prayerRequestLikeRepository.delete(prayerRequestLike);
+        prayerRequestRepository.save(prayerRequest);
+    }
 
 }
