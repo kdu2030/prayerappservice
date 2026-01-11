@@ -115,8 +115,7 @@ public class PrayerRequestService {
         prayerRequestLikeRepository.save(prayerRequestLike);
         prayerRequestRepository.save(prayerRequest);
 
-
-
+        return prayerRequestMapper.prayerRequestLikeToPrayerRequestLikeModel(prayerRequestLike);
     }
 
 
