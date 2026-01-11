@@ -102,6 +102,12 @@ public class PrayerRequestService {
         PrayerRequest prayerRequest = prayerRequestRepository.findById(prayerRequestId)
                 .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST));
 
+        Optional<PrayerRequestLike> existingPrayerRequestLike = prayerRequestLikeRepository.findByPrayerRequest_prayerRequestIdAndUser_userId(prayerRequestId, createRequest.getUserId());
+
+        if(existingPrayerRequestLike.isPresent()){
+            throw new DataValidationException(PrayerRequestErrors.PRAYER_REQUEST_LIKE_EXISTS);
+        }
+
         LocalDateTime submittedDate = Optional.ofNullable(createRequest.getSubmittedDate()).orElse(LocalDateTime.now());
         User submittedUser = entityManager.getReference(User.class, createRequest.getUserId());
 
