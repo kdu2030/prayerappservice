@@ -25,15 +25,17 @@ public class PrayerRequestService {
     private final PrayerRequestRepository prayerRequestRepository;
     private final PrayerRequestMapper prayerRequestMapper;
     private final EntityManager entityManager;
+    private final PrayerRequestLikeRepository prayerRequestLikeRepository;
 
     public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository,
                                 PrayerRequestRepository prayerRequestRepository,
-                                PrayerRequestMapper prayerRequestMapper, EntityManager entityManager) {
+                                PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository) {
         this.jwtService = jwtService;
         this.prayerGroupUserRepository = prayerGroupUserRepository;
         this.prayerRequestRepository = prayerRequestRepository;
         this.prayerRequestMapper = prayerRequestMapper;
         this.entityManager = entityManager;
+        this.prayerRequestLikeRepository = prayerRequestLikeRepository;
     }
 
     public PrayerRequestModel createPrayerRequest(String authHeader,
@@ -105,6 +107,13 @@ public class PrayerRequestService {
 
         PrayerRequestLike prayerRequestLike = new PrayerRequestLike(submittedDate, submittedUser, prayerRequest);
 
+        List<PrayerRequestLike> prayerRequestLikes = prayerRequest.getPrayerRequestLikes();
+        prayerRequestLikes.add(prayerRequestLike);
+
+        prayerRequest.setLikeCount(prayerRequest.getLikeCount() + 1);
+
+        prayerRequestLikeRepository.save(prayerRequestLike);
+        prayerRequestRepository.save(prayerRequest);
 
 
 
