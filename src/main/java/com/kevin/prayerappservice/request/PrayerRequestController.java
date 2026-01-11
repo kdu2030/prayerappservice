@@ -33,4 +33,10 @@ public class PrayerRequestController implements PrayerRequestApi {
         return new ResponseEntity<>(prayerRequestLike, HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Void> deletePrayerRequestLike(String authHeader, int prayerRequestLikeId){
+        prayerRequestService.deletePrayerRequestLike(authHeader, prayerRequestLikeId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

@@ -21,4 +21,8 @@ public interface PrayerRequestApi {
     @PostMapping("/{prayerRequestId}/like")
     @Operation(summary = "Creates a prayer request like")
     ResponseEntity<PrayerRequestLikeModel> createPrayerRequestLike(@PathVariable int prayerRequestId, @Valid @RequestBody PrayerRequestLikeCreateRequest createRequest);
+
+    @DeleteMapping("/like/{prayerRequestLikeId}")
+    @Operation(summary = "Deletes a prayer request like")
+    ResponseEntity<Void> deletePrayerRequestLike( @RequestHeader("Authorization") String authHeader, @PathVariable int prayerRequestLikeId);
 }
