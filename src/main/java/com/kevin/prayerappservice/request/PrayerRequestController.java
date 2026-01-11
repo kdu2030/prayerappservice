@@ -1,9 +1,6 @@
 package com.kevin.prayerappservice.request;
 
-import com.kevin.prayerappservice.request.models.PrayerRequestCreateRequest;
-import com.kevin.prayerappservice.request.models.PrayerRequestFilterCriteria;
-import com.kevin.prayerappservice.request.models.PrayerRequestGetResponse;
-import com.kevin.prayerappservice.request.models.PrayerRequestModel;
+import com.kevin.prayerappservice.request.models.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,6 +25,12 @@ public class PrayerRequestController implements PrayerRequestApi {
     public ResponseEntity<PrayerRequestGetResponse> getPrayerRequests(String authHeader, PrayerRequestFilterCriteria prayerRequestFilterCriteria){
         PrayerRequestGetResponse getResponse = prayerRequestService.getPrayerRequests(authHeader, prayerRequestFilterCriteria);
         return new ResponseEntity<>(getResponse, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PrayerRequestLikeModel> createPrayerRequestLike(int prayerRequestId, PrayerRequestLikeCreateRequest createRequest){
+        PrayerRequestLikeModel prayerRequestLike = prayerRequestService.createPrayerRequestLike(prayerRequestId, createRequest);
+        return new ResponseEntity<>(prayerRequestLike, HttpStatus.OK);
     }
 
 }

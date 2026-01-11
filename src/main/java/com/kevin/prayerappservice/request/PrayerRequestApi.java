@@ -1,9 +1,6 @@
 package com.kevin.prayerappservice.request;
 
-import com.kevin.prayerappservice.request.models.PrayerRequestCreateRequest;
-import com.kevin.prayerappservice.request.models.PrayerRequestFilterCriteria;
-import com.kevin.prayerappservice.request.models.PrayerRequestGetResponse;
-import com.kevin.prayerappservice.request.models.PrayerRequestModel;
+import com.kevin.prayerappservice.request.models.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -20,4 +17,8 @@ public interface PrayerRequestApi {
     @PostMapping("/filter")
     @Operation(summary =  "Gets prayer requests")
     ResponseEntity<PrayerRequestGetResponse> getPrayerRequests(@RequestHeader("Authorization") String authHeader, @Valid @RequestBody PrayerRequestFilterCriteria prayerRequestFilterCriteria);
+
+    @PostMapping("/{prayerRequestId}/like")
+    @Operation(summary = "Creates a prayer request like")
+    ResponseEntity<PrayerRequestLikeModel> createPrayerRequestLike(int prayerRequestId, @Valid @RequestBody PrayerRequestLikeCreateRequest createRequest);
 }
