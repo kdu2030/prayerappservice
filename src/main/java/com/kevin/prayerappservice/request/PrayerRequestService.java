@@ -5,15 +5,15 @@ import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.group.PrayerGroupUserRepository;
 import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
 import com.kevin.prayerappservice.request.dtos.*;
+import com.kevin.prayerappservice.request.entities.PrayerRequest;
+import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
 import com.kevin.prayerappservice.request.mappers.PrayerRequestMapper;
-import com.kevin.prayerappservice.request.models.PrayerRequestCreateRequest;
-import com.kevin.prayerappservice.request.models.PrayerRequestFilterCriteria;
-import com.kevin.prayerappservice.request.models.PrayerRequestGetResponse;
-import com.kevin.prayerappservice.request.models.PrayerRequestModel;
+import com.kevin.prayerappservice.request.models.*;
 import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PrayerRequestService {
@@ -89,6 +89,13 @@ public class PrayerRequestService {
             }
             throw exception;
         }
+    }
+
+    public PrayerRequestLikeModel createPrayerRequestLike(int prayerRequestId, int userId){
+        PrayerRequest prayerRequest = prayerRequestRepository.findById(prayerRequestId)
+                .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST));
+
+
     }
 
 
