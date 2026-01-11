@@ -4,14 +4,16 @@ import java.time.LocalDateTime;
 
 public class PrayerRequestLikeModel {
     private int prayerRequestLikeId;
-    private PrayerRequestModel prayerRequest;
-    private PrayerRequestUserSummary submittedUser;
+    private int prayerRequestId;
+    private int submittedUserId;
     private LocalDateTime submittedDate;
 
-    public PrayerRequestLikeModel(int prayerRequestLikeId, PrayerRequestModel prayerRequest, PrayerRequestUserSummary submittedUser, LocalDateTime submittedDate) {
+    public PrayerRequestLikeModel(){}
+
+    public PrayerRequestLikeModel(int prayerRequestLikeId, int prayerRequestId, int submittedUserId, LocalDateTime submittedDate) {
         this.prayerRequestLikeId = prayerRequestLikeId;
-        this.prayerRequest = prayerRequest;
-        this.submittedUser = submittedUser;
+        this.prayerRequestId = prayerRequestId;
+        this.submittedUserId = submittedUserId;
         this.submittedDate = submittedDate;
     }
 
@@ -23,20 +25,20 @@ public class PrayerRequestLikeModel {
         this.prayerRequestLikeId = prayerRequestLikeId;
     }
 
-    public PrayerRequestModel getPrayerRequest() {
-        return prayerRequest;
+    public int getPrayerRequestId() {
+        return prayerRequestId;
     }
 
-    public void setPrayerRequest(PrayerRequestModel prayerRequest) {
-        this.prayerRequest = prayerRequest;
+    public void setPrayerRequestId(int prayerRequestId) {
+        this.prayerRequestId = prayerRequestId;
     }
 
-    public PrayerRequestUserSummary getSubmittedUser() {
-        return submittedUser;
+    public int getSubmittedUserId() {
+        return submittedUserId;
     }
 
-    public void setSubmittedUser(PrayerRequestUserSummary submittedUser) {
-        this.submittedUser = submittedUser;
+    public void setSubmittedUserId(int submittedUserId) {
+        this.submittedUserId = submittedUserId;
     }
 
     public LocalDateTime getSubmittedDate() {

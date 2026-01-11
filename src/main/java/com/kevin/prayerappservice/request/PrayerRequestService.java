@@ -9,9 +9,12 @@ import com.kevin.prayerappservice.request.entities.PrayerRequest;
 import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
 import com.kevin.prayerappservice.request.mappers.PrayerRequestMapper;
 import com.kevin.prayerappservice.request.models.*;
+import com.kevin.prayerappservice.user.entities.User;
+import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,14 +24,16 @@ public class PrayerRequestService {
     private final PrayerGroupUserRepository prayerGroupUserRepository;
     private final PrayerRequestRepository prayerRequestRepository;
     private final PrayerRequestMapper prayerRequestMapper;
+    private final EntityManager entityManager;
 
     public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository,
                                 PrayerRequestRepository prayerRequestRepository,
-                                PrayerRequestMapper prayerRequestMapper) {
+                                PrayerRequestMapper prayerRequestMapper, EntityManager entityManager) {
         this.jwtService = jwtService;
         this.prayerGroupUserRepository = prayerGroupUserRepository;
         this.prayerRequestRepository = prayerRequestRepository;
         this.prayerRequestMapper = prayerRequestMapper;
+        this.entityManager = entityManager;
     }
 
     public PrayerRequestModel createPrayerRequest(String authHeader,
@@ -91,9 +96,16 @@ public class PrayerRequestService {
         }
     }
 
-    public PrayerRequestLikeModel createPrayerRequestLike(int prayerRequestId, int userId){
+    public PrayerRequestLikeModel createPrayerRequestLike(int prayerRequestId, PrayerRequestLikeCreateRequest createRequest){
         PrayerRequest prayerRequest = prayerRequestRepository.findById(prayerRequestId)
                 .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST));
+
+        LocalDateTime submittedDate = Optional.ofNullable(createRequest.getSubmittedDate()).orElse(LocalDateTime.now());
+        User submittedUser = entityManager.getReference(User.class, createRequest.getUserId());
+
+        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(submittedDate, submittedUser, prayerRequest);
+
+
 
 
     }
