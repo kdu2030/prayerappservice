@@ -161,6 +161,21 @@ public class PrayerRequestService {
         return prayerRequestMapper.prayerRequestBookmarkToModel(prayerRequestBookmark);
     }
 
+    public void deletePrayerRequestBookmark(String authHeader, int prayerRequestBookmarkId){
+        String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
+        int userId = jwtService.extractUserId(authToken);
+
+        PrayerRequestBookmark prayerRequestBookmark =
+                prayerRequestBookmarkRepository
+                .findById(prayerRequestBookmarkId)
+                .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_BOOKMARK));
+
+        if(prayerRequestBookmark.getUser().getUserId() != userId){
+            throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_DELETE_BOOKMARK);
+        }
+
+        prayerRequestBookmarkRepository.delete(prayerRequestBookmark);
+    }
 
 
 }

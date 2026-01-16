@@ -8,4 +8,6 @@ public class PrayerRequestErrors {
     public static final String CANNOT_FIND_PRAYER_REQUEST_LIKE = "Cannot find prayer request like.";
     public static final String ONLY_SUBMITTED_CAN_DELETE_LIKE = "Only the submitted user can delete the prayer request like.";
     public static final String BOOKMARK_ALREADY_EXISTS = "Bookmark already exists for this prayer request and user.";
+    public static final String CANNOT_FIND_BOOKMARK = "Cannot find bookmark";
+    public static final String ONLY_SUBMITTED_CAN_DELETE_BOOKMARK = "Only the submitted user can delete the bookmark.";
 }
