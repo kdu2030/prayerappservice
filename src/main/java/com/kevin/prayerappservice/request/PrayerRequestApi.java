@@ -20,7 +20,7 @@ public interface PrayerRequestApi {
 
     @PostMapping("/{prayerRequestId}/like")
     @Operation(summary = "Creates a prayer request like")
-    ResponseEntity<PrayerRequestLikeModel> createPrayerRequestLike(@PathVariable int prayerRequestId, @Valid @RequestBody PrayerRequestLikeCreateRequest createRequest);
+    ResponseEntity<PrayerRequestLikeModel> createPrayerRequestLike(@PathVariable int prayerRequestId, @Valid @RequestBody PrayerRequestActionCreateRequest createRequest);
 
     @DeleteMapping("/like/{prayerRequestLikeId}")
     @Operation(summary = "Deletes a prayer request like")

@@ -4,14 +4,14 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
-public class PrayerRequestLikeCreateRequest {
+public class PrayerRequestActionCreateRequest {
     @NotNull
     private int userId;
     private LocalDateTime submittedDate;
 
-    public PrayerRequestLikeCreateRequest(){}
+    public PrayerRequestActionCreateRequest(){}
 
-    public PrayerRequestLikeCreateRequest(int userId, LocalDateTime submittedDate) {
+    public PrayerRequestActionCreateRequest(int userId, LocalDateTime submittedDate) {
         this.userId = userId;
         this.submittedDate = submittedDate;
     }

@@ -3,10 +3,10 @@ package com.kevin.prayerappservice.request;
 import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.group.PrayerGroupUserRepository;
-import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
 import com.kevin.prayerappservice.request.dtos.*;
 import com.kevin.prayerappservice.request.entities.PrayerRequest;
+import com.kevin.prayerappservice.request.entities.PrayerRequestBookmark;
 import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
 import com.kevin.prayerappservice.request.mappers.PrayerRequestMapper;
 import com.kevin.prayerappservice.request.models.*;
@@ -27,16 +27,18 @@ public class PrayerRequestService {
     private final PrayerRequestMapper prayerRequestMapper;
     private final EntityManager entityManager;
     private final PrayerRequestLikeRepository prayerRequestLikeRepository;
+    private final PrayerRequestBookmarkRepository prayerRequestBookmarkRepository;
 
     public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository,
                                 PrayerRequestRepository prayerRequestRepository,
-                                PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository) {
+                                PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository, PrayerRequestBookmarkRepository prayerRequestBookmarkRepository) {
         this.jwtService = jwtService;
         this.prayerGroupUserRepository = prayerGroupUserRepository;
         this.prayerRequestRepository = prayerRequestRepository;
         this.prayerRequestMapper = prayerRequestMapper;
         this.entityManager = entityManager;
         this.prayerRequestLikeRepository = prayerRequestLikeRepository;
+        this.prayerRequestBookmarkRepository = prayerRequestBookmarkRepository;
     }
 
     public PrayerRequestModel createPrayerRequest(String authHeader,
@@ -99,7 +101,7 @@ public class PrayerRequestService {
         }
     }
 
-    public PrayerRequestLikeModel createPrayerRequestLike(int prayerRequestId, PrayerRequestLikeCreateRequest createRequest){
+    public PrayerRequestLikeModel createPrayerRequestLike(int prayerRequestId, PrayerRequestActionCreateRequest createRequest){
         PrayerRequest prayerRequest = prayerRequestRepository.findById(prayerRequestId)
                 .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST));
 
@@ -143,6 +145,21 @@ public class PrayerRequestService {
         prayerRequestRepository.save(prayerRequest);
     }
 
+    public PrayerRequestBookmarkModel createPrayerRequestBookmark(int prayerRequestId, PrayerRequestActionCreateRequest createRequest){
+        Optional<PrayerRequestBookmark> existingBookmark = prayerRequestBookmarkRepository.findByPrayerRequest_prayerRequestIdAndUser_userId(prayerRequestId, createRequest.getUserId());
+
+        if(existingBookmark.isPresent()){
+            throw new DataValidationException(PrayerRequestErrors.BOOKMARK_ALREADY_EXISTS);
+        }
+
+        PrayerRequest prayerRequest = entityManager.getReference(PrayerRequest.class, prayerRequestId);
+        User user = entityManager.getReference(User.class, createRequest.getUserId());
+
+        PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user, Optional.ofNullable(createRequest.getSubmittedDate()).orElse(LocalDateTime.now()));
+        prayerRequestBookmarkRepository.save(prayerRequestBookmark);
+
+        return prayerRequestMapper.prayerRequestBookmarkToModel(prayerRequestBookmark);
+    }
 
 
 }

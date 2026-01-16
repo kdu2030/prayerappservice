@@ -5,8 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
-import java.util.List;
-
 @Controller
 public class PrayerRequestController implements PrayerRequestApi {
     public final PrayerRequestService prayerRequestService;
@@ -28,7 +26,7 @@ public class PrayerRequestController implements PrayerRequestApi {
     }
 
     @Override
-    public ResponseEntity<PrayerRequestLikeModel> createPrayerRequestLike(int prayerRequestId, PrayerRequestLikeCreateRequest createRequest){
+    public ResponseEntity<PrayerRequestLikeModel> createPrayerRequestLike(int prayerRequestId, PrayerRequestActionCreateRequest createRequest){
         PrayerRequestLikeModel prayerRequestLike = prayerRequestService.createPrayerRequestLike(prayerRequestId, createRequest);
         return new ResponseEntity<>(prayerRequestLike, HttpStatus.OK);
     }
