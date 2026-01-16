@@ -3,6 +3,7 @@ package com.kevin.prayerappservice.request;
 import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.group.PrayerGroupUserRepository;
+import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
 import com.kevin.prayerappservice.request.dtos.*;
 import com.kevin.prayerappservice.request.entities.PrayerRequest;
@@ -141,5 +142,7 @@ public class PrayerRequestService {
         prayerRequestLikeRepository.delete(prayerRequestLike);
         prayerRequestRepository.save(prayerRequest);
     }
+
+
 
 }
