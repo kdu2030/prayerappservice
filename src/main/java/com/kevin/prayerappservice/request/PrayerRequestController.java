@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.request;
 
 import com.kevin.prayerappservice.request.models.*;
+import com.sun.net.httpserver.HttpsServer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,4 +38,9 @@ public class PrayerRequestController implements PrayerRequestApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<PrayerRequestBookmarkModel> createPrayerRequestBookmark(int prayerRequestId, PrayerRequestActionCreateRequest createRequest){
+        PrayerRequestBookmarkModel prayerRequestBookmark = prayerRequestService.createPrayerRequestBookmark(prayerRequestId, createRequest);
+        return new ResponseEntity<>(prayerRequestBookmark, HttpStatus.OK);
+    }
 }
