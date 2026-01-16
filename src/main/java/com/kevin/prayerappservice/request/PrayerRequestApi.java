@@ -29,4 +29,8 @@ public interface PrayerRequestApi {
     @PostMapping("/{prayerRequestId}/bookmark")
     @Operation(summary = "Creates a prayer request bookmark")
     ResponseEntity<PrayerRequestBookmarkModel> createPrayerRequestBookmark(@PathVariable int prayerRequestId, @Valid @RequestBody PrayerRequestActionCreateRequest createRequest);
+
+    @DeleteMapping("/bookmark/{prayerRequestBookmarkId}")
+    @Operation(summary = "Deletes a prayer request bookmark")
+    ResponseEntity<Void> deletePrayerRequestBookmark(@RequestHeader("Authorization") String authHeader, @PathVariable int prayerRequestBookmarkId);
 }
