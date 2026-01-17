@@ -51,10 +51,12 @@ public class PrayerRequestService {
         prayerGroupUserRepository.findByPrayerGroup_prayerGroupIdAndUser_userId(prayerGroupId, userId)
                 .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_CREATE));
 
+        LocalDateTime createdDate = Optional.ofNullable(createRequest.getCreatedDate()).orElse(LocalDateTime.now());
+
         PrayerRequestCreateQuery createQuery = new PrayerRequestCreateQuery(
                 createRequest.getRequestTitle(),
                 createRequest.getRequestDescription(),
-                createRequest.getCreatedDate(),
+                createdDate,
                 createRequest.getExpirationDate(),
                 prayerGroupId, createRequest.getUserId());
 
