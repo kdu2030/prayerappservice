@@ -191,4 +191,26 @@ public class PrayerRequestServiceTests {
                 .isThrownBy(() -> prayerRequestService.createPrayerRequestLike(prayerRequest.getPrayerRequestId(), createRequest));
 
     }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void createPrayerRequestLike_givenValidParameters_createsPrayerRequestLike(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 0, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestActionCreateRequest createRequest = new PrayerRequestActionCreateRequest(user.getUserId(), LocalDateTime.now());
+
+        PrayerRequestLikeModel prayerRequestLike = prayerRequestService.createPrayerRequestLike(prayerRequest.getPrayerRequestId(), createRequest);
+
+        Assertions.assertThat(prayerRequest.getLikeCount()).isEqualTo(1);
+        Assertions.assertThat(prayerRequestLike.getPrayerRequestId()).isEqualTo(prayerRequest.getPrayerRequestId());
+    }
 }

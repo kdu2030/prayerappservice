@@ -115,10 +115,6 @@ public class PrayerRequestService {
         User submittedUser = entityManager.getReference(User.class, createRequest.getUserId());
 
         PrayerRequestLike prayerRequestLike = new PrayerRequestLike(submittedDate, submittedUser, prayerRequest);
-
-        List<PrayerRequestLike> prayerRequestLikes = prayerRequest.getPrayerRequestLikes();
-        prayerRequestLikes.add(prayerRequestLike);
-
         prayerRequest.setLikeCount(prayerRequest.getLikeCount() + 1);
 
         prayerRequestLikeRepository.save(prayerRequestLike);
