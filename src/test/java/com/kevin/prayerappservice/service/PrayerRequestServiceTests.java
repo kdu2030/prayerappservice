@@ -42,6 +42,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -212,5 +213,60 @@ public class PrayerRequestServiceTests {
 
         Assertions.assertThat(prayerRequest.getLikeCount()).isEqualTo(1);
         Assertions.assertThat(prayerRequestLike.getPrayerRequestId()).isEqualTo(prayerRequest.getPrayerRequestId());
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequestLike_nonSubmittedUserDeletes_throwsException(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(LocalDateTime.now(), user, prayerRequest);
+        prayerRequestLikeRepository.save(prayerRequestLike);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId() + 1);
+
+        Assertions
+                .assertThatExceptionOfType(DataValidationException.class)
+                .isThrownBy(() -> prayerRequestService.deletePrayerRequestLike("mockHeader", prayerRequestLike.getPrayerRequestLikeId()));
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequestLike_givenValidValues_deletesPrayerRequestLike(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(LocalDateTime.now(), user, prayerRequest);
+        prayerRequestLikeRepository.save(prayerRequestLike);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId());
+
+        int prayerRequestLikeId = prayerRequestLike.getPrayerRequestLikeId();
+
+        prayerRequestService.deletePrayerRequestLike("mockHeader", prayerRequestLikeId);
+
+        Optional<PrayerRequestLike> prayerRequestLikeAfterDeletion = prayerRequestLikeRepository.findById(prayerRequestLikeId);
+
+        Assertions.assertThat(prayerRequestLikeAfterDeletion.isEmpty()).isTrue();
+        Assertions.assertThat(prayerRequest.getLikeCount()).isEqualTo(0);
     }
 }
