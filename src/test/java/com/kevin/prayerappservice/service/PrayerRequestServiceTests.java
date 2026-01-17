@@ -11,16 +11,14 @@ import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.group.models.PrayerGroupModel;
-import com.kevin.prayerappservice.request.PrayerRequestJdbcRepositoryImpl;
-import com.kevin.prayerappservice.request.PrayerRequestLikeRepository;
-import com.kevin.prayerappservice.request.PrayerRequestRepository;
-import com.kevin.prayerappservice.request.PrayerRequestService;
+import com.kevin.prayerappservice.request.*;
 import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
 import com.kevin.prayerappservice.request.constants.PrayerRequestSortField;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCountResult;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateResult;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestGetResult;
 import com.kevin.prayerappservice.request.entities.PrayerRequest;
+import com.kevin.prayerappservice.request.entities.PrayerRequestBookmark;
 import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
 import com.kevin.prayerappservice.request.models.*;
 import com.kevin.prayerappservice.user.UserRepository;
@@ -70,6 +68,9 @@ public class PrayerRequestServiceTests {
 
     @Autowired
     private PrayerRequestLikeRepository prayerRequestLikeRepository;
+
+    @Autowired
+    private PrayerRequestBookmarkRepository prayerRequestBookmarkRepository;
 
     @Autowired
     private PrayerRequestService prayerRequestService;
@@ -268,5 +269,27 @@ public class PrayerRequestServiceTests {
 
         Assertions.assertThat(prayerRequestLikeAfterDeletion.isEmpty()).isTrue();
         Assertions.assertThat(prayerRequest.getLikeCount()).isEqualTo(0);
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void createPrayerRequestBookmark_bookmarkAlreadyExists_throwsException(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user, LocalDateTime.now());
+        prayerRequestBookmarkRepository.save(prayerRequestBookmark);
+
+        PrayerRequestActionCreateRequest createRequest = new PrayerRequestActionCreateRequest(user.getUserId(), LocalDateTime.now());
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.createPrayerRequestBookmark(prayerRequest.getPrayerRequestId(), createRequest));
     }
 }
