@@ -313,4 +313,29 @@ public class PrayerRequestServiceTests {
         Assertions.assertThat(prayerRequestBookmarkModel.getPrayerRequestId()).isEqualTo(prayerRequest.getPrayerRequestId());
         Assertions.assertThat(prayerRequestBookmarkModel.getSubmittedUserId()).isEqualTo(user.getUserId());
     }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequestBookmark_nonSubmitterDeletes_throwsException(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user, LocalDateTime.now());
+        prayerRequestBookmarkRepository.save(prayerRequestBookmark);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId() + 1);
+
+        Assertions
+                .assertThatExceptionOfType(DataValidationException.class)
+                .isThrownBy(() -> prayerRequestService.deletePrayerRequestBookmark("mockHeader", prayerRequestBookmark.getPrayerRequestBookmarkId()));
+    }
 }
