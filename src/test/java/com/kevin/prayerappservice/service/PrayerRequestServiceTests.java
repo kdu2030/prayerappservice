@@ -10,20 +10,20 @@ import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
-import com.kevin.prayerappservice.request.PrayerRequestJdbcRepositoryImpl;
-import com.kevin.prayerappservice.request.PrayerRequestService;
+import com.kevin.prayerappservice.request.*;
 import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
 import com.kevin.prayerappservice.request.constants.PrayerRequestSortField;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCountResult;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateResult;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestGetResult;
-import com.kevin.prayerappservice.request.models.PrayerRequestCreateRequest;
-import com.kevin.prayerappservice.request.models.PrayerRequestFilterCriteria;
-import com.kevin.prayerappservice.request.models.PrayerRequestGetResponse;
-import com.kevin.prayerappservice.request.models.PrayerRequestModel;
+import com.kevin.prayerappservice.request.entities.PrayerRequest;
+import com.kevin.prayerappservice.request.entities.PrayerRequestBookmark;
+import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
+import com.kevin.prayerappservice.request.models.*;
 import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
+import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,6 +38,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -59,6 +60,15 @@ public class PrayerRequestServiceTests {
 
     @MockBean
     private PrayerRequestJdbcRepositoryImpl prayerRequestJdbcRepository;
+
+    @Autowired
+    private PrayerRequestRepository prayerRequestRepository;
+
+    @Autowired
+    private PrayerRequestLikeRepository prayerRequestLikeRepository;
+
+    @Autowired
+    private PrayerRequestBookmarkRepository prayerRequestBookmarkRepository;
 
     @Autowired
     private PrayerRequestService prayerRequestService;
@@ -158,4 +168,201 @@ public class PrayerRequestServiceTests {
         Assertions.assertThat(getResponse.getPrayerRequests().getLast().getPrayerRequestId()).isEqualTo(prayerRequest2.getPrayerRequestId());
     }
 
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void createPrayerRequestLike_prayerRequestLikeExists_throwsException(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 0, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(LocalDateTime.now(), user, prayerRequest);
+        prayerRequestLikeRepository.save(prayerRequestLike);
+
+        PrayerRequestActionCreateRequest createRequest = new PrayerRequestActionCreateRequest(user.getUserId(), LocalDateTime.now());
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class)
+                .isThrownBy(() -> prayerRequestService.createPrayerRequestLike(prayerRequest.getPrayerRequestId(), createRequest));
+
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void createPrayerRequestLike_givenValidParameters_createsPrayerRequestLike(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 0, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestActionCreateRequest createRequest = new PrayerRequestActionCreateRequest(user.getUserId(), LocalDateTime.now());
+
+        PrayerRequestLikeModel prayerRequestLike = prayerRequestService.createPrayerRequestLike(prayerRequest.getPrayerRequestId(), createRequest);
+
+        Assertions.assertThat(prayerRequest.getLikeCount()).isEqualTo(1);
+        Assertions.assertThat(prayerRequestLike.getPrayerRequestId()).isEqualTo(prayerRequest.getPrayerRequestId());
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequestLike_nonSubmittedUserDeletes_throwsException(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(LocalDateTime.now(), user, prayerRequest);
+        prayerRequestLikeRepository.save(prayerRequestLike);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId() + 1);
+
+        Assertions
+                .assertThatExceptionOfType(DataValidationException.class)
+                .isThrownBy(() -> prayerRequestService.deletePrayerRequestLike("mockHeader", prayerRequestLike.getPrayerRequestLikeId()));
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequestLike_givenValidValues_deletesPrayerRequestLike(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(LocalDateTime.now(), user, prayerRequest);
+        prayerRequestLikeRepository.save(prayerRequestLike);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId());
+
+        int prayerRequestLikeId = prayerRequestLike.getPrayerRequestLikeId();
+
+        prayerRequestService.deletePrayerRequestLike("mockHeader", prayerRequestLikeId);
+
+        Optional<PrayerRequestLike> prayerRequestLikeAfterDeletion = prayerRequestLikeRepository.findById(prayerRequestLikeId);
+
+        Assertions.assertThat(prayerRequestLikeAfterDeletion.isEmpty()).isTrue();
+        Assertions.assertThat(prayerRequest.getLikeCount()).isEqualTo(0);
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void createPrayerRequestBookmark_bookmarkAlreadyExists_throwsException(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user, LocalDateTime.now());
+        prayerRequestBookmarkRepository.save(prayerRequestBookmark);
+
+        PrayerRequestActionCreateRequest createRequest = new PrayerRequestActionCreateRequest(user.getUserId(), LocalDateTime.now());
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.createPrayerRequestBookmark(prayerRequest.getPrayerRequestId(), createRequest));
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void createPrayerRequestBookmark_givenValidValues_createsBookmark(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+        PrayerRequestActionCreateRequest createRequest = new PrayerRequestActionCreateRequest(user.getUserId(), LocalDateTime.now());
+
+        PrayerRequestBookmarkModel prayerRequestBookmarkModel = prayerRequestService.createPrayerRequestBookmark(prayerRequest.getPrayerRequestId(), createRequest);
+
+        Assertions.assertThat(prayerRequestBookmarkModel.getPrayerRequestId()).isEqualTo(prayerRequest.getPrayerRequestId());
+        Assertions.assertThat(prayerRequestBookmarkModel.getSubmittedUserId()).isEqualTo(user.getUserId());
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequestBookmark_nonSubmitterDeletes_throwsException(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user, LocalDateTime.now());
+        prayerRequestBookmarkRepository.save(prayerRequestBookmark);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId() + 1);
+
+        Assertions
+                .assertThatExceptionOfType(DataValidationException.class)
+                .isThrownBy(() -> prayerRequestService.deletePrayerRequestBookmark("mockHeader", prayerRequestBookmark.getPrayerRequestBookmarkId()));
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequestBookmark_givenValidValues_deletesBookmark(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user, LocalDateTime.now());
+        prayerRequestBookmarkRepository.save(prayerRequestBookmark);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId());
+
+        int bookmarkId = prayerRequestBookmark.getPrayerRequestBookmarkId();
+
+        prayerRequestService.deletePrayerRequestBookmark("mockHeader", bookmarkId);
+
+        Optional<PrayerRequestBookmark> bookmarkAfterDelete = prayerRequestBookmarkRepository.findById(bookmarkId);
+
+        Assertions.assertThat(bookmarkAfterDelete.isEmpty()).isTrue();
+    }
 }

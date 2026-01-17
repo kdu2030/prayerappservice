@@ -2,10 +2,9 @@ package com.kevin.prayerappservice.request.mappers;
 
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateResult;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestGetResult;
-import com.kevin.prayerappservice.request.models.PrayerRequestCreateRequest;
-import com.kevin.prayerappservice.request.models.PrayerRequestModel;
-import com.kevin.prayerappservice.request.models.PrayerRequestPrayerGroupSummary;
-import com.kevin.prayerappservice.request.models.PrayerRequestUserSummary;
+import com.kevin.prayerappservice.request.entities.PrayerRequestBookmark;
+import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
+import com.kevin.prayerappservice.request.models.*;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
@@ -46,6 +45,14 @@ public interface PrayerRequestMapper {
     @Mapping(source = "userFileUrl", target = "user.image.fileUrl")
     @Mapping(source = "userFileType", target = "user.image.fileType")
     PrayerRequestModel prayerRequestGetResultToPrayerRequestModel(PrayerRequestGetResult source);
+
+    @Mapping(source = "prayerRequest.prayerRequestId", target = "prayerRequestId")
+    @Mapping(source = "user.userId", target = "submittedUserId")
+    PrayerRequestLikeModel prayerRequestLikeToPrayerRequestLikeModel(PrayerRequestLike source);
+
+    @Mapping(source = "prayerRequest.prayerRequestId", target = "prayerRequestId")
+    @Mapping(source = "user.userId", target = "submittedUserId")
+    PrayerRequestBookmarkModel prayerRequestBookmarkToModel(PrayerRequestBookmark source);
 
     @AfterMapping
     default void setImagesToNull(@MappingTarget PrayerRequestModel prayerRequestModel){

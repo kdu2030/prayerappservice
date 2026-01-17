@@ -1,14 +1,10 @@
 package com.kevin.prayerappservice.request;
 
-import com.kevin.prayerappservice.request.models.PrayerRequestCreateRequest;
-import com.kevin.prayerappservice.request.models.PrayerRequestFilterCriteria;
-import com.kevin.prayerappservice.request.models.PrayerRequestGetResponse;
-import com.kevin.prayerappservice.request.models.PrayerRequestModel;
+import com.kevin.prayerappservice.request.models.*;
+import com.sun.net.httpserver.HttpsServer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
 
 @Controller
 public class PrayerRequestController implements PrayerRequestApi {
@@ -30,4 +26,27 @@ public class PrayerRequestController implements PrayerRequestApi {
         return new ResponseEntity<>(getResponse, HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<PrayerRequestLikeModel> createPrayerRequestLike(int prayerRequestId, PrayerRequestActionCreateRequest createRequest){
+        PrayerRequestLikeModel prayerRequestLike = prayerRequestService.createPrayerRequestLike(prayerRequestId, createRequest);
+        return new ResponseEntity<>(prayerRequestLike, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> deletePrayerRequestLike(String authHeader, int prayerRequestLikeId){
+        prayerRequestService.deletePrayerRequestLike(authHeader, prayerRequestLikeId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PrayerRequestBookmarkModel> createPrayerRequestBookmark(int prayerRequestId, PrayerRequestActionCreateRequest createRequest){
+        PrayerRequestBookmarkModel prayerRequestBookmark = prayerRequestService.createPrayerRequestBookmark(prayerRequestId, createRequest);
+        return new ResponseEntity<>(prayerRequestBookmark, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> deletePrayerRequestBookmark(String authHeader, int prayerRequestBookmarkId){
+        prayerRequestService.deletePrayerRequestBookmark(authHeader, prayerRequestBookmarkId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

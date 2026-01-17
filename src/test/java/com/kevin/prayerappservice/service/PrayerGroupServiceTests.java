@@ -365,5 +365,4 @@ public class PrayerGroupServiceTests {
         Assertions.assertThat(prayerGroupUserModel.getUserId()).isEqualTo(user2.getUserId());
         Assertions.assertThat(prayerGroupUserModel.getPrayerGroupRole()).isEqualTo(PrayerGroupRole.MEMBER);
     }
-
 }
