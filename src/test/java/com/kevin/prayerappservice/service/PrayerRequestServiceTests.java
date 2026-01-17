@@ -292,4 +292,25 @@ public class PrayerRequestServiceTests {
 
         Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.createPrayerRequestBookmark(prayerRequest.getPrayerRequestId(), createRequest));
     }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void createPrayerRequestBookmark_givenValidValues_createsBookmark(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+        PrayerRequestActionCreateRequest createRequest = new PrayerRequestActionCreateRequest(user.getUserId(), LocalDateTime.now());
+
+        PrayerRequestBookmarkModel prayerRequestBookmarkModel = prayerRequestService.createPrayerRequestBookmark(prayerRequest.getPrayerRequestId(), createRequest);
+
+        Assertions.assertThat(prayerRequestBookmarkModel.getPrayerRequestId()).isEqualTo(prayerRequest.getPrayerRequestId());
+        Assertions.assertThat(prayerRequestBookmarkModel.getSubmittedUserId()).isEqualTo(user.getUserId());
+    }
 }
