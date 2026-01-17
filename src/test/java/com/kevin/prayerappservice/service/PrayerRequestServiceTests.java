@@ -10,7 +10,6 @@ import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
-import com.kevin.prayerappservice.group.models.PrayerGroupModel;
 import com.kevin.prayerappservice.request.*;
 import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
 import com.kevin.prayerappservice.request.constants.PrayerRequestSortField;
@@ -25,7 +24,6 @@ import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.transaction.Transactional;
-import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -337,5 +335,34 @@ public class PrayerRequestServiceTests {
         Assertions
                 .assertThatExceptionOfType(DataValidationException.class)
                 .isThrownBy(() -> prayerRequestService.deletePrayerRequestBookmark("mockHeader", prayerRequestBookmark.getPrayerRequestBookmarkId()));
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequestBookmark_givenValidValues_deletesBookmark(){
+        User user = new User("戴风", "demo", "demo@kandk.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup mockPrayerGroup = new PrayerGroup("K&K", "K&K俱乐部的祷告小组", null,
+                VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(mockPrayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null, mockPrayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user, LocalDateTime.now());
+        prayerRequestBookmarkRepository.save(prayerRequestBookmark);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId());
+
+        int bookmarkId = prayerRequestBookmark.getPrayerRequestBookmarkId();
+
+        prayerRequestService.deletePrayerRequestBookmark("mockHeader", bookmarkId);
+
+        Optional<PrayerRequestBookmark> bookmarkAfterDelete = prayerRequestBookmarkRepository.findById(bookmarkId);
+
+        Assertions.assertThat(bookmarkAfterDelete.isEmpty()).isTrue();
     }
 }
