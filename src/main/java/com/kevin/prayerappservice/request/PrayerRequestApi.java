@@ -33,4 +33,8 @@ public interface PrayerRequestApi {
     @DeleteMapping("/bookmark/{prayerRequestBookmarkId}")
     @Operation(summary = "Deletes a prayer request bookmark")
     ResponseEntity<Void> deletePrayerRequestBookmark(@RequestHeader("Authorization") String authHeader, @PathVariable int prayerRequestBookmarkId);
+
+    @GetMapping("{prayerRequestId}")
+    @Operation(summary = "Gets a prayer request")
+    ResponseEntity<PrayerRequestDetailsModel> getPrayerRequest(@RequestHeader("Authorization") String authHeader, @PathVariable int prayerRequestId);
 }

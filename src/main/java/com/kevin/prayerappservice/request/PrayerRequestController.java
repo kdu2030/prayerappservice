@@ -49,4 +49,10 @@ public class PrayerRequestController implements PrayerRequestApi {
         prayerRequestService.deletePrayerRequestBookmark(authHeader, prayerRequestBookmarkId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<PrayerRequestDetailsModel> getPrayerRequest(String authHeader, int prayerRequestId){
+        PrayerRequestDetailsModel prayerRequest = prayerRequestService.getPrayerRequest(authHeader, prayerRequestId);
+        return new ResponseEntity<>(prayerRequest, HttpStatus.OK);
+    }
 }
