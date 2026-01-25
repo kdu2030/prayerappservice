@@ -45,5 +45,11 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
         return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(PrayerRequestGetResult.class));
     }
 
-
+    @Override
+    public List<PrayerRequestCommentResult> getPrayerRequestComments(int prayerRequestId){
+        String sql = "SELECT * FROM get_prayer_request_comments(:prayerRequestId);";
+        PrayerRequestCommentQuery commentQuery = new PrayerRequestCommentQuery(prayerRequestId);
+        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(commentQuery);
+        return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerRequestCommentResult.class));
+    }
 }

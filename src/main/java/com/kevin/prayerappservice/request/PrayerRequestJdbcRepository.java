@@ -9,4 +9,5 @@ public interface PrayerRequestJdbcRepository {
     List<PrayerRequestGetResult> getPrayerRequests(PrayerRequestGetQuery getQuery);
     PrayerRequestCountResult getPrayerRequestsCount(PrayerRequestCountQuery countQuery);
     PrayerRequestGetResult getPrayerRequest(int prayerRequestId, int userId);
+    List<PrayerRequestCommentResult> getPrayerRequestComments(int prayerRequestId);
 }
