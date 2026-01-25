@@ -184,13 +184,12 @@ public class PrayerRequestService {
             PrayerRequestGetResult prayerRequestResult = prayerRequestRepository.getPrayerRequest(prayerRequestId, userId);
             List<PrayerRequestCommentResult> prayerRequestCommentsResult = prayerRequestRepository.getPrayerRequestComments(prayerRequestId);
 
-            PrayerRequestDetailsModel prayerRequest = (PrayerRequestDetailsModel) prayerRequestMapper.prayerRequestGetResultToPrayerRequestModel(prayerRequestResult);
+            PrayerRequestModel prayerRequest = prayerRequestMapper.prayerRequestGetResultToPrayerRequestModel(prayerRequestResult);
 
             Stream<PrayerRequestCommentResult> commentResultStream = prayerRequestCommentsResult.stream();
             List<PrayerRequestCommentModel> comments = commentResultStream.map(prayerRequestMapper::prayerRequestCommentToModel).toList();
 
-            prayerRequest.setComments(comments);
-            return prayerRequest;
+            return PrayerRequestDetailsModel.prayerRequestModelToDetailsModel(prayerRequest, comments);
         } catch(UncategorizedSQLException exception){
             Throwable cause = exception.getCause();
             String exceptionMessage = cause != null ? cause.getMessage() : null;
