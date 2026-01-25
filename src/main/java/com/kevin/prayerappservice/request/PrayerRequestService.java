@@ -179,6 +179,13 @@ public class PrayerRequestService {
         try {
             String token = jwtService.extractTokenFromAuthHeader(authHeader);
             int userId = jwtService.extractUserId(token);
+
+            PrayerRequestGetResult prayerRequestResult = prayerRequestRepository.getPrayerRequest(prayerRequestId, userId);
+            List<PrayerRequestCommentResult> prayerRequestCommentsResult = prayerRequestRepository.getPrayerRequestComments(prayerRequestId);
+
+            PrayerRequestDetailsModel prayerRequest = (PrayerRequestDetailsModel) prayerRequestMapper.prayerRequestGetResultToPrayerRequestModel(prayerRequestResult);
+
+
         } catch(UncategorizedSQLException exception){
             Throwable cause = exception.getCause();
             String exceptionMessage = cause != null ? cause.getMessage() : null;

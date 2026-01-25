@@ -8,20 +8,20 @@ public class PrayerRequestCommentResult {
     private int userId;
     private String username;
     private String fullName;
-    private Integer imageFileId;
+    private Integer userFileId;
     private String userFileName;
     private String userFileType;
     private String userFileUrl;
 
     public PrayerRequestCommentResult() {}
 
-    public PrayerRequestCommentResult(int prayerRequestCommentId, LocalDateTime submittedDate, int userId, String username, String fullName, Integer imageFileId, String userFileName, String userFileType, String userFileUrl) {
+    public PrayerRequestCommentResult(int prayerRequestCommentId, LocalDateTime submittedDate, int userId, String username, String fullName, Integer userFileId, String userFileName, String userFileType, String userFileUrl) {
         this.prayerRequestCommentId = prayerRequestCommentId;
         this.submittedDate = submittedDate;
         this.userId = userId;
         this.username = username;
         this.fullName = fullName;
-        this.imageFileId = imageFileId;
+        this.userFileId = userFileId;
         this.userFileName = userFileName;
         this.userFileType = userFileType;
         this.userFileUrl = userFileUrl;
@@ -67,12 +67,12 @@ public class PrayerRequestCommentResult {
         this.fullName = fullName;
     }
 
-    public Integer getImageFileId() {
-        return imageFileId;
+    public Integer getUserFileId() {
+        return userFileId;
     }
 
-    public void setImageFileId(Integer imageFileId) {
-        this.imageFileId = imageFileId;
+    public void setUserFileId(Integer userFileId) {
+        this.userFileId = userFileId;
     }
 
     public String getUserFileName() {

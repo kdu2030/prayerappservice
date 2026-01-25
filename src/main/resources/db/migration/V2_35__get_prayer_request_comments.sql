@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION get_prayer_request_comments (
     user_id INT,
     username VARCHAR(255),
     full_name VARCHAR(255),
-    image_file_id INT,
+    user_file_id INT,
     user_file_name VARCHAR(255),
     user_file_type VARCHAR(255),
     user_file_url VARCHAR(255)
@@ -21,7 +21,7 @@ SELECT
     u.user_id,
     u.username,
     u.full_name,
-    u.image_file_id,
+    u.image_file_id AS user_file_id,
     f.file_name AS user_file_name,
     f.file_type AS user_file_type,
     f.file_url AS user_file_url

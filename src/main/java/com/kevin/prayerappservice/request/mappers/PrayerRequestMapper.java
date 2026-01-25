@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.request.mappers;
 
+import com.kevin.prayerappservice.request.dtos.PrayerRequestCommentResult;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateResult;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestGetResult;
 import com.kevin.prayerappservice.request.entities.PrayerRequestBookmark;
@@ -53,6 +54,13 @@ public interface PrayerRequestMapper {
     @Mapping(source = "prayerRequest.prayerRequestId", target = "prayerRequestId")
     @Mapping(source = "user.userId", target = "submittedUserId")
     PrayerRequestBookmarkModel prayerRequestBookmarkToModel(PrayerRequestBookmark source);
+
+    @Mapping(source = "userId", target = "user.userId")
+    @Mapping(source = "fullName", target = "user.fullName")
+    @Mapping(source = "username", target = "user.username")
+    @Mapping(source = "imageFileId", target = "user.image.mediaFileId")
+    @Mapping(source = "userFileName", target = "")
+    PrayerRequestCommentModel prayerRequestCommentToModel(PrayerRequestCommentResult source);
 
     @AfterMapping
     default void setImagesToNull(@MappingTarget PrayerRequestModel prayerRequestModel){
