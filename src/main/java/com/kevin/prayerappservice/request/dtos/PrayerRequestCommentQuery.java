@@ -1,12 +1,10 @@
 package com.kevin.prayerappservice.request.dtos;
 
-public class SinglePrayerRequestGetQuery {
+public class PrayerRequestCommentQuery {
     private int prayerRequestId;
-    private int userId;
 
-    public SinglePrayerRequestGetQuery(int prayerRequestId, int userId) {
+    public PrayerRequestCommentQuery(int prayerRequestId) {
         this.prayerRequestId = prayerRequestId;
-        this.userId = userId;
     }
 
     public int getPrayerRequestId() {
@@ -15,13 +13,5 @@ public class SinglePrayerRequestGetQuery {
 
     public void setPrayerRequestId(int prayerRequestId) {
         this.prayerRequestId = prayerRequestId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 }
