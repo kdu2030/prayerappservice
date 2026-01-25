@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class PrayerRequestService {
@@ -185,7 +186,11 @@ public class PrayerRequestService {
 
             PrayerRequestDetailsModel prayerRequest = (PrayerRequestDetailsModel) prayerRequestMapper.prayerRequestGetResultToPrayerRequestModel(prayerRequestResult);
 
+            Stream<PrayerRequestCommentResult> commentResultStream = prayerRequestCommentsResult.stream();
+            List<PrayerRequestCommentModel> comments = commentResultStream.map(prayerRequestMapper::prayerRequestCommentToModel).toList();
 
+            prayerRequest.setComments(comments);
+            return prayerRequest;
         } catch(UncategorizedSQLException exception){
             Throwable cause = exception.getCause();
             String exceptionMessage = cause != null ? cause.getMessage() : null;

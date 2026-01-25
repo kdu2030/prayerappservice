@@ -58,8 +58,10 @@ public interface PrayerRequestMapper {
     @Mapping(source = "userId", target = "user.userId")
     @Mapping(source = "fullName", target = "user.fullName")
     @Mapping(source = "username", target = "user.username")
-    @Mapping(source = "imageFileId", target = "user.image.mediaFileId")
-    @Mapping(source = "userFileName", target = "")
+    @Mapping(source = "userFileId", target = "user.image.mediaFileId")
+    @Mapping(source = "userFileName", target = "user.image.fileName")
+    @Mapping(source = "userFileType", target = "user.image.fileType")
+    @Mapping(source = "userFileUrl", target = "user.image.fileUrl")
     PrayerRequestCommentModel prayerRequestCommentToModel(PrayerRequestCommentResult source);
 
     @AfterMapping
@@ -73,6 +75,15 @@ public interface PrayerRequestMapper {
 
         if(prayerRequestUserSummary.getImage().getMediaFileId() == null){
             prayerRequestUserSummary.setImage(null);
+        }
+    }
+
+    @AfterMapping
+    default void setCommentUserImageToNull(@MappingTarget PrayerRequestCommentModel commentModel){
+        PrayerRequestUserSummary userSummary = commentModel.getUser();
+
+        if(userSummary.getImage().getMediaFileId() == null){
+            userSummary.setImage(null);
         }
     }
 }
