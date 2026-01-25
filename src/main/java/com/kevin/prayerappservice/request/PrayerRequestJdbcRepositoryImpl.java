@@ -36,4 +36,9 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(countQuery);
         return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(PrayerRequestCountResult.class));
     }
+
+    @Override
+    public PrayerRequestGetResult getPrayerRequest(int prayerRequestId, int userId){
+
+    }
 }
