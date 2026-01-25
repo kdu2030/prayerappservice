@@ -175,5 +175,20 @@ public class PrayerRequestService {
         prayerRequestBookmarkRepository.delete(prayerRequestBookmark);
     }
 
+    public PrayerRequestDetailsModel getPrayerRequest(String authHeader, int prayerRequestId){
+        try {
+            String token = jwtService.extractTokenFromAuthHeader(authHeader);
+            int userId = jwtService.extractUserId(token);
+        } catch(UncategorizedSQLException exception){
+            Throwable cause = exception.getCause();
+            String exceptionMessage = cause != null ? cause.getMessage() : null;
+
+            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)){
+                throw new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW);
+            }
+
+            throw exception;
+        }
+    }
 
 }
