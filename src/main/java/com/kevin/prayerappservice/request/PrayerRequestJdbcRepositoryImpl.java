@@ -39,6 +39,9 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
 
     @Override
     public PrayerRequestGetResult getPrayerRequest(int prayerRequestId, int userId){
-
+        String sql = "SELECT * FROM get_prayer_request(:prayerRequestId, :userId);";
+        SinglePrayerRequestGetQuery getQuery = new SinglePrayerRequestGetQuery(prayerRequestId, userId);
+        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(getQuery);
+        return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(PrayerRequestGetResult.class));
     }
 }
