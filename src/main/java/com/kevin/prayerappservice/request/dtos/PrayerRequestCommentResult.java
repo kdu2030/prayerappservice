@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class PrayerRequestCommentResult {
     private int prayerRequestCommentId;
     private LocalDateTime submittedDate;
+    private String comment;
     private int userId;
     private String username;
     private String fullName;
@@ -15,9 +16,10 @@ public class PrayerRequestCommentResult {
 
     public PrayerRequestCommentResult() {}
 
-    public PrayerRequestCommentResult(int prayerRequestCommentId, LocalDateTime submittedDate, int userId, String username, String fullName, Integer userFileId, String userFileName, String userFileType, String userFileUrl) {
+    public PrayerRequestCommentResult(int prayerRequestCommentId, LocalDateTime submittedDate, String comment, int userId, String username, String fullName, Integer userFileId, String userFileName, String userFileType, String userFileUrl) {
         this.prayerRequestCommentId = prayerRequestCommentId;
         this.submittedDate = submittedDate;
+        this.comment = comment;
         this.userId = userId;
         this.username = username;
         this.fullName = fullName;
@@ -97,5 +99,13 @@ public class PrayerRequestCommentResult {
 
     public void setUserFileUrl(String userFileUrl) {
         this.userFileUrl = userFileUrl;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

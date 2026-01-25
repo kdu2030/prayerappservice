@@ -5,13 +5,15 @@ import java.time.LocalDateTime;
 public class PrayerRequestCommentModel {
     private int prayerRequestCommentId;
     private LocalDateTime submittedDate;
+    private String comment;
     private PrayerRequestUserSummary user;
 
     public PrayerRequestCommentModel(){}
 
-    public PrayerRequestCommentModel(int prayerRequestCommentId, LocalDateTime submittedDate, PrayerRequestUserSummary user) {
+    public PrayerRequestCommentModel(int prayerRequestCommentId, LocalDateTime submittedDate, String comment, PrayerRequestUserSummary user) {
         this.prayerRequestCommentId = prayerRequestCommentId;
         this.submittedDate = submittedDate;
+        this.comment = comment;
         this.user = user;
     }
 
@@ -37,5 +39,13 @@ public class PrayerRequestCommentModel {
 
     public void setUser(PrayerRequestUserSummary user) {
         this.user = user;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
