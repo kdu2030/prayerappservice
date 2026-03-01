@@ -55,4 +55,10 @@ public class PrayerRequestController implements PrayerRequestApi {
         PrayerRequestDetailsModel prayerRequest = prayerRequestService.getPrayerRequest(authHeader, prayerRequestId);
         return new ResponseEntity<>(prayerRequest, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<PrayerRequestCommentModel> createPrayerRequest(String authHeader, int prayerRequestId, PrayerRequestCommentCreateRequest createRequest){
+        PrayerRequestCommentModel prayerRequestComment = prayerRequestService.createPrayerRequestComment(authHeader, prayerRequestId, createRequest);
+        return new ResponseEntity<>(prayerRequestComment, HttpStatus.OK);
+    }
 }

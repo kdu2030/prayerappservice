@@ -1,9 +1,13 @@
 package com.kevin.prayerappservice.request.models;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.time.LocalDateTime;
 
 public class PrayerRequestCommentCreateRequest {
     private int userId;
+
+    @NotBlank
     private String comment;
     private LocalDateTime submittedDate;
 
