@@ -40,5 +40,5 @@ public interface PrayerRequestApi {
 
     @PostMapping("{prayerRequestId}/comment")
     @Operation(summary = "Creates a prayer request comment")
-    ResponseEntity<PrayerRequestCommentModel> createPrayerRequest(@RequestHeader("Authorization") String authHeader, @PathVariable int prayerRequestId, @Valid @RequestBody PrayerRequestCommentCreateRequest createRequest);
+    ResponseEntity<PrayerRequestCommentModel> createPrayerRequestComment(@RequestHeader("Authorization") String authHeader, @PathVariable int prayerRequestId, @Valid @RequestBody PrayerRequestCommentCreateRequest createRequest);
 }
