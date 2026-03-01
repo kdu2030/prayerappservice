@@ -30,9 +30,7 @@ public class PrayerRequestService {
     private final PrayerRequestLikeRepository prayerRequestLikeRepository;
     private final PrayerRequestBookmarkRepository prayerRequestBookmarkRepository;
 
-    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository,
-                                PrayerRequestRepository prayerRequestRepository,
-                                PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository, PrayerRequestBookmarkRepository prayerRequestBookmarkRepository) {
+    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository, PrayerRequestBookmarkRepository prayerRequestBookmarkRepository) {
         this.jwtService = jwtService;
         this.prayerGroupUserRepository = prayerGroupUserRepository;
         this.prayerRequestRepository = prayerRequestRepository;
@@ -42,24 +40,17 @@ public class PrayerRequestService {
         this.prayerRequestBookmarkRepository = prayerRequestBookmarkRepository;
     }
 
-    public PrayerRequestModel createPrayerRequest(String authHeader,
-                                                  PrayerRequestCreateRequest createRequest) {
+    public PrayerRequestModel createPrayerRequest(String authHeader, PrayerRequestCreateRequest createRequest) {
         int prayerGroupId = createRequest.getPrayerGroupId();
-        
+
         String token = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(token);
 
-        prayerGroupUserRepository.findByPrayerGroup_prayerGroupIdAndUser_userId(prayerGroupId, userId)
-                .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_CREATE));
+        prayerGroupUserRepository.findByPrayerGroup_prayerGroupIdAndUser_userId(prayerGroupId, userId).orElseThrow(() -> new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_CREATE));
 
         LocalDateTime createdDate = Optional.ofNullable(createRequest.getCreatedDate()).orElse(LocalDateTime.now());
 
-        PrayerRequestCreateQuery createQuery = new PrayerRequestCreateQuery(
-                createRequest.getRequestTitle(),
-                createRequest.getRequestDescription(),
-                createdDate,
-                createRequest.getExpirationDate(),
-                prayerGroupId, createRequest.getUserId());
+        PrayerRequestCreateQuery createQuery = new PrayerRequestCreateQuery(createRequest.getRequestTitle(), createRequest.getRequestDescription(), createdDate, createRequest.getExpirationDate(), prayerGroupId, createRequest.getUserId());
 
         PrayerRequestCreateResult createResult = prayerRequestRepository.createPrayerRequest(createQuery);
         return prayerRequestMapper.prayerRequestCreateResultToPrayerRequestModel(createResult);
@@ -75,19 +66,14 @@ public class PrayerRequestService {
 
             int[] prayerGroupIds = filterCriteria.getPrayerGroupIds().stream().mapToInt(Integer::valueOf).toArray();
 
-            PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(userId, prayerGroupIds, null, null,
-                    filterCriteria.isIncludeExpiredPrayerRequests());
+            PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests());
             PrayerRequestCountResult countResult = prayerRequestRepository.getPrayerRequestsCount(countQuery);
 
-            PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(userId, prayerGroupIds, null, null,
-                    filterCriteria.isIncludeExpiredPrayerRequests(),
-                    filterCriteria.getSortConfig().getSortField().toString(),
-                    filterCriteria.getSortConfig().getSortDirection().toString(), pageIndex * pageSize, pageSize);
+            PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests(), filterCriteria.getSortConfig().getSortField().toString(), filterCriteria.getSortConfig().getSortDirection().toString(), pageIndex * pageSize, pageSize);
 
             List<PrayerRequestGetResult> getResults = prayerRequestRepository.getPrayerRequests(getQuery);
 
-            List<PrayerRequestModel> prayerRequests =
-                    getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList();
+            List<PrayerRequestModel> prayerRequests = getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList();
 
             int prayerRequestsCount = countResult.getPrayerRequestCount();
             int numberOfPages = (int) Math.ceil(prayerRequestsCount / (double) pageSize);
@@ -104,13 +90,12 @@ public class PrayerRequestService {
         }
     }
 
-    public PrayerRequestLikeModel createPrayerRequestLike(int prayerRequestId, PrayerRequestActionCreateRequest createRequest){
-        PrayerRequest prayerRequest = prayerRequestRepository.findById(prayerRequestId)
-                .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST));
+    public PrayerRequestLikeModel createPrayerRequestLike(int prayerRequestId, PrayerRequestActionCreateRequest createRequest) {
+        PrayerRequest prayerRequest = prayerRequestRepository.findById(prayerRequestId).orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST));
 
         Optional<PrayerRequestLike> existingPrayerRequestLike = prayerRequestLikeRepository.findByPrayerRequest_prayerRequestIdAndUser_userId(prayerRequestId, createRequest.getUserId());
 
-        if(existingPrayerRequestLike.isPresent()){
+        if (existingPrayerRequestLike.isPresent()) {
             throw new DataValidationException(PrayerRequestErrors.PRAYER_REQUEST_LIKE_EXISTS);
         }
 
@@ -126,14 +111,13 @@ public class PrayerRequestService {
         return prayerRequestMapper.prayerRequestLikeToPrayerRequestLikeModel(prayerRequestLike);
     }
 
-    public void deletePrayerRequestLike(String authHeader, int prayerRequestLikeId){
-        PrayerRequestLike prayerRequestLike = prayerRequestLikeRepository.findById(prayerRequestLikeId)
-                .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST_LIKE));
+    public void deletePrayerRequestLike(String authHeader, int prayerRequestLikeId) {
+        PrayerRequestLike prayerRequestLike = prayerRequestLikeRepository.findById(prayerRequestLikeId).orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST_LIKE));
 
         String token = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(token);
 
-        if(prayerRequestLike.getUser().getUserId() != userId){
+        if (prayerRequestLike.getUser().getUserId() != userId) {
             throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_DELETE_LIKE);
         }
 
@@ -144,10 +128,10 @@ public class PrayerRequestService {
         prayerRequestRepository.save(prayerRequest);
     }
 
-    public PrayerRequestBookmarkModel createPrayerRequestBookmark(int prayerRequestId, PrayerRequestActionCreateRequest createRequest){
+    public PrayerRequestBookmarkModel createPrayerRequestBookmark(int prayerRequestId, PrayerRequestActionCreateRequest createRequest) {
         Optional<PrayerRequestBookmark> existingBookmark = prayerRequestBookmarkRepository.findByPrayerRequest_prayerRequestIdAndUser_userId(prayerRequestId, createRequest.getUserId());
 
-        if(existingBookmark.isPresent()){
+        if (existingBookmark.isPresent()) {
             throw new DataValidationException(PrayerRequestErrors.BOOKMARK_ALREADY_EXISTS);
         }
 
@@ -160,23 +144,20 @@ public class PrayerRequestService {
         return prayerRequestMapper.prayerRequestBookmarkToModel(prayerRequestBookmark);
     }
 
-    public void deletePrayerRequestBookmark(String authHeader, int prayerRequestBookmarkId){
+    public void deletePrayerRequestBookmark(String authHeader, int prayerRequestBookmarkId) {
         String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(authToken);
 
-        PrayerRequestBookmark prayerRequestBookmark =
-                prayerRequestBookmarkRepository
-                .findById(prayerRequestBookmarkId)
-                .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_BOOKMARK));
+        PrayerRequestBookmark prayerRequestBookmark = prayerRequestBookmarkRepository.findById(prayerRequestBookmarkId).orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_BOOKMARK));
 
-        if(prayerRequestBookmark.getUser().getUserId() != userId){
+        if (prayerRequestBookmark.getUser().getUserId() != userId) {
             throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_DELETE_BOOKMARK);
         }
 
         prayerRequestBookmarkRepository.delete(prayerRequestBookmark);
     }
 
-    public PrayerRequestDetailsModel getPrayerRequest(String authHeader, int prayerRequestId){
+    public PrayerRequestDetailsModel getPrayerRequest(String authHeader, int prayerRequestId) {
         try {
             String token = jwtService.extractTokenFromAuthHeader(authHeader);
             int userId = jwtService.extractUserId(token);
@@ -190,11 +171,11 @@ public class PrayerRequestService {
             List<PrayerRequestCommentModel> comments = commentResultStream.map(prayerRequestMapper::prayerRequestCommentToModel).toList();
 
             return PrayerRequestDetailsModel.prayerRequestModelToDetailsModel(prayerRequest, comments);
-        } catch(UncategorizedSQLException exception){
+        } catch (UncategorizedSQLException exception) {
             Throwable cause = exception.getCause();
             String exceptionMessage = cause != null ? cause.getMessage() : null;
 
-            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)){
+            if (exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)) {
                 throw new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW);
             }
 
@@ -202,6 +183,29 @@ public class PrayerRequestService {
         }
     }
 
+    public PrayerRequestCommentModel createPrayerRequestComment(String authHeader, int prayerRequestId, PrayerRequestCommentCreateRequest createRequest) {
+        String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
+        int userId = jwtService.extractUserId(authToken);
+
+        if(userId != createRequest.getUserId()){
+            throw new DataValidationException(PrayerRequestErrors.USER_ID_DOES_NOT_MATCH);
+        }
+
+        PrayerRequestCommentCreateParams createParams = new PrayerRequestCommentCreateParams(prayerRequestId, createRequest.getUserId(), createRequest.getComment(), createRequest.getSubmittedDate());
+        try {
+            PrayerRequestCommentResult createCommentResult = prayerRequestRepository.createPrayerRequestComment(createParams);
+            return prayerRequestMapper.prayerRequestCommentToModel(createCommentResult);
+        } catch(UncategorizedSQLException exception){
+            Throwable cause = exception.getCause();
+            String exceptionMessage = cause != null ? cause.getMessage() : null;
+
+            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_COMMENT)){
+                throw new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_COMMENT);
+            }
+
+            throw exception;
+        }
+    }
 
 
 }

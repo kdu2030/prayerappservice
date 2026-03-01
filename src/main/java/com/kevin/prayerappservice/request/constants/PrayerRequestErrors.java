@@ -11,4 +11,5 @@ public class PrayerRequestErrors {
     public static final String CANNOT_FIND_BOOKMARK = "Cannot find bookmark";
     public static final String ONLY_SUBMITTED_CAN_DELETE_BOOKMARK = "Only the submitted user can delete the bookmark.";
     public static final String USER_MUST_BE_JOINED_TO_COMMENT = "A user must be a member of the prayer group to comment on prayer requests.";
+    public static final String USER_ID_DOES_NOT_MATCH = "User ID from Auth Token must match User ID in request";
 }
