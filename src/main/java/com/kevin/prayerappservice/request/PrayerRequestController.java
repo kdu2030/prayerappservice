@@ -62,4 +62,9 @@ public class PrayerRequestController implements PrayerRequestApi {
         PrayerRequestCommentModel prayerRequestComment = prayerRequestService.createPrayerRequestComment(authHeader, prayerRequestId, createRequest);
         return new ResponseEntity<>(prayerRequestComment, HttpStatus.OK);
     }
+
+    public ResponseEntity<PrayerRequestCommentModel> updatePrayerRequestComment(String authHeader, int prayerRequestCommentId, PrayerRequestCommentUpdateRequest updateRequest){
+        PrayerRequestCommentModel prayerRequestComment = prayerRequestService.updatePrayerRequestComment(authHeader, prayerRequestCommentId, updateRequest);
+        return new ResponseEntity<>(prayerRequestComment, HttpStatus.OK);
+    }
 }

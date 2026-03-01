@@ -1,6 +1,9 @@
 package com.kevin.prayerappservice.request.models;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class PrayerRequestCommentUpdateRequest {
+    @NotBlank
     private String comment;
 
     public PrayerRequestCommentUpdateRequest(){}
