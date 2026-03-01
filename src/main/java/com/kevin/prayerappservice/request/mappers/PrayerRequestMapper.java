@@ -3,7 +3,9 @@ package com.kevin.prayerappservice.request.mappers;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCommentResult;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateResult;
 import com.kevin.prayerappservice.request.dtos.PrayerRequestGetResult;
+import com.kevin.prayerappservice.request.entities.PrayerRequest;
 import com.kevin.prayerappservice.request.entities.PrayerRequestBookmark;
+import com.kevin.prayerappservice.request.entities.PrayerRequestComment;
 import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
 import com.kevin.prayerappservice.request.models.*;
 import org.mapstruct.*;
@@ -63,6 +65,12 @@ public interface PrayerRequestMapper {
     @Mapping(source = "userFileType", target = "user.image.fileType")
     @Mapping(source = "userFileUrl", target = "user.image.fileUrl")
     PrayerRequestCommentModel prayerRequestCommentToModel(PrayerRequestCommentResult source);
+
+    @Mapping(source = "user.imageFile.mediaFileId", target = "user.image.mediaFileId")
+    @Mapping(source = "user.imageFile.fileName", target = "user.image.fileName")
+    @Mapping(source = "user.imageFile.fileType", target = "user.image.fileType")
+    @Mapping(source = "user.imageFile.fileUrl", target = "user.image.fileUrl")
+    PrayerRequestCommentModel prayerRequestCommentEntityToModel(PrayerRequestComment source);
 
     @AfterMapping
     default void setImagesToNull(@MappingTarget PrayerRequestModel prayerRequestModel){

@@ -7,6 +7,7 @@ import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
 import com.kevin.prayerappservice.request.dtos.*;
 import com.kevin.prayerappservice.request.entities.PrayerRequest;
 import com.kevin.prayerappservice.request.entities.PrayerRequestBookmark;
+import com.kevin.prayerappservice.request.entities.PrayerRequestComment;
 import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
 import com.kevin.prayerappservice.request.mappers.PrayerRequestMapper;
 import com.kevin.prayerappservice.request.models.*;
@@ -29,8 +30,9 @@ public class PrayerRequestService {
     private final EntityManager entityManager;
     private final PrayerRequestLikeRepository prayerRequestLikeRepository;
     private final PrayerRequestBookmarkRepository prayerRequestBookmarkRepository;
+    private final PrayerRequestCommentRepository prayerRequestCommentRepository;
 
-    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository, PrayerRequestBookmarkRepository prayerRequestBookmarkRepository) {
+    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository, PrayerRequestBookmarkRepository prayerRequestBookmarkRepository, PrayerRequestCommentRepository prayerRequestCommentRepository) {
         this.jwtService = jwtService;
         this.prayerGroupUserRepository = prayerGroupUserRepository;
         this.prayerRequestRepository = prayerRequestRepository;
@@ -38,6 +40,7 @@ public class PrayerRequestService {
         this.entityManager = entityManager;
         this.prayerRequestLikeRepository = prayerRequestLikeRepository;
         this.prayerRequestBookmarkRepository = prayerRequestBookmarkRepository;
+        this.prayerRequestCommentRepository = prayerRequestCommentRepository;
     }
 
     public PrayerRequestModel createPrayerRequest(String authHeader, PrayerRequestCreateRequest createRequest) {
@@ -207,5 +210,20 @@ public class PrayerRequestService {
         }
     }
 
+    public PrayerRequestCommentModel updatePrayerRequestComment(String authHeader, int prayerRequestCommentId, PrayerRequestCommentUpdateRequest updateRequest){
+        String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
+        int userId = jwtService.extractUserId(authToken);
+
+        PrayerRequestComment comment = prayerRequestCommentRepository.findById(prayerRequestCommentId).orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST_COMMENT));
+
+        if(comment.getUser().getUserId() != userId){
+            throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_UPDATE_COMMENT);
+        }
+
+        comment.setComment(updateRequest.getComment());
+        prayerRequestCommentRepository.save(comment);
+
+        return prayerRequestMapper.prayerRequestCommentEntityToModel(comment);
+    }
 
 }

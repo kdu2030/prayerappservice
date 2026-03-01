@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.request;
 
+import com.kevin.prayerappservice.request.entities.PrayerRequestComment;
 import com.kevin.prayerappservice.request.models.*;
 import com.sun.net.httpserver.HttpsServer;
 import org.springframework.http.HttpStatus;
@@ -61,5 +62,4 @@ public class PrayerRequestController implements PrayerRequestApi {
         PrayerRequestCommentModel prayerRequestComment = prayerRequestService.createPrayerRequestComment(authHeader, prayerRequestId, createRequest);
         return new ResponseEntity<>(prayerRequestComment, HttpStatus.OK);
     }
-
 }
