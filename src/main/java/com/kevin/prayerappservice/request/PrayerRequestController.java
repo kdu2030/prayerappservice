@@ -63,8 +63,15 @@ public class PrayerRequestController implements PrayerRequestApi {
         return new ResponseEntity<>(prayerRequestComment, HttpStatus.OK);
     }
 
+    @Override
     public ResponseEntity<PrayerRequestCommentModel> updatePrayerRequestComment(String authHeader, int prayerRequestCommentId, PrayerRequestCommentUpdateRequest updateRequest){
         PrayerRequestCommentModel prayerRequestComment = prayerRequestService.updatePrayerRequestComment(authHeader, prayerRequestCommentId, updateRequest);
         return new ResponseEntity<>(prayerRequestComment, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> deletePrayerRequestComment(String authHeader, int prayerRequestCommentId){
+        prayerRequestService.deletePrayerRequestComment(authHeader, prayerRequestCommentId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

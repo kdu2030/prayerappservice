@@ -238,7 +238,7 @@ public class PrayerRequestService {
             throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_DELETE_COMMENT);
         }
 
-
+        prayerRequestRepository.deletePrayerRequestComment(prayerRequestCommentId);
     }
 
 }

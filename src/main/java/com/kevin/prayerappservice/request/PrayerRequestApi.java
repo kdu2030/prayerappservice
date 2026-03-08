@@ -45,4 +45,8 @@ public interface PrayerRequestApi {
     @PutMapping("comment/{prayerRequestCommentId}")
     @Operation(summary = "Updates a prayer request comment")
     ResponseEntity<PrayerRequestCommentModel> updatePrayerRequestComment(@RequestHeader("Authorization") String authHeader, @PathVariable int prayerRequestCommentId, @Valid @RequestBody PrayerRequestCommentUpdateRequest updateRequest);
+
+    @DeleteMapping("comment/{prayerRequestCommentId}")
+    @Operation(summary = "Deletes a prayer request comment")
+    ResponseEntity<Void> deletePrayerRequestComment(@RequestHeader("Authorization") String authHeader, @PathVariable int prayerRequestCommentId);
 }
