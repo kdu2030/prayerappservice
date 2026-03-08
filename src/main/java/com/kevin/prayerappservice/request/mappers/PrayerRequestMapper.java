@@ -77,11 +77,11 @@ public interface PrayerRequestMapper {
         PrayerRequestPrayerGroupSummary prayerGroupSummary = prayerRequestModel.getPrayerGroup();
         PrayerRequestUserSummary prayerRequestUserSummary = prayerRequestModel.getUser();
 
-        if(prayerGroupSummary.getAvatarFile().getMediaFileId() == null){
+        if(prayerGroupSummary.getAvatarFile() == null || prayerGroupSummary.getAvatarFile().getMediaFileId() == null){
             prayerGroupSummary.setAvatarFile(null);
         }
 
-        if(prayerRequestUserSummary.getImage().getMediaFileId() == null){
+        if(prayerRequestUserSummary.getImage() == null || prayerRequestUserSummary.getImage().getMediaFileId() == null){
             prayerRequestUserSummary.setImage(null);
         }
     }
@@ -90,7 +90,7 @@ public interface PrayerRequestMapper {
     default void setCommentUserImageToNull(@MappingTarget PrayerRequestCommentModel commentModel){
         PrayerRequestUserSummary userSummary = commentModel.getUser();
 
-        if(userSummary.getImage().getMediaFileId() == null){
+        if(userSummary.getImage() == null || userSummary.getImage().getMediaFileId() == null){
             userSummary.setImage(null);
         }
     }
