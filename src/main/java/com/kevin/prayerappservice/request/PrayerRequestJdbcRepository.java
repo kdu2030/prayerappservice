@@ -11,4 +11,5 @@ public interface PrayerRequestJdbcRepository {
     PrayerRequestGetResult getPrayerRequest(int prayerRequestId, int userId);
     List<PrayerRequestCommentResult> getPrayerRequestComments(int prayerRequestId);
     PrayerRequestCommentResult createPrayerRequestComment(PrayerRequestCommentCreateParams createParams);
+    void deletePrayerRequestComment(int prayerRequestCommentId);
 }
