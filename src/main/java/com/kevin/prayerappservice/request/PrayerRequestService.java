@@ -226,4 +226,19 @@ public class PrayerRequestService {
         return prayerRequestMapper.prayerRequestCommentEntityToModel(comment);
     }
 
+    public void deletePrayerRequestComment(String authHeader, int prayerRequestCommentId){
+        PrayerRequestComment comment = prayerRequestCommentRepository
+                .findById(prayerRequestCommentId)
+                .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST_COMMENT));
+
+        String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
+        int userId = jwtService.extractUserId(authToken);
+
+        if(comment.getUser().getUserId() != userId){
+            throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_DELETE_COMMENT);
+        }
+
+
+    }
+
 }
