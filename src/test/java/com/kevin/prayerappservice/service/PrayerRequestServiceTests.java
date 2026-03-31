@@ -40,8 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -364,5 +363,16 @@ public class PrayerRequestServiceTests {
         Optional<PrayerRequestBookmark> bookmarkAfterDelete = prayerRequestBookmarkRepository.findById(bookmarkId);
 
         Assertions.assertThat(bookmarkAfterDelete.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void getPrayerRequest_nonJoinedUserViewsPrivateRequest_ThrowsException(){
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(757);
+
+        UncategorizedSQLException userNotJoinedException = new UncategorizedSQLException(null, null, new SQLException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW));
+        Mockito.when(prayerRequestJdbcRepository.getPrayerRequest(anyInt(), anyInt())).thenThrow(userNotJoinedException);
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.getPrayerRequest("mockHeader", 787));
     }
 }
