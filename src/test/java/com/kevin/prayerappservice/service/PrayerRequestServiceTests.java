@@ -16,6 +16,7 @@ import com.kevin.prayerappservice.request.constants.PrayerRequestSortField;
 import com.kevin.prayerappservice.request.dtos.*;
 import com.kevin.prayerappservice.request.entities.PrayerRequest;
 import com.kevin.prayerappservice.request.entities.PrayerRequestBookmark;
+import com.kevin.prayerappservice.request.entities.PrayerRequestComment;
 import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
 import com.kevin.prayerappservice.request.models.*;
 import com.kevin.prayerappservice.user.UserRepository;
@@ -71,6 +72,9 @@ public class PrayerRequestServiceTests {
 
     @Autowired
     private PrayerRequestService prayerRequestService;
+
+    @Autowired
+    public PrayerRequestCommentRepository prayerRequestCommentRepository;
 
     @Test
     @DirtiesContext
@@ -456,5 +460,30 @@ public class PrayerRequestServiceTests {
 
         Assertions.assertThat(prayerRequestCommentModel.getPrayerRequestCommentId()).isEqualTo(commentResult.getPrayerRequestCommentId());
         Assertions.assertThat(prayerRequestCommentModel.getComment()).isEqualTo(commentResult.getComment());
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void updatePrayerRequest_updatedByNonSubmittedUser_throwsException(){
+        User user = new User("Link Neal", "lneal", "lneal@mythical.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Mythical Entertainment", "A prayer group for the makers of Good Mythical Morning", "", VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("Mock Prayer Request", "Mock prayer request description", LocalDateTime.now(), 0, 0, 0, null, prayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestComment prayerRequestComment = new PrayerRequestComment("Mock prayer request comment", prayerRequest, user, LocalDateTime.now());
+        prayerRequestCommentRepository.save(prayerRequestComment);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId() + 1);
+
+        PrayerRequestCommentUpdateRequest updateRequest = new PrayerRequestCommentUpdateRequest("Comment submitted by other user");
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.updatePrayerRequestComment("mockHeader", prayerRequestComment.getPrayerRequestCommentId(), updateRequest));
+
     }
 }
