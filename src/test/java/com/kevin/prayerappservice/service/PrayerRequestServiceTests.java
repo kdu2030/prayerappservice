@@ -13,10 +13,7 @@ import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.request.*;
 import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
 import com.kevin.prayerappservice.request.constants.PrayerRequestSortField;
-import com.kevin.prayerappservice.request.dtos.PrayerRequestCommentResult;
-import com.kevin.prayerappservice.request.dtos.PrayerRequestCountResult;
-import com.kevin.prayerappservice.request.dtos.PrayerRequestCreateResult;
-import com.kevin.prayerappservice.request.dtos.PrayerRequestGetResult;
+import com.kevin.prayerappservice.request.dtos.*;
 import com.kevin.prayerappservice.request.entities.PrayerRequest;
 import com.kevin.prayerappservice.request.entities.PrayerRequestBookmark;
 import com.kevin.prayerappservice.request.entities.PrayerRequestLike;
@@ -425,5 +422,20 @@ public class PrayerRequestServiceTests {
 
         Assertions.assertThat(prayerRequestModel.getComments().size()).isEqualTo(commentResults.length);
         Assertions.assertThat(prayerRequestModel.getComments().getFirst().getPrayerRequestCommentId()).isEqualTo(commentResults[0].getPrayerRequestCommentId());
+    }
+
+    @Test
+    public void createPrayerRequest_userIsNotMember_throwsException(){
+        int mockUserId = 757;
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(mockUserId);
+
+        PrayerRequestCommentCreateRequest createRequest = new PrayerRequestCommentCreateRequest(mockUserId, "Can I share this during our church's prayer meeting?", LocalDateTime.now());
+
+        UncategorizedSQLException notJoinedException = new UncategorizedSQLException(null, null, new SQLException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_COMMENT));
+        Mockito.when(prayerRequestJdbcRepository.createPrayerRequestComment(any())).thenThrow(notJoinedException);
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.createPrayerRequestComment("mockHeader", 787, createRequest));
     }
 }
