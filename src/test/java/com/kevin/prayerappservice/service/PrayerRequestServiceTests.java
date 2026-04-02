@@ -486,4 +486,30 @@ public class PrayerRequestServiceTests {
         Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.updatePrayerRequestComment("mockHeader", prayerRequestComment.getPrayerRequestCommentId(), updateRequest));
 
     }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void updatePrayerRequest_updatedBySubmittedUser_updatesComment(){
+        User user = new User("Link Neal", "lneal", "lneal@mythical.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Mythical Entertainment", "A prayer group for the makers of Good Mythical Morning", "", VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("Mock Prayer Request", "Mock prayer request description", LocalDateTime.now(), 0, 0, 0, null, prayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestComment prayerRequestComment = new PrayerRequestComment("Mock prayer request comment", prayerRequest, user, LocalDateTime.now());
+        prayerRequestCommentRepository.save(prayerRequestComment);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId());
+
+        PrayerRequestCommentUpdateRequest updateRequest = new PrayerRequestCommentUpdateRequest("Comment submitted by same user");
+        PrayerRequestCommentModel prayerRequestCommentModel = prayerRequestService.updatePrayerRequestComment("mockHeader", prayerRequestComment.getPrayerRequestCommentId(), updateRequest);
+
+        Assertions.assertThat(prayerRequestCommentModel.getComment()).isEqualTo(updateRequest.getComment());
+
+    }
 }
