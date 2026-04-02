@@ -22,6 +22,7 @@ import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.transaction.Transactional;
+import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -425,7 +426,7 @@ public class PrayerRequestServiceTests {
     }
 
     @Test
-    public void createPrayerRequest_userIsNotMember_throwsException(){
+    public void createPrayerRequestComment_userIsNotMember_throwsException(){
         int mockUserId = 757;
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
@@ -437,5 +438,23 @@ public class PrayerRequestServiceTests {
         Mockito.when(prayerRequestJdbcRepository.createPrayerRequestComment(any())).thenThrow(notJoinedException);
 
         Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.createPrayerRequestComment("mockHeader", 787, createRequest));
+    }
+
+    @Test
+    public void createPrayerRequestComment_givenValidComment_createsComment(){
+        int mockUserId = 757;
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(mockUserId);
+
+        PrayerRequestCommentCreateRequest createRequest = new PrayerRequestCommentCreateRequest(mockUserId, "Can I share this during our church's prayer meeting?", LocalDateTime.now());
+        PrayerRequestCommentResult commentResult = new PrayerRequestCommentResult(717, LocalDateTime.now(), createRequest.getComment(), mockUserId, "lneal", "Link Neal", null, null, null, null);
+
+        Mockito.when(prayerRequestJdbcRepository.createPrayerRequestComment(any())).thenReturn(commentResult);
+
+        PrayerRequestCommentModel prayerRequestCommentModel = prayerRequestService.createPrayerRequestComment("mockHeader",787, createRequest);
+
+        Assertions.assertThat(prayerRequestCommentModel.getPrayerRequestCommentId()).isEqualTo(commentResult.getPrayerRequestCommentId());
+        Assertions.assertThat(prayerRequestCommentModel.getComment()).isEqualTo(commentResult.getComment());
     }
 }
