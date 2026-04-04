@@ -1,5 +1,6 @@
 package com.kevin.prayerappservice.request;
 
+import com.kevin.prayerappservice.request.entities.PrayerRequestComment;
 import com.kevin.prayerappservice.request.models.*;
 import com.sun.net.httpserver.HttpsServer;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,30 @@ public class PrayerRequestController implements PrayerRequestApi {
     @Override
     public ResponseEntity<Void> deletePrayerRequestBookmark(String authHeader, int prayerRequestBookmarkId){
         prayerRequestService.deletePrayerRequestBookmark(authHeader, prayerRequestBookmarkId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PrayerRequestDetailsModel> getPrayerRequest(String authHeader, int prayerRequestId){
+        PrayerRequestDetailsModel prayerRequest = prayerRequestService.getPrayerRequest(authHeader, prayerRequestId);
+        return new ResponseEntity<>(prayerRequest, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PrayerRequestCommentModel> createPrayerRequestComment(String authHeader, int prayerRequestId, PrayerRequestCommentCreateRequest createRequest){
+        PrayerRequestCommentModel prayerRequestComment = prayerRequestService.createPrayerRequestComment(authHeader, prayerRequestId, createRequest);
+        return new ResponseEntity<>(prayerRequestComment, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PrayerRequestCommentModel> updatePrayerRequestComment(String authHeader, int prayerRequestCommentId, PrayerRequestCommentUpdateRequest updateRequest){
+        PrayerRequestCommentModel prayerRequestComment = prayerRequestService.updatePrayerRequestComment(authHeader, prayerRequestCommentId, updateRequest);
+        return new ResponseEntity<>(prayerRequestComment, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> deletePrayerRequestComment(String authHeader, int prayerRequestCommentId){
+        prayerRequestService.deletePrayerRequestComment(authHeader, prayerRequestCommentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

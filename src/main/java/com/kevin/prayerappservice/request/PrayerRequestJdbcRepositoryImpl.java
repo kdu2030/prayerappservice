@@ -36,4 +36,35 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(countQuery);
         return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(PrayerRequestCountResult.class));
     }
+
+    @Override
+    public PrayerRequestGetResult getPrayerRequest(int prayerRequestId, int userId){
+        String sql = "SELECT * FROM get_prayer_request(:prayerRequestId, :userId);";
+        SinglePrayerRequestGetQuery getQuery = new SinglePrayerRequestGetQuery(prayerRequestId, userId);
+        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(getQuery);
+        return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(PrayerRequestGetResult.class));
+    }
+
+    @Override
+    public List<PrayerRequestCommentResult> getPrayerRequestComments(int prayerRequestId){
+        String sql = "SELECT * FROM get_prayer_request_comments(:prayerRequestId);";
+        PrayerRequestCommentQuery commentQuery = new PrayerRequestCommentQuery(prayerRequestId);
+        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(commentQuery);
+        return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerRequestCommentResult.class));
+    }
+
+    @Override
+    public PrayerRequestCommentResult createPrayerRequestComment(PrayerRequestCommentCreateParams createParams){
+        String sql = "SELECT * FROM add_prayer_request_comment(:prayerRequestId, :userId, :comment, :submittedDate);";
+        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(createParams);
+        return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(PrayerRequestCommentResult.class));
+    }
+
+    @Override
+    public void deletePrayerRequestComment(int prayerRequestCommentId){
+        String sql = "CALL delete_prayer_request_comment(:commentId);";
+        PrayerRequestCommentDeleteQuery deleteQuery = new PrayerRequestCommentDeleteQuery(prayerRequestCommentId);
+        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(deleteQuery);
+        jdbcTemplate.update(sql, params);
+    }
 }

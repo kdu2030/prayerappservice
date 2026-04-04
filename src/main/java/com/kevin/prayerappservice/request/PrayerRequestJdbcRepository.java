@@ -8,4 +8,8 @@ public interface PrayerRequestJdbcRepository {
     PrayerRequestCreateResult createPrayerRequest(PrayerRequestCreateQuery createQuery);
     List<PrayerRequestGetResult> getPrayerRequests(PrayerRequestGetQuery getQuery);
     PrayerRequestCountResult getPrayerRequestsCount(PrayerRequestCountQuery countQuery);
+    PrayerRequestGetResult getPrayerRequest(int prayerRequestId, int userId);
+    List<PrayerRequestCommentResult> getPrayerRequestComments(int prayerRequestId);
+    PrayerRequestCommentResult createPrayerRequestComment(PrayerRequestCommentCreateParams createParams);
+    void deletePrayerRequestComment(int prayerRequestCommentId);
 }
