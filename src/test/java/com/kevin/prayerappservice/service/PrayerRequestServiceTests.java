@@ -23,9 +23,9 @@ import com.kevin.prayerappservice.user.UserRepository;
 import com.kevin.prayerappservice.user.entities.Role;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.transaction.Transactional;
-import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,10 +36,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mockito.ArgumentMatchers.*;
 
@@ -532,5 +532,35 @@ public class PrayerRequestServiceTests {
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId() + 1);
 
         Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.deletePrayerRequestComment("mockHeader", prayerRequestComment.getPrayerRequestCommentId()));
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequest_submittedUserDeletes_deletesPrayerRequest(){
+        User user = new User("Link Neal", "lneal", "lneal@mythical.com", "mockPasswordHash", Role.USER);
+        userRepository.save(user);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Mythical Entertainment", "A prayer group for the makers of Good Mythical Morning", "", VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        PrayerRequest prayerRequest = new PrayerRequest("Mock Prayer Request", "Mock prayer request description", LocalDateTime.now(), 0, 0, 0, null, prayerGroup, user);
+        prayerRequestRepository.save(prayerRequest);
+
+        PrayerRequestComment prayerRequestComment = new PrayerRequestComment("Mock prayer request comment", prayerRequest, user, LocalDateTime.now());
+        prayerRequestCommentRepository.save(prayerRequestComment);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(user.getUserId());
+
+        int prayerRequestCommentId = prayerRequestComment.getPrayerRequestCommentId();
+
+        prayerRequestService.deletePrayerRequestComment("mockHeader", prayerRequestCommentId);
+
+        ArgumentCaptor<Integer> prayerRequestCommentIdCaptor = ArgumentCaptor.forClass(Integer.class);
+        Mockito.verify(prayerRequestJdbcRepository).deletePrayerRequestComment(prayerRequestCommentIdCaptor.capture());
+
+        Integer calledId = prayerRequestCommentIdCaptor.getValue();
+        Assertions.assertThat(calledId).isEqualTo(prayerRequestCommentId);
     }
 }
