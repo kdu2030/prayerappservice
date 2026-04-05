@@ -2,6 +2,8 @@ package com.kevin.prayerappservice.user;
 
 import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
+import com.kevin.prayerappservice.file.entities.MediaFile;
+import com.kevin.prayerappservice.file.models.MediaFileSummary;
 import com.kevin.prayerappservice.group.PrayerGroupService;
 import com.kevin.prayerappservice.group.models.PrayerGroupSummaryModel;
 import com.kevin.prayerappservice.user.entities.Role;
@@ -110,11 +112,14 @@ public class UserService {
     private UserSummary createUserSummary(User user, List<PrayerGroupSummaryModel> prayerGroups) {
         UserTokenPair userTokenPair = generateUserTokenPair(user);
 
+        MediaFile userProfilePicture = user.getImageFile();
+        MediaFileSummary profilePictureSummary = new MediaFileSummary(userProfilePicture.getMediaFileId(), userProfilePicture.getFileName(),  userProfilePicture.getFileUrl(), userProfilePicture.getFileType());
+
         return new UserSummary(user.getUserId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getFullName(),
-                userTokenPair, null, prayerGroups);
+                userTokenPair, profilePictureSummary, prayerGroups);
     }
 
 }
