@@ -67,4 +67,10 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(deleteQuery);
         jdbcTemplate.update(sql, params);
     }
+
+    public List<PrayerRequestUserCommentResult> getPrayerRequestUserCommentIds(PrayerRequestUserCommentQuery commentQuery){
+        String sql = "SELECT * FROM get_user_comment_ids(:prayerRequestIds, :userId);";
+        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(commentQuery);
+        return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerRequestUserCommentResult.class));
+    }
 }
