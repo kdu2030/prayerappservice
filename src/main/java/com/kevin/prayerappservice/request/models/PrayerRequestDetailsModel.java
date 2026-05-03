@@ -10,8 +10,8 @@ public class PrayerRequestDetailsModel extends PrayerRequestModel {
         super();
     }
 
-    public PrayerRequestDetailsModel(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, Integer userCommentId, Integer userBookmarkId, Integer userPrayerSessionId, List<PrayerRequestCommentModel> comments) {
-        super(prayerRequestId, requestTitle, requestDescription, createdDate, expirationDate, prayerGroup, user, likeCount, commentCount, prayedCount, userLikeId, userCommentId, userBookmarkId, userPrayerSessionId);
+    public PrayerRequestDetailsModel(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, List<Integer> userCommentIds, Integer userBookmarkId, Integer userPrayerSessionId, List<PrayerRequestCommentModel> comments) {
+        super(prayerRequestId, requestTitle, requestDescription, createdDate, expirationDate, prayerGroup, user, likeCount, commentCount, prayedCount, userLikeId, userCommentIds, userBookmarkId, userPrayerSessionId);
         this.comments = comments;
     }
 
@@ -36,7 +36,7 @@ public class PrayerRequestDetailsModel extends PrayerRequestModel {
                 prayerRequestModel.getCommentCount(),
                 prayerRequestModel.getPrayedCount(),
                 prayerRequestModel.getUserLikeId(),
-                prayerRequestModel.getUserCommentId(),
+                prayerRequestModel.getUserCommentIds(),
                 prayerRequestModel.getUserBookmarkId(),
                 prayerRequestModel.getUserPrayerSessionId(),
                 comments

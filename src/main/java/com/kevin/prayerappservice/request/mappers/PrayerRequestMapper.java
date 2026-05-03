@@ -26,7 +26,6 @@ public interface PrayerRequestMapper {
     @Mapping(source = "userFileUrl", target = "user.image.fileUrl")
     @Mapping(source = "userFileType", target = "user.image.fileType")
     @Mapping(ignore = true, target = "userLikeId")
-    @Mapping(ignore = true, target = "userCommentId")
     @Mapping(ignore = true, target = "userBookmarkId")
     @Mapping(ignore = true, target = "userPrayerSessionId")
     @Mapping(constant = "0", target = "likeCount")
