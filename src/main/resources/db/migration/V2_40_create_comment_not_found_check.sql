@@ -54,7 +54,7 @@ BEGIN
         FROM
             prayer_group_user pgu
         INNER JOIN
-            temp_prayer_request tpr ON pr.prayer_group_id = pgu.prayer_group_id
+            temp_prayer_request tpr ON tpr.prayer_group_id = pgu.prayer_group_id
         WHERE
             tpr.prayer_request_id = p_prayer_request_id AND pgu.user_id = p_user_id
     )
