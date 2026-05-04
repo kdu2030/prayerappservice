@@ -17,6 +17,8 @@ import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -251,6 +253,32 @@ public class PrayerRequestService {
         }
 
         prayerRequestRepository.deletePrayerRequestComment(prayerRequestCommentId);
+    }
+
+    private void getPrayerRequestIdToActionIdsMap(int[] prayerRequestIds, int userId){
+        PrayerRequestUserActionIdQuery actionIdQuery = new PrayerRequestUserActionIdQuery(prayerRequestIds, userId);
+
+        HashMap<Integer, PrayerRequestUserAction> actionsHashMap = new HashMap<>();
+
+        List<PrayerRequestUserCommentResult> userCommentResults = prayerRequestRepository.getPrayerRequestUserCommentIds(actionIdQuery);
+        List<PrayerRequestUserSessionResult> userSessionResults = prayerRequestRepository.getPrayerRequestUserSessionIds(actionIdQuery);
+
+        for(PrayerRequestUserCommentResult userCommentResult: userCommentResults){
+            int prayerRequestId = userCommentResult.getPrayerRequestId();
+            int commentId = userCommentResult.getPrayerRequestCommentId();
+
+            if(actionsHashMap.containsKey(prayerRequestId)){
+                PrayerRequestUserAction action = actionsHashMap.get(prayerRequestId);
+                List<Integer> commentIds = action.getUserCommentIds();
+
+                commentIds.add(commentId);
+                actionsHashMap.put(prayerRequestId, action);
+            } else {
+                actionsHashMap.put(prayerRequestId, new PrayerRequestUserAction(prayerRequestId, new ArrayList<>(commentId), new ArrayList<>()));
+            }
+        }
+
+
     }
 
 }
