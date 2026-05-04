@@ -1,10 +1,10 @@
 package com.kevin.prayerappservice.request.dtos;
 
-public class PrayerRequestUserCommentQuery {
+public class PrayerRequestUserSessionResult {
     private int[] prayerRequestIds;
     private int userId;
 
-    public PrayerRequestUserCommentQuery(int[] prayerRequestIds, int userId) {
+    public PrayerRequestUserSessionResult(int[] prayerRequestIds, int userId) {
         this.prayerRequestIds = prayerRequestIds;
         this.userId = userId;
     }
