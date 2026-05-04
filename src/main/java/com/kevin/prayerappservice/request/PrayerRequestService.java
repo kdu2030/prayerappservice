@@ -192,6 +192,18 @@ public class PrayerRequestService {
             Stream<PrayerRequestCommentResult> commentResultStream = prayerRequestCommentsResult.stream();
             List<PrayerRequestCommentModel> comments = commentResultStream.map(prayerRequestMapper::prayerRequestCommentToModel).toList();
 
+            PrayerRequestDetailsModel prayerRequestDetails = PrayerRequestDetailsModel.prayerRequestModelToDetailsModel(prayerRequest, comments);
+
+            List<Integer> userCommentIds = prayerRequestCommentsResult
+                    .stream()
+                    .filter(comment -> comment.getUserId() == userId)
+                    .map(PrayerRequestCommentResult::getPrayerRequestCommentId)
+                    .toList();
+
+            prayerRequestDetails.setUserCommentIds(userCommentIds);
+
+
+
             return PrayerRequestDetailsModel.prayerRequestModelToDetailsModel(prayerRequest, comments);
         } catch (UncategorizedSQLException exception) {
             Throwable cause = exception.getCause();
