@@ -1,27 +1,29 @@
 package com.kevin.prayerappservice.request.dtos;
 
 public class PrayerRequestUserSessionResult {
-    private int[] prayerRequestIds;
-    private int userId;
+    private int prayerRequestId;
+    private int prayerSessionId;
 
-    public PrayerRequestUserSessionResult(int[] prayerRequestIds, int userId) {
-        this.prayerRequestIds = prayerRequestIds;
-        this.userId = userId;
+    public PrayerRequestUserSessionResult(){}
+
+    public PrayerRequestUserSessionResult(int prayerRequestId, int prayerSessionId) {
+        this.prayerRequestId = prayerRequestId;
+        this.prayerSessionId = prayerSessionId;
     }
 
-    public int[] getPrayerRequestIds() {
-        return prayerRequestIds;
+    public int getPrayerRequestId() {
+        return prayerRequestId;
     }
 
-    public void setPrayerRequestIds(int[] prayerRequestIds) {
-        this.prayerRequestIds = prayerRequestIds;
+    public void setPrayerRequestId(int prayerRequestId) {
+        this.prayerRequestId = prayerRequestId;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getPrayerSessionId() {
+        return prayerSessionId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setPrayerSessionId(int prayerSessionId) {
+        this.prayerSessionId = prayerSessionId;
     }
 }

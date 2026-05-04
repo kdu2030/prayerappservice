@@ -255,7 +255,7 @@ public class PrayerRequestService {
         prayerRequestRepository.deletePrayerRequestComment(prayerRequestCommentId);
     }
 
-    private void getPrayerRequestIdToActionIdsMap(int[] prayerRequestIds, int userId){
+    private HashMap<Integer, PrayerRequestUserAction> getPrayerRequestIdToActionIdsMap(int[] prayerRequestIds, int userId){
         PrayerRequestUserActionIdQuery actionIdQuery = new PrayerRequestUserActionIdQuery(prayerRequestIds, userId);
 
         HashMap<Integer, PrayerRequestUserAction> actionsHashMap = new HashMap<>();
@@ -279,6 +279,22 @@ public class PrayerRequestService {
         }
 
 
+        for(PrayerRequestUserSessionResult userSessionResult: userSessionResults){
+            int prayerRequestId = userSessionResult.getPrayerRequestId();
+            int sessionId = userSessionResult.getPrayerSessionId();
+
+            if(actionsHashMap.containsKey(prayerRequestId)){
+                PrayerRequestUserAction action = actionsHashMap.get(prayerRequestId);
+                List<Integer> sessionIds = action.getUserPrayerSessionIds();
+
+                sessionIds.add(sessionId);
+                actionsHashMap.put(prayerRequestId, action);
+            } else {
+                actionsHashMap.put(prayerRequestId, new PrayerRequestUserAction(prayerRequestId, new ArrayList<>(), new ArrayList<>(sessionId)));
+            }
+        }
+
+        return actionsHashMap;
     }
 
 }
