@@ -78,6 +78,14 @@ public class PrayerRequestService {
 
             List<PrayerRequestModel> prayerRequests = getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList();
 
+            int[] prayerRequestIds = prayerRequests.stream().mapToInt(PrayerRequestModel::getPrayerRequestId).toArray();
+            PrayerRequestUserActionIdQuery actionIdQuery = new PrayerRequestUserActionIdQuery(prayerRequestIds, userId);
+
+            List<PrayerRequestUserCommentResult> userCommentResults = prayerRequestRepository.getPrayerRequestUserCommentIds(actionIdQuery);
+            List<PrayerRequestUserSessionResult> userSessionResults = prayerRequestRepository.getPrayerRequestUserSessionIds(actionIdQuery);
+
+
+
             int prayerRequestsCount = countResult.getPrayerRequestCount();
             int numberOfPages = (int) Math.ceil(prayerRequestsCount / (double) pageSize);
 

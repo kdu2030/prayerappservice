@@ -17,11 +17,11 @@ public class PrayerRequestModel {
     private Integer userLikeId;
     private List<Integer> userCommentIds;
     private Integer userBookmarkId;
-    private Integer userPrayerSessionId;
+    private List<Integer> userPrayerSessionIds;
 
     public PrayerRequestModel(){}
 
-    public PrayerRequestModel(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, List<Integer> userCommentIds, Integer userBookmarkId, Integer userPrayerSessionId) {
+    public PrayerRequestModel(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, List<Integer> userCommentIds, Integer userBookmarkId, List<Integer> userPrayerSessionIds) {
         this.prayerRequestId = prayerRequestId;
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
@@ -35,7 +35,7 @@ public class PrayerRequestModel {
         this.userLikeId = userLikeId;
         this.userCommentIds = userCommentIds;
         this.userBookmarkId = userBookmarkId;
-        this.userPrayerSessionId = userPrayerSessionId;
+        this.userPrayerSessionIds = userPrayerSessionIds;
     }
 
     public int getPrayerRequestId() {
@@ -142,11 +142,11 @@ public class PrayerRequestModel {
         this.userBookmarkId = userBookmarkId;
     }
 
-    public Integer getUserPrayerSessionId() {
-        return userPrayerSessionId;
+    public List<Integer> getUserPrayerSessionIds() {
+        return userPrayerSessionIds;
     }
 
-    public void setUserPrayerSessionId(Integer userPrayerSessionId) {
-        this.userPrayerSessionId = userPrayerSessionId;
+    public void setUserPrayerSessionId(List<Integer> userPrayerSessionIds) {
+        this.userPrayerSessionIds = userPrayerSessionIds;
     }
 }
