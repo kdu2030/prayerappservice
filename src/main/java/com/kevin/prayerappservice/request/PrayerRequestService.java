@@ -78,14 +78,23 @@ public class PrayerRequestService {
 
             List<PrayerRequestGetResult> getResults = prayerRequestRepository.getPrayerRequests(getQuery);
 
-            List<PrayerRequestModel> prayerRequests = getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList();
+            List<PrayerRequestModel> prayerRequests = new ArrayList<>(getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList());
 
             int[] prayerRequestIds = prayerRequests.stream().mapToInt(PrayerRequestModel::getPrayerRequestId).toArray();
-            PrayerRequestUserActionIdQuery actionIdQuery = new PrayerRequestUserActionIdQuery(prayerRequestIds, userId);
+            HashMap<Integer, PrayerRequestUserAction> userActionHashMap = getPrayerRequestIdToActionIdsMap(prayerRequestIds, userId);
 
-            List<PrayerRequestUserCommentResult> userCommentResults = prayerRequestRepository.getPrayerRequestUserCommentIds(actionIdQuery);
-            List<PrayerRequestUserSessionResult> userSessionResults = prayerRequestRepository.getPrayerRequestUserSessionIds(actionIdQuery);
+            for(int i = 0; i < prayerRequests.size(); i++){
+                PrayerRequestModel prayerRequest = prayerRequests.get(i);
+                if(!userActionHashMap.containsKey(prayerRequest.getPrayerRequestId())){
+                    continue;
+                }
 
+                PrayerRequestUserAction userAction = userActionHashMap.get(prayerRequest.getPrayerRequestId());
+                prayerRequest.setUserCommentIds(userAction.getUserCommentIds());
+                prayerRequest.setUserPrayerSessionIds(userAction.getUserPrayerSessionIds());
+
+                prayerRequests.set(i, prayerRequest);
+            }
 
 
             int prayerRequestsCount = countResult.getPrayerRequestCount();

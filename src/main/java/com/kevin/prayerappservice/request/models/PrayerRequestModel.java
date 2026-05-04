@@ -146,7 +146,7 @@ public class PrayerRequestModel {
         return userPrayerSessionIds;
     }
 
-    public void setUserPrayerSessionId(List<Integer> userPrayerSessionIds) {
+    public void setUserPrayerSessionIds(List<Integer> userPrayerSessionIds) {
         this.userPrayerSessionIds = userPrayerSessionIds;
     }
 }
