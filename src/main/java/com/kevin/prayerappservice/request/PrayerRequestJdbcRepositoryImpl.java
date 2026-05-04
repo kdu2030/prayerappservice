@@ -68,12 +68,14 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
         jdbcTemplate.update(sql, params);
     }
 
+    @Override
     public List<PrayerRequestUserCommentResult> getPrayerRequestUserCommentIds(PrayerRequestUserActionIdQuery commentQuery){
         String sql = "SELECT * FROM get_user_comment_ids(:prayerRequestIds, :userId);";
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(commentQuery);
         return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerRequestUserCommentResult.class));
     }
 
+    @Override
     public List<PrayerRequestUserSessionResult> getPrayerRequestUserSessionIds(PrayerRequestUserActionIdQuery sessionQuery){
         String sql = "SELECT * FROM get_user_prayer_session_ids(:prayerRequestIds, :userId);";
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(sessionQuery);
