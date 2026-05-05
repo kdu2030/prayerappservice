@@ -26,9 +26,9 @@ public interface PrayerRequestMapper {
     @Mapping(source = "userFileUrl", target = "user.image.fileUrl")
     @Mapping(source = "userFileType", target = "user.image.fileType")
     @Mapping(ignore = true, target = "userLikeId")
-    @Mapping(ignore = true, target = "userCommentId")
     @Mapping(ignore = true, target = "userBookmarkId")
-    @Mapping(ignore = true, target = "userPrayerSessionId")
+    @Mapping(ignore = true, target = "userPrayerSessionIds")
+    @Mapping(ignore = true, target = "userCommentIds")
     @Mapping(constant = "0", target = "likeCount")
     @Mapping(constant = "0", target = "prayedCount")
     @Mapping(constant = "0", target = "commentCount")
@@ -47,6 +47,8 @@ public interface PrayerRequestMapper {
     @Mapping(source = "userFileName", target = "user.image.fileName")
     @Mapping(source = "userFileUrl", target = "user.image.fileUrl")
     @Mapping(source = "userFileType", target = "user.image.fileType")
+    @Mapping(ignore = true, target = "userPrayerSessionIds")
+    @Mapping(ignore = true, target = "userCommentIds")
     PrayerRequestModel prayerRequestGetResultToPrayerRequestModel(PrayerRequestGetResult source);
 
     @Mapping(source = "prayerRequest.prayerRequestId", target = "prayerRequestId")

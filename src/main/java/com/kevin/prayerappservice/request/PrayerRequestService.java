@@ -17,6 +17,8 @@ import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -76,7 +78,24 @@ public class PrayerRequestService {
 
             List<PrayerRequestGetResult> getResults = prayerRequestRepository.getPrayerRequests(getQuery);
 
-            List<PrayerRequestModel> prayerRequests = getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList();
+            List<PrayerRequestModel> prayerRequests = new ArrayList<>(getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList());
+
+            int[] prayerRequestIds = prayerRequests.stream().mapToInt(PrayerRequestModel::getPrayerRequestId).toArray();
+            HashMap<Integer, PrayerRequestUserAction> userActionHashMap = getPrayerRequestIdToActionIdsMap(prayerRequestIds, userId);
+
+            for(int i = 0; i < prayerRequests.size(); i++){
+                PrayerRequestModel prayerRequest = prayerRequests.get(i);
+                if(!userActionHashMap.containsKey(prayerRequest.getPrayerRequestId())){
+                    continue;
+                }
+
+                PrayerRequestUserAction userAction = userActionHashMap.get(prayerRequest.getPrayerRequestId());
+                prayerRequest.setUserCommentIds(userAction.getUserCommentIds());
+                prayerRequest.setUserPrayerSessionIds(userAction.getUserPrayerSessionIds());
+
+                prayerRequests.set(i, prayerRequest);
+            }
+
 
             int prayerRequestsCount = countResult.getPrayerRequestCount();
             int numberOfPages = (int) Math.ceil(prayerRequestsCount / (double) pageSize);
@@ -168,15 +187,38 @@ public class PrayerRequestService {
             PrayerRequestGetResult prayerRequestResult = prayerRequestRepository.getPrayerRequest(prayerRequestId, userId);
             List<PrayerRequestCommentResult> prayerRequestCommentsResult = prayerRequestRepository.getPrayerRequestComments(prayerRequestId);
 
+            List<PrayerRequestUserSessionResult> userSessionResults = prayerRequestRepository.getPrayerRequestUserSessionIds(new PrayerRequestUserActionIdQuery(new int[] { prayerRequestId }, userId));
+
             PrayerRequestModel prayerRequest = prayerRequestMapper.prayerRequestGetResultToPrayerRequestModel(prayerRequestResult);
 
             Stream<PrayerRequestCommentResult> commentResultStream = prayerRequestCommentsResult.stream();
             List<PrayerRequestCommentModel> comments = commentResultStream.map(prayerRequestMapper::prayerRequestCommentToModel).toList();
 
-            return PrayerRequestDetailsModel.prayerRequestModelToDetailsModel(prayerRequest, comments);
+            PrayerRequestDetailsModel prayerRequestDetails = PrayerRequestDetailsModel.prayerRequestModelToDetailsModel(prayerRequest, comments);
+
+            List<Integer> userCommentIds = prayerRequestCommentsResult
+                    .stream()
+                    .filter(comment -> comment.getUserId() == userId)
+                    .map(PrayerRequestCommentResult::getPrayerRequestCommentId)
+                    .toList();
+
+            prayerRequestDetails.setUserCommentIds(userCommentIds);
+
+            List<Integer> userPrayerSessionIds = userSessionResults
+                    .stream()
+                    .map(PrayerRequestUserSessionResult::getPrayerSessionId)
+                    .toList();
+
+            prayerRequestDetails.setUserPrayerSessionIds(userPrayerSessionIds);
+
+            return prayerRequestDetails;
         } catch (UncategorizedSQLException exception) {
             Throwable cause = exception.getCause();
             String exceptionMessage = cause != null ? cause.getMessage() : null;
+
+            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST)){
+                throw new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST);
+            }
 
             if (exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)) {
                 throw new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW);
@@ -201,6 +243,10 @@ public class PrayerRequestService {
         } catch(UncategorizedSQLException exception){
             Throwable cause = exception.getCause();
             String exceptionMessage = cause != null ? cause.getMessage() : null;
+
+            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST)){
+                throw new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST);
+            }
 
             if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_COMMENT)){
                 throw new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_COMMENT);
@@ -239,6 +285,50 @@ public class PrayerRequestService {
         }
 
         prayerRequestRepository.deletePrayerRequestComment(prayerRequestCommentId);
+    }
+
+    private HashMap<Integer, PrayerRequestUserAction> getPrayerRequestIdToActionIdsMap(int[] prayerRequestIds, int userId){
+        PrayerRequestUserActionIdQuery actionIdQuery = new PrayerRequestUserActionIdQuery(prayerRequestIds, userId);
+
+        HashMap<Integer, PrayerRequestUserAction> actionsHashMap = new HashMap<>();
+
+        List<PrayerRequestUserCommentResult> userCommentResults = prayerRequestRepository.getPrayerRequestUserCommentIds(actionIdQuery);
+        List<PrayerRequestUserSessionResult> userSessionResults = prayerRequestRepository.getPrayerRequestUserSessionIds(actionIdQuery);
+
+        for(PrayerRequestUserCommentResult userCommentResult: userCommentResults){
+            int prayerRequestId = userCommentResult.getPrayerRequestId();
+            int commentId = userCommentResult.getPrayerRequestCommentId();
+
+            if(actionsHashMap.containsKey(prayerRequestId)){
+                PrayerRequestUserAction action = actionsHashMap.get(prayerRequestId);
+                List<Integer> commentIds = action.getUserCommentIds();
+
+                commentIds.add(commentId);
+                actionsHashMap.put(prayerRequestId, action);
+            } else {
+                List<Integer> commentIds = new ArrayList<>(List.of(commentId));
+                actionsHashMap.put(prayerRequestId, new PrayerRequestUserAction(prayerRequestId, commentIds, new ArrayList<>()));
+            }
+        }
+
+
+        for(PrayerRequestUserSessionResult userSessionResult: userSessionResults){
+            int prayerRequestId = userSessionResult.getPrayerRequestId();
+            int sessionId = userSessionResult.getPrayerSessionId();
+
+            if(actionsHashMap.containsKey(prayerRequestId)){
+                PrayerRequestUserAction action = actionsHashMap.get(prayerRequestId);
+                List<Integer> sessionIds = action.getUserPrayerSessionIds();
+
+                sessionIds.add(sessionId);
+                actionsHashMap.put(prayerRequestId, action);
+            } else {
+                List<Integer> sessionIds = new ArrayList<>(List.of(sessionId));
+                actionsHashMap.put(prayerRequestId, new PrayerRequestUserAction(prayerRequestId, new ArrayList<>(), sessionIds));
+            }
+        }
+
+        return actionsHashMap;
     }
 
 }

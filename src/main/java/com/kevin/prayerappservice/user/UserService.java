@@ -113,7 +113,11 @@ public class UserService {
         UserTokenPair userTokenPair = generateUserTokenPair(user);
 
         MediaFile userProfilePicture = user.getImageFile();
-        MediaFileSummary profilePictureSummary = new MediaFileSummary(userProfilePicture.getMediaFileId(), userProfilePicture.getFileName(),  userProfilePicture.getFileUrl(), userProfilePicture.getFileType());
+        MediaFileSummary profilePictureSummary = null;
+
+        if(userProfilePicture != null){
+           profilePictureSummary = new MediaFileSummary(userProfilePicture.getMediaFileId(), userProfilePicture.getFileName(),  userProfilePicture.getFileUrl(), userProfilePicture.getFileType());
+        }
 
         return new UserSummary(user.getUserId(),
                 user.getUsername(),

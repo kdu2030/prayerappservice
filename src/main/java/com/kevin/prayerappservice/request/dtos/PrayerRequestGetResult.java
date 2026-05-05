@@ -14,9 +14,7 @@ public class PrayerRequestGetResult {
     private int commentCount;
     private int prayedCount;
     private Integer userLikeId;
-    private Integer userCommentId;
     private Integer userBookmarkId;
-    private Integer userPrayerSessionId;
     private int prayerGroupId;
     private String groupName;
     private Integer avatarFileId;
@@ -41,7 +39,7 @@ public class PrayerRequestGetResult {
         this.expirationDate = expirationDate;
     }
 
-    public PrayerRequestGetResult(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, int likeCount, int commentCount, int prayedCount, Integer userLikeId, Integer userCommentId, Integer userBookmarkId, Integer userPrayerSessionId, int prayerGroupId, String groupName, Integer avatarFileId, String avatarFileName, String avatarFileUrl, FileType avatarFileType, int userId, String username, Integer userFileId, String userFileName, String userFileUrl, FileType userFileType) {
+    public PrayerRequestGetResult(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, int likeCount, int commentCount, int prayedCount, Integer userLikeId, Integer userBookmarkId, int prayerGroupId, String groupName, Integer avatarFileId, String avatarFileName, String avatarFileUrl, FileType avatarFileType, int userId, String username, Integer userFileId, String userFileName, String userFileUrl, FileType userFileType) {
         this.prayerRequestId = prayerRequestId;
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
@@ -51,9 +49,7 @@ public class PrayerRequestGetResult {
         this.commentCount = commentCount;
         this.prayedCount = prayedCount;
         this.userLikeId = userLikeId;
-        this.userCommentId = userCommentId;
         this.userBookmarkId = userBookmarkId;
-        this.userPrayerSessionId = userPrayerSessionId;
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.avatarFileId = avatarFileId;
@@ -140,28 +136,12 @@ public class PrayerRequestGetResult {
         this.userLikeId = userLikeId;
     }
 
-    public Integer getUserCommentId() {
-        return userCommentId;
-    }
-
-    public void setUserCommentId(Integer userCommentId) {
-        this.userCommentId = userCommentId;
-    }
-
     public Integer getUserBookmarkId() {
         return userBookmarkId;
     }
 
     public void setUserBookmarkId(Integer userBookmarkId) {
         this.userBookmarkId = userBookmarkId;
-    }
-
-    public Integer getUserPrayerSessionId() {
-        return userPrayerSessionId;
-    }
-
-    public void setUserPrayerSessionId(Integer userPrayerSessionId) {
-        this.userPrayerSessionId = userPrayerSessionId;
     }
 
     public int getPrayerGroupId() {

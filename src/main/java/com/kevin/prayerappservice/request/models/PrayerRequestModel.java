@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.request.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class PrayerRequestModel {
     private int prayerRequestId;
@@ -14,13 +15,13 @@ public class PrayerRequestModel {
     private int commentCount;
     private int prayedCount;
     private Integer userLikeId;
-    private Integer userCommentId;
+    private List<Integer> userCommentIds;
     private Integer userBookmarkId;
-    private Integer userPrayerSessionId;
+    private List<Integer> userPrayerSessionIds;
 
     public PrayerRequestModel(){}
 
-    public PrayerRequestModel(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, Integer userCommentId, Integer userBookmarkId, Integer userPrayerSessionId) {
+    public PrayerRequestModel(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, List<Integer> userCommentIds, Integer userBookmarkId, List<Integer> userPrayerSessionIds) {
         this.prayerRequestId = prayerRequestId;
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
@@ -32,9 +33,9 @@ public class PrayerRequestModel {
         this.commentCount = commentCount;
         this.prayedCount = prayedCount;
         this.userLikeId = userLikeId;
-        this.userCommentId = userCommentId;
+        this.userCommentIds = userCommentIds;
         this.userBookmarkId = userBookmarkId;
-        this.userPrayerSessionId = userPrayerSessionId;
+        this.userPrayerSessionIds = userPrayerSessionIds;
     }
 
     public int getPrayerRequestId() {
@@ -125,12 +126,12 @@ public class PrayerRequestModel {
         this.userLikeId = userLikeId;
     }
 
-    public Integer getUserCommentId() {
-        return userCommentId;
+    public List<Integer> getUserCommentIds() {
+        return userCommentIds;
     }
 
-    public void setUserCommentId(Integer userCommentId) {
-        this.userCommentId = userCommentId;
+    public void setUserCommentIds(List<Integer> userCommentIds){
+        this.userCommentIds = userCommentIds;
     }
 
     public Integer getUserBookmarkId() {
@@ -141,11 +142,11 @@ public class PrayerRequestModel {
         this.userBookmarkId = userBookmarkId;
     }
 
-    public Integer getUserPrayerSessionId() {
-        return userPrayerSessionId;
+    public List<Integer> getUserPrayerSessionIds() {
+        return userPrayerSessionIds;
     }
 
-    public void setUserPrayerSessionId(Integer userPrayerSessionId) {
-        this.userPrayerSessionId = userPrayerSessionId;
+    public void setUserPrayerSessionIds(List<Integer> userPrayerSessionIds) {
+        this.userPrayerSessionIds = userPrayerSessionIds;
     }
 }
