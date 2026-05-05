@@ -602,6 +602,34 @@ public class PrayerRequestServiceTests {
     }
 
     @Test
+    public void getPrayerRequest_hasUserPrayerSessions_returnsPrayerSessionIds() {
+        int mockUserId = 757;
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(mockUserId);
+
+        PrayerRequestGetResult prayerRequestGetResult = new PrayerRequestGetResult(787, "Pray for my uncle", "Pray " +
+                "for my uncle's surgery", LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+        prayerRequestGetResult.setCommentCount(2);
+
+        PrayerRequestCommentResult[] commentResults = {new PrayerRequestCommentResult(777, LocalDateTime.now(), "Will" +
+                " pray for this", 717, "captainrex", "CT-7567", null, null, null, null),
+                new PrayerRequestCommentResult(787, LocalDateTime.now(), "In my book, experience outranks everything.", mockUserId, "commanderfox", "CC-1010", null, null, null, null)};
+
+        Mockito.when(prayerRequestRepository.getPrayerRequest(anyInt(), anyInt())).thenReturn(prayerRequestGetResult);
+        Mockito.when(prayerRequestRepository.getPrayerRequestComments(anyInt())).thenReturn(List.of(commentResults));
+
+        PrayerRequestUserSessionResult userSessionResult = new PrayerRequestUserSessionResult(prayerRequestGetResult.getPrayerRequestId(), 2707);
+
+        List<PrayerRequestUserSessionResult> prayerRequestUserSessionResults = new ArrayList<>(List.of(userSessionResult));
+        Mockito.when(prayerRequestJdbcRepository.getPrayerRequestUserSessionIds(any())).thenReturn(prayerRequestUserSessionResults);
+
+        PrayerRequestDetailsModel prayerRequestModel = prayerRequestService.getPrayerRequest("mockHeader", 787);
+
+        Assertions.assertThat(prayerRequestModel.getUserPrayerSessionIds()).contains(userSessionResult.getPrayerSessionId());
+    }
+
+    @Test
     public void createPrayerRequestComment_userIsNotMember_throwsException(){
         int mockUserId = 757;
 
