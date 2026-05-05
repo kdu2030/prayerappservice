@@ -36,6 +36,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -172,6 +173,43 @@ public class PrayerRequestServiceTests {
 
         Assertions.assertThat(getResponse.getPrayerRequests().getFirst().getPrayerRequestId()).isEqualTo(prayerRequest1.getPrayerRequestId());
         Assertions.assertThat(getResponse.getPrayerRequests().getLast().getPrayerRequestId()).isEqualTo(prayerRequest2.getPrayerRequestId());
+    }
+
+    @Test
+    public void getPrayerRequests_noUsersCommentsOrSessions_doesNotReturnIds(){
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(1);
+
+        List<Integer> prayerGroupIds = Arrays.asList(747, 777);
+        SortConfig<PrayerRequestSortField> sortConfig = new SortConfig<>(PrayerRequestSortField.CREATED_DATE,
+                SortDirection.DESCENDING);
+
+        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
+                sortConfig, false);
+
+        Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
+
+        PrayerRequestGetResult prayerRequest1 = new PrayerRequestGetResult(34, "Request Title", "Request Description"
+                , LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+        PrayerRequestGetResult prayerRequest2 = new PrayerRequestGetResult(65, "Request Title 1", "Request " +
+                "Description 1", LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+
+        List<PrayerRequestGetResult> getResults = Arrays.asList(prayerRequest1, prayerRequest2);
+        Mockito.when(prayerRequestJdbcRepository.getPrayerRequests(any())).thenReturn(getResults);
+
+        List<PrayerRequestUserCommentResult> userCommentResults = new ArrayList<>();
+        List<PrayerRequestUserSessionResult> userSessionResults = new ArrayList<>();
+
+        Mockito.when(prayerRequestJdbcRepository.getPrayerRequestUserCommentIds(any())).thenReturn(userCommentResults);
+        Mockito.when(prayerRequestJdbcRepository.getPrayerRequestUserSessionIds(any())).thenReturn(userSessionResults);
+
+        PrayerRequestGetResponse getResponse = prayerRequestService.getPrayerRequests("mockHeader", filterCriteria);
+
+        PrayerRequestModel prayerRequest1Model = getResponse.getPrayerRequests().getFirst();
+        PrayerRequestModel prayerRequest2Model = getResponse.getPrayerRequests().getLast();
+
+        Assertions.assertThat(prayerRequest1Model.getUserCommentIds()).isNullOrEmpty();
+        Assertions.assertThat(prayerRequest2Model.getUserPrayerSessionIds()).isNullOrEmpty();
     }
 
     @Test
