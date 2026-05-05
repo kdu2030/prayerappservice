@@ -1,3 +1,5 @@
+DROP FUNCTION get_prayer_request;
+
 CREATE OR REPLACE FUNCTION get_prayer_request (
     p_prayer_request_id INT,
     p_user_id INT
