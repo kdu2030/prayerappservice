@@ -216,6 +216,10 @@ public class PrayerRequestService {
             Throwable cause = exception.getCause();
             String exceptionMessage = cause != null ? cause.getMessage() : null;
 
+            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST)){
+                throw new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST);
+            }
+
             if (exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)) {
                 throw new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW);
             }
