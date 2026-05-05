@@ -306,9 +306,7 @@ public class PrayerRequestService {
                 commentIds.add(commentId);
                 actionsHashMap.put(prayerRequestId, action);
             } else {
-                List<Integer> commentIds = new ArrayList<>();
-                commentIds.add(commentId);
-
+                List<Integer> commentIds = new ArrayList<>(List.of(commentId));
                 actionsHashMap.put(prayerRequestId, new PrayerRequestUserAction(prayerRequestId, commentIds, new ArrayList<>()));
             }
         }
@@ -325,9 +323,7 @@ public class PrayerRequestService {
                 sessionIds.add(sessionId);
                 actionsHashMap.put(prayerRequestId, action);
             } else {
-                List<Integer> sessionIds = new ArrayList<>();
-                sessionIds.add(sessionId);
-
+                List<Integer> sessionIds = new ArrayList<>(List.of(sessionId));
                 actionsHashMap.put(prayerRequestId, new PrayerRequestUserAction(prayerRequestId, new ArrayList<>(), sessionIds));
             }
         }
