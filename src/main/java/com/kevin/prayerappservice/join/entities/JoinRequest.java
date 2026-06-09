@@ -5,7 +5,7 @@ import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 public class JoinRequest {
@@ -24,11 +24,11 @@ public class JoinRequest {
     private PrayerGroup prayerGroup;
 
     @NotNull
-    private LocalDateTime submittedDate;
+    private OffsetDateTime submittedDate;
 
     public JoinRequest(){}
 
-    public JoinRequest(User user, PrayerGroup prayerGroup, LocalDateTime submittedDate) {
+    public JoinRequest(User user, PrayerGroup prayerGroup, OffsetDateTime submittedDate) {
         this.user = user;
         this.prayerGroup = prayerGroup;
         this.submittedDate = submittedDate;
@@ -58,11 +58,11 @@ public class JoinRequest {
         this.prayerGroup = prayerGroup;
     }
 
-    public @NotNull LocalDateTime getSubmittedDate() {
+    public @NotNull OffsetDateTime getSubmittedDate() {
         return submittedDate;
     }
 
-    public void setSubmittedDate(@NotNull LocalDateTime submittedDate) {
+    public void setSubmittedDate(@NotNull OffsetDateTime submittedDate) {
         this.submittedDate = submittedDate;
     }
 }

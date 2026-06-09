@@ -1,16 +1,16 @@
 package com.kevin.prayerappservice.request.dtos;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class PrayerRequestCreateQuery {
     private String requestTitle;
     private String requestDescription;
-    private LocalDateTime createdDate;
-    private LocalDateTime expirationDate;
+    private OffsetDateTime createdDate;
+    private OffsetDateTime expirationDate;
     private int prayerGroupId;
     private int userId;
 
-    public PrayerRequestCreateQuery(String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, int prayerGroupId, int userId) {
+    public PrayerRequestCreateQuery(String requestTitle, String requestDescription, OffsetDateTime createdDate, OffsetDateTime expirationDate, int prayerGroupId, int userId) {
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
         this.createdDate = createdDate;
@@ -35,19 +35,19 @@ public class PrayerRequestCreateQuery {
         this.requestDescription = requestDescription;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public OffsetDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(OffsetDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public OffsetDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(OffsetDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 

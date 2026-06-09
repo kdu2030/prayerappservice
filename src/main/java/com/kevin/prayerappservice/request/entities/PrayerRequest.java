@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -28,7 +28,7 @@ public class PrayerRequest {
     private String requestDescription;
 
     @NotNull
-    private LocalDateTime createdDate;
+    private OffsetDateTime createdDate;
 
     private int likeCount;
 
@@ -36,7 +36,7 @@ public class PrayerRequest {
 
     private int prayedCount;
 
-    private LocalDateTime expirationDate;
+    private OffsetDateTime expirationDate;
 
     @NotNull
     @ManyToOne
@@ -62,7 +62,7 @@ public class PrayerRequest {
 
     public PrayerRequest(){}
 
-    public PrayerRequest(String requestTitle, String requestDescription, LocalDateTime createdDate, int likeCount, int commentCount, int prayedCount, LocalDateTime expirationDate, PrayerGroup prayerGroup, User user) {
+    public PrayerRequest(String requestTitle, String requestDescription, OffsetDateTime createdDate, int likeCount, int commentCount, int prayedCount, OffsetDateTime expirationDate, PrayerGroup prayerGroup, User user) {
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
         this.createdDate = createdDate;
@@ -98,11 +98,11 @@ public class PrayerRequest {
         this.requestDescription = requestDescription;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public OffsetDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(OffsetDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -130,11 +130,11 @@ public class PrayerRequest {
         this.prayedCount = prayedCount;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public OffsetDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(OffsetDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 

@@ -34,8 +34,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -237,7 +236,7 @@ public class PrayerGroupServiceTests {
         PrayerGroupUser mockPrayerGroupUser = new PrayerGroupUser(mockUser, mockPrayerGroup, PrayerGroupRole.ADMIN);
         prayerGroupUserRepository.save(mockPrayerGroupUser);
 
-        JoinRequest joinRequest = new JoinRequest(mockUser, mockPrayerGroup, LocalDateTime.now());
+        JoinRequest joinRequest = new JoinRequest(mockUser, mockPrayerGroup, OffsetDateTime.now());
         joinRequestRepository.save(joinRequest);
 
         PutPrayerGroupRequest putPrayerGroupRequest = new PutPrayerGroupRequest("Alphabet", "Search engine", "No web " +

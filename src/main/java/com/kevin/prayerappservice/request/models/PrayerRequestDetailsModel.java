@@ -1,6 +1,6 @@
 package com.kevin.prayerappservice.request.models;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public class PrayerRequestDetailsModel extends PrayerRequestModel {
@@ -10,7 +10,7 @@ public class PrayerRequestDetailsModel extends PrayerRequestModel {
         super();
     }
 
-    public PrayerRequestDetailsModel(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, List<Integer> userCommentIds, Integer userBookmarkId, List<Integer> userPrayerSessionIds, List<PrayerRequestCommentModel> comments) {
+    public PrayerRequestDetailsModel(int prayerRequestId, String requestTitle, String requestDescription, OffsetDateTime createdDate, OffsetDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, List<Integer> userCommentIds, Integer userBookmarkId, List<Integer> userPrayerSessionIds, List<PrayerRequestCommentModel> comments) {
         super(prayerRequestId, requestTitle, requestDescription, createdDate, expirationDate, prayerGroup, user, likeCount, commentCount, prayedCount, userLikeId, userCommentIds, userBookmarkId, userPrayerSessionIds);
         this.comments = comments;
     }

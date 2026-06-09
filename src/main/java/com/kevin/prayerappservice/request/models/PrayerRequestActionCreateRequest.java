@@ -2,16 +2,16 @@ package com.kevin.prayerappservice.request.models;
 
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class PrayerRequestActionCreateRequest {
     @NotNull
     private int userId;
-    private LocalDateTime submittedDate;
+    private OffsetDateTime submittedDate;
 
     public PrayerRequestActionCreateRequest(){}
 
-    public PrayerRequestActionCreateRequest(int userId, LocalDateTime submittedDate) {
+    public PrayerRequestActionCreateRequest(int userId, OffsetDateTime submittedDate) {
         this.userId = userId;
         this.submittedDate = submittedDate;
     }
@@ -24,11 +24,11 @@ public class PrayerRequestActionCreateRequest {
         this.userId = userId;
     }
 
-    public LocalDateTime getSubmittedDate() {
+    public OffsetDateTime getSubmittedDate() {
         return submittedDate;
     }
 
-    public void setSubmittedDate(LocalDateTime submittedDate) {
+    public void setSubmittedDate(OffsetDateTime submittedDate) {
         this.submittedDate = submittedDate;
     }
 }

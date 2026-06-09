@@ -4,7 +4,7 @@ import com.kevin.prayerappservice.request.entities.PrayerRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Set;
 
 @Entity
@@ -14,10 +14,10 @@ public class PrayerSession {
     private Integer prayerSessionId;
 
     @NotNull
-    private LocalDateTime startTime;
+    private OffsetDateTime startTime;
 
     @NotNull
-    private LocalDateTime endTime;
+    private OffsetDateTime endTime;
 
     @ManyToMany
     @JoinTable(
@@ -29,7 +29,7 @@ public class PrayerSession {
 
     public PrayerSession(){}
 
-    public PrayerSession(LocalDateTime startTime, LocalDateTime endTime) {
+    public PrayerSession(OffsetDateTime startTime, OffsetDateTime endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -42,19 +42,19 @@ public class PrayerSession {
         this.prayerSessionId = prayerSessionId;
     }
 
-    public @NotNull LocalDateTime getStartTime() {
+    public @NotNull OffsetDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(@NotNull LocalDateTime startTime) {
+    public void setStartTime(@NotNull OffsetDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public @NotNull LocalDateTime getEndTime() {
+    public @NotNull OffsetDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(@NotNull LocalDateTime endTime) {
+    public void setEndTime(@NotNull OffsetDateTime endTime) {
         this.endTime = endTime;
     }
 

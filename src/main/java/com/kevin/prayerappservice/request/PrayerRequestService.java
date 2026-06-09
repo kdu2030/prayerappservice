@@ -16,7 +16,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +53,7 @@ public class PrayerRequestService {
 
         prayerGroupUserRepository.findByPrayerGroup_prayerGroupIdAndUser_userId(prayerGroupId, userId).orElseThrow(() -> new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_CREATE));
 
-        LocalDateTime createdDate = Optional.ofNullable(createRequest.getCreatedDate()).orElse(LocalDateTime.now());
+        OffsetDateTime createdDate = Optional.ofNullable(createRequest.getCreatedDate()).orElse(OffsetDateTime.now());
 
         PrayerRequestCreateQuery createQuery = new PrayerRequestCreateQuery(createRequest.getRequestTitle(), createRequest.getRequestDescription(), createdDate, createRequest.getExpirationDate(), prayerGroupId, createRequest.getUserId());
 
@@ -121,7 +121,7 @@ public class PrayerRequestService {
             throw new DataValidationException(PrayerRequestErrors.PRAYER_REQUEST_LIKE_EXISTS);
         }
 
-        LocalDateTime submittedDate = Optional.ofNullable(createRequest.getSubmittedDate()).orElse(LocalDateTime.now());
+        OffsetDateTime submittedDate = Optional.ofNullable(createRequest.getSubmittedDate()).orElse(OffsetDateTime.now());
         User submittedUser = entityManager.getReference(User.class, createRequest.getUserId());
 
         PrayerRequestLike prayerRequestLike = new PrayerRequestLike(submittedDate, submittedUser, prayerRequest);
@@ -160,7 +160,7 @@ public class PrayerRequestService {
         PrayerRequest prayerRequest = entityManager.getReference(PrayerRequest.class, prayerRequestId);
         User user = entityManager.getReference(User.class, createRequest.getUserId());
 
-        PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user, Optional.ofNullable(createRequest.getSubmittedDate()).orElse(LocalDateTime.now()));
+        PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user, Optional.ofNullable(createRequest.getSubmittedDate()).orElse(OffsetDateTime.now()));
         prayerRequestBookmarkRepository.save(prayerRequestBookmark);
 
         return prayerRequestMapper.prayerRequestBookmarkToModel(prayerRequestBookmark);

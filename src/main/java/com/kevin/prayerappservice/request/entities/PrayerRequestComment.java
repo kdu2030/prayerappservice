@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 public class PrayerRequestComment {
@@ -30,11 +30,11 @@ public class PrayerRequestComment {
     private User user;
 
     @NotNull
-    private LocalDateTime submittedDate;
+    private OffsetDateTime submittedDate;
 
     public PrayerRequestComment(){}
 
-    public PrayerRequestComment(String comment, PrayerRequest prayerRequest, User user, LocalDateTime submittedDate) {
+    public PrayerRequestComment(String comment, PrayerRequest prayerRequest, User user, OffsetDateTime submittedDate) {
         this.comment = comment;
         this.prayerRequest = prayerRequest;
         this.user = user;
@@ -73,11 +73,11 @@ public class PrayerRequestComment {
         this.user = user;
     }
 
-    public LocalDateTime getSubmittedDate() {
+    public OffsetDateTime getSubmittedDate() {
         return submittedDate;
     }
 
-    public void setSubmittedDate(LocalDateTime submittedDate) {
+    public void setSubmittedDate(OffsetDateTime submittedDate) {
         this.submittedDate = submittedDate;
     }
 }

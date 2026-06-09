@@ -1,10 +1,10 @@
 package com.kevin.prayerappservice.request.dtos;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class PrayerRequestCommentResult {
     private int prayerRequestCommentId;
-    private LocalDateTime submittedDate;
+    private OffsetDateTime submittedDate;
     private String comment;
     private int userId;
     private String username;
@@ -16,7 +16,7 @@ public class PrayerRequestCommentResult {
 
     public PrayerRequestCommentResult() {}
 
-    public PrayerRequestCommentResult(int prayerRequestCommentId, LocalDateTime submittedDate, String comment, int userId, String username, String fullName, Integer userFileId, String userFileName, String userFileType, String userFileUrl) {
+    public PrayerRequestCommentResult(int prayerRequestCommentId, OffsetDateTime submittedDate, String comment, int userId, String username, String fullName, Integer userFileId, String userFileName, String userFileType, String userFileUrl) {
         this.prayerRequestCommentId = prayerRequestCommentId;
         this.submittedDate = submittedDate;
         this.comment = comment;
@@ -37,11 +37,11 @@ public class PrayerRequestCommentResult {
         this.prayerRequestCommentId = prayerRequestCommentId;
     }
 
-    public LocalDateTime getSubmittedDate() {
+    public OffsetDateTime getSubmittedDate() {
         return submittedDate;
     }
 
-    public void setSubmittedDate(LocalDateTime submittedDate) {
+    public void setSubmittedDate(OffsetDateTime submittedDate) {
         this.submittedDate = submittedDate;
     }
 
