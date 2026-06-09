@@ -35,7 +35,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -89,7 +89,7 @@ public class PrayerRequestServiceTests {
 
         PrayerRequestCreateRequest createRequest = new PrayerRequestCreateRequest(1,
                 mockPrayerGroup.getPrayerGroupId(), "Suffering from headaches",
-                "Getting headaches, pray for healing", LocalDateTime.now().plusMonths(1), LocalDateTime.now());
+                "Getting headaches, pray for healing", OffsetDateTime.now().plusMonths(1), OffsetDateTime.now());
 
         Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.createPrayerRequest("mockAuthHeader", createRequest));
     }
@@ -112,7 +112,7 @@ public class PrayerRequestServiceTests {
 
         PrayerRequestCreateRequest createRequest = new PrayerRequestCreateRequest(1,
                 mockPrayerGroup.getPrayerGroupId(), "Suffering from headaches",
-                "Getting headaches, pray for healing", LocalDateTime.now().plusMonths(1), LocalDateTime.now());
+                "Getting headaches, pray for healing", OffsetDateTime.now().plusMonths(1), OffsetDateTime.now());
 
         PrayerRequestCreateResult prayerRequestCreateResult = new PrayerRequestCreateResult(787,
                 createRequest.getRequestTitle(), createRequest.getRequestDescription(),
@@ -162,9 +162,9 @@ public class PrayerRequestServiceTests {
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
         PrayerRequestGetResult prayerRequest1 = new PrayerRequestGetResult(34, "Request Title", "Request Description"
-                , LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                , OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
         PrayerRequestGetResult prayerRequest2 = new PrayerRequestGetResult(65, "Request Title 1", "Request " +
-                "Description 1", LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                "Description 1", OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
 
         List<PrayerRequestGetResult> getResults = Arrays.asList(prayerRequest1, prayerRequest2);
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequests(any())).thenReturn(getResults);
@@ -190,9 +190,9 @@ public class PrayerRequestServiceTests {
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
         PrayerRequestGetResult prayerRequest1 = new PrayerRequestGetResult(34, "Request Title", "Request Description"
-                , LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                , OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
         PrayerRequestGetResult prayerRequest2 = new PrayerRequestGetResult(65, "Request Title 1", "Request " +
-                "Description 1", LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                "Description 1", OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
 
         List<PrayerRequestGetResult> getResults = Arrays.asList(prayerRequest1, prayerRequest2);
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequests(any())).thenReturn(getResults);
@@ -227,9 +227,9 @@ public class PrayerRequestServiceTests {
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
         PrayerRequestGetResult prayerRequest1 = new PrayerRequestGetResult(34, "Request Title", "Request Description"
-                , LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                , OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
         PrayerRequestGetResult prayerRequest2 = new PrayerRequestGetResult(65, "Request Title 1", "Request " +
-                "Description 1", LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                "Description 1", OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
 
         List<PrayerRequestGetResult> getResults = Arrays.asList(prayerRequest1, prayerRequest2);
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequests(any())).thenReturn(getResults);
@@ -269,9 +269,9 @@ public class PrayerRequestServiceTests {
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
         PrayerRequestGetResult prayerRequest1 = new PrayerRequestGetResult(34, "Request Title", "Request Description"
-                , LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                , OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
         PrayerRequestGetResult prayerRequest2 = new PrayerRequestGetResult(65, "Request Title 1", "Request " +
-                "Description 1", LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                "Description 1", OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
 
         List<PrayerRequestGetResult> getResults = Arrays.asList(prayerRequest1, prayerRequest2);
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequests(any())).thenReturn(getResults);
@@ -307,15 +307,15 @@ public class PrayerRequestServiceTests {
                 VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(mockPrayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 0, 0, 0, null,
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", OffsetDateTime.now(), 0, 0, 0, null,
                 mockPrayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
 
-        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(LocalDateTime.now(), user, prayerRequest);
+        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(OffsetDateTime.now(), user, prayerRequest);
         prayerRequestLikeRepository.save(prayerRequestLike);
 
         PrayerRequestActionCreateRequest createRequest = new PrayerRequestActionCreateRequest(user.getUserId(),
-                LocalDateTime.now());
+                OffsetDateTime.now());
 
         Assertions.assertThatExceptionOfType(DataValidationException.class)
                 .isThrownBy(() -> prayerRequestService.createPrayerRequestLike(prayerRequest.getPrayerRequestId(),
@@ -334,12 +334,12 @@ public class PrayerRequestServiceTests {
                 VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(mockPrayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 0, 0, 0, null,
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", OffsetDateTime.now(), 0, 0, 0, null,
                 mockPrayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
 
         PrayerRequestActionCreateRequest createRequest = new PrayerRequestActionCreateRequest(user.getUserId(),
-                LocalDateTime.now());
+                OffsetDateTime.now());
 
         PrayerRequestLikeModel prayerRequestLike =
                 prayerRequestService.createPrayerRequestLike(prayerRequest.getPrayerRequestId(), createRequest);
@@ -359,11 +359,11 @@ public class PrayerRequestServiceTests {
                 VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(mockPrayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null,
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", OffsetDateTime.now(), 1, 0, 0, null,
                 mockPrayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
 
-        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(LocalDateTime.now(), user, prayerRequest);
+        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(OffsetDateTime.now(), user, prayerRequest);
         prayerRequestLikeRepository.save(prayerRequestLike);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
@@ -386,11 +386,11 @@ public class PrayerRequestServiceTests {
                 VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(mockPrayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null,
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", OffsetDateTime.now(), 1, 0, 0, null,
                 mockPrayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
 
-        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(LocalDateTime.now(), user, prayerRequest);
+        PrayerRequestLike prayerRequestLike = new PrayerRequestLike(OffsetDateTime.now(), user, prayerRequest);
         prayerRequestLikeRepository.save(prayerRequestLike);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
@@ -418,16 +418,16 @@ public class PrayerRequestServiceTests {
                 VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(mockPrayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null,
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", OffsetDateTime.now(), 1, 0, 0, null,
                 mockPrayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
 
         PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user,
-                LocalDateTime.now());
+                OffsetDateTime.now());
         prayerRequestBookmarkRepository.save(prayerRequestBookmark);
 
         PrayerRequestActionCreateRequest createRequest = new PrayerRequestActionCreateRequest(user.getUserId(),
-                LocalDateTime.now());
+                OffsetDateTime.now());
 
         Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.createPrayerRequestBookmark(prayerRequest.getPrayerRequestId(), createRequest));
     }
@@ -443,11 +443,11 @@ public class PrayerRequestServiceTests {
                 VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(mockPrayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null,
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", OffsetDateTime.now(), 1, 0, 0, null,
                 mockPrayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
         PrayerRequestActionCreateRequest createRequest = new PrayerRequestActionCreateRequest(user.getUserId(),
-                LocalDateTime.now());
+                OffsetDateTime.now());
 
         PrayerRequestBookmarkModel prayerRequestBookmarkModel =
                 prayerRequestService.createPrayerRequestBookmark(prayerRequest.getPrayerRequestId(), createRequest);
@@ -467,12 +467,12 @@ public class PrayerRequestServiceTests {
                 VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(mockPrayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null,
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", OffsetDateTime.now(), 1, 0, 0, null,
                 mockPrayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
 
         PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user,
-                LocalDateTime.now());
+                OffsetDateTime.now());
         prayerRequestBookmarkRepository.save(prayerRequestBookmark);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
@@ -495,12 +495,12 @@ public class PrayerRequestServiceTests {
                 VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(mockPrayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", LocalDateTime.now(), 1, 0, 0, null,
+        PrayerRequest prayerRequest = new PrayerRequest("父母离婚", "请为我父母离婚祷告", OffsetDateTime.now(), 1, 0, 0, null,
                 mockPrayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
 
         PrayerRequestBookmark prayerRequestBookmark = new PrayerRequestBookmark(prayerRequest, user,
-                LocalDateTime.now());
+                OffsetDateTime.now());
         prayerRequestBookmarkRepository.save(prayerRequestBookmark);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
@@ -533,10 +533,10 @@ public class PrayerRequestServiceTests {
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(757);
 
         PrayerRequestGetResult prayerRequestGetResult = new PrayerRequestGetResult(787, "Pray for my uncle", "Pray " +
-                "for my uncle's surgery", LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                "for my uncle's surgery", OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
         prayerRequestGetResult.setCommentCount(1);
 
-        PrayerRequestCommentResult[] commentResults = {new PrayerRequestCommentResult(777, LocalDateTime.now(), "Will" +
+        PrayerRequestCommentResult[] commentResults = {new PrayerRequestCommentResult(777, OffsetDateTime.now(), "Will" +
                 " pray for this", 717, "captainrex", "CT-7567", null, null, null, null)};
 
         Mockito.when(prayerRequestRepository.getPrayerRequest(anyInt(), anyInt())).thenReturn(prayerRequestGetResult);
@@ -557,10 +557,10 @@ public class PrayerRequestServiceTests {
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(757);
 
         PrayerRequestGetResult prayerRequestGetResult = new PrayerRequestGetResult(787, "Pray for my uncle", "Pray " +
-                "for my uncle's surgery", LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                "for my uncle's surgery", OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
         prayerRequestGetResult.setCommentCount(1);
 
-        PrayerRequestCommentResult[] commentResults = {new PrayerRequestCommentResult(777, LocalDateTime.now(), "Will" +
+        PrayerRequestCommentResult[] commentResults = {new PrayerRequestCommentResult(777, OffsetDateTime.now(), "Will" +
                 " pray for this", 717, "captainrex", "CT-7567", null, null, null, null)};
 
         Mockito.when(prayerRequestRepository.getPrayerRequest(anyInt(), anyInt())).thenReturn(prayerRequestGetResult);
@@ -583,12 +583,12 @@ public class PrayerRequestServiceTests {
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(mockUserId);
 
         PrayerRequestGetResult prayerRequestGetResult = new PrayerRequestGetResult(787, "Pray for my uncle", "Pray " +
-                "for my uncle's surgery", LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                "for my uncle's surgery", OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
         prayerRequestGetResult.setCommentCount(2);
 
-        PrayerRequestCommentResult[] commentResults = {new PrayerRequestCommentResult(777, LocalDateTime.now(), "Will" +
+        PrayerRequestCommentResult[] commentResults = {new PrayerRequestCommentResult(777, OffsetDateTime.now(), "Will" +
                 " pray for this", 717, "captainrex", "CT-7567", null, null, null, null),
-            new PrayerRequestCommentResult(787, LocalDateTime.now(), "In my book, experience outranks everything.", mockUserId, "commanderfox", "CC-1010", null, null, null, null)};
+            new PrayerRequestCommentResult(787, OffsetDateTime.now(), "In my book, experience outranks everything.", mockUserId, "commanderfox", "CC-1010", null, null, null, null)};
 
         Mockito.when(prayerRequestRepository.getPrayerRequest(anyInt(), anyInt())).thenReturn(prayerRequestGetResult);
         Mockito.when(prayerRequestRepository.getPrayerRequestComments(anyInt())).thenReturn(List.of(commentResults));
@@ -609,12 +609,12 @@ public class PrayerRequestServiceTests {
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(mockUserId);
 
         PrayerRequestGetResult prayerRequestGetResult = new PrayerRequestGetResult(787, "Pray for my uncle", "Pray " +
-                "for my uncle's surgery", LocalDateTime.now(), LocalDateTime.now().plusDays(15));
+                "for my uncle's surgery", OffsetDateTime.now(), OffsetDateTime.now().plusDays(15));
         prayerRequestGetResult.setCommentCount(2);
 
-        PrayerRequestCommentResult[] commentResults = {new PrayerRequestCommentResult(777, LocalDateTime.now(), "Will" +
+        PrayerRequestCommentResult[] commentResults = {new PrayerRequestCommentResult(777, OffsetDateTime.now(), "Will" +
                 " pray for this", 717, "captainrex", "CT-7567", null, null, null, null),
-                new PrayerRequestCommentResult(787, LocalDateTime.now(), "In my book, experience outranks everything.", mockUserId, "commanderfox", "CC-1010", null, null, null, null)};
+                new PrayerRequestCommentResult(787, OffsetDateTime.now(), "In my book, experience outranks everything.", mockUserId, "commanderfox", "CC-1010", null, null, null, null)};
 
         Mockito.when(prayerRequestRepository.getPrayerRequest(anyInt(), anyInt())).thenReturn(prayerRequestGetResult);
         Mockito.when(prayerRequestRepository.getPrayerRequestComments(anyInt())).thenReturn(List.of(commentResults));
@@ -636,7 +636,7 @@ public class PrayerRequestServiceTests {
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(mockUserId);
 
-        PrayerRequestCommentCreateRequest createRequest = new PrayerRequestCommentCreateRequest(mockUserId, "Can I share this during our church's prayer meeting?", LocalDateTime.now());
+        PrayerRequestCommentCreateRequest createRequest = new PrayerRequestCommentCreateRequest(mockUserId, "Can I share this during our church's prayer meeting?", OffsetDateTime.now());
 
         UncategorizedSQLException notJoinedException = new UncategorizedSQLException(null, null, new SQLException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_COMMENT));
         Mockito.when(prayerRequestJdbcRepository.createPrayerRequestComment(any())).thenThrow(notJoinedException);
@@ -651,8 +651,8 @@ public class PrayerRequestServiceTests {
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(mockUserId);
 
-        PrayerRequestCommentCreateRequest createRequest = new PrayerRequestCommentCreateRequest(mockUserId, "Can I share this during our church's prayer meeting?", LocalDateTime.now());
-        PrayerRequestCommentResult commentResult = new PrayerRequestCommentResult(717, LocalDateTime.now(), createRequest.getComment(), mockUserId, "lneal", "Link Neal", null, null, null, null);
+        PrayerRequestCommentCreateRequest createRequest = new PrayerRequestCommentCreateRequest(mockUserId, "Can I share this during our church's prayer meeting?", OffsetDateTime.now());
+        PrayerRequestCommentResult commentResult = new PrayerRequestCommentResult(717, OffsetDateTime.now(), createRequest.getComment(), mockUserId, "lneal", "Link Neal", null, null, null, null);
 
         Mockito.when(prayerRequestJdbcRepository.createPrayerRequestComment(any())).thenReturn(commentResult);
 
@@ -672,10 +672,10 @@ public class PrayerRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Mythical Entertainment", "A prayer group for the makers of Good Mythical Morning", "", VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("Mock Prayer Request", "Mock prayer request description", LocalDateTime.now(), 0, 0, 0, null, prayerGroup, user);
+        PrayerRequest prayerRequest = new PrayerRequest("Mock Prayer Request", "Mock prayer request description", OffsetDateTime.now(), 0, 0, 0, null, prayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
 
-        PrayerRequestComment prayerRequestComment = new PrayerRequestComment("Mock prayer request comment", prayerRequest, user, LocalDateTime.now());
+        PrayerRequestComment prayerRequestComment = new PrayerRequestComment("Mock prayer request comment", prayerRequest, user, OffsetDateTime.now());
         prayerRequestCommentRepository.save(prayerRequestComment);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
@@ -697,10 +697,10 @@ public class PrayerRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Mythical Entertainment", "A prayer group for the makers of Good Mythical Morning", "", VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("Mock Prayer Request", "Mock prayer request description", LocalDateTime.now(), 0, 0, 0, null, prayerGroup, user);
+        PrayerRequest prayerRequest = new PrayerRequest("Mock Prayer Request", "Mock prayer request description", OffsetDateTime.now(), 0, 0, 0, null, prayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
 
-        PrayerRequestComment prayerRequestComment = new PrayerRequestComment("Mock prayer request comment", prayerRequest, user, LocalDateTime.now());
+        PrayerRequestComment prayerRequestComment = new PrayerRequestComment("Mock prayer request comment", prayerRequest, user, OffsetDateTime.now());
         prayerRequestCommentRepository.save(prayerRequestComment);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
@@ -722,10 +722,10 @@ public class PrayerRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Mythical Entertainment", "A prayer group for the makers of Good Mythical Morning", "", VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("Mock Prayer Request", "Mock prayer request description", LocalDateTime.now(), 0, 0, 0, null, prayerGroup, user);
+        PrayerRequest prayerRequest = new PrayerRequest("Mock Prayer Request", "Mock prayer request description", OffsetDateTime.now(), 0, 0, 0, null, prayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
 
-        PrayerRequestComment prayerRequestComment = new PrayerRequestComment("Mock prayer request comment", prayerRequest, user, LocalDateTime.now());
+        PrayerRequestComment prayerRequestComment = new PrayerRequestComment("Mock prayer request comment", prayerRequest, user, OffsetDateTime.now());
         prayerRequestCommentRepository.save(prayerRequestComment);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
@@ -744,10 +744,10 @@ public class PrayerRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Mythical Entertainment", "A prayer group for the makers of Good Mythical Morning", "", VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
-        PrayerRequest prayerRequest = new PrayerRequest("Mock Prayer Request", "Mock prayer request description", LocalDateTime.now(), 0, 0, 0, null, prayerGroup, user);
+        PrayerRequest prayerRequest = new PrayerRequest("Mock Prayer Request", "Mock prayer request description", OffsetDateTime.now(), 0, 0, 0, null, prayerGroup, user);
         prayerRequestRepository.save(prayerRequest);
 
-        PrayerRequestComment prayerRequestComment = new PrayerRequestComment("Mock prayer request comment", prayerRequest, user, LocalDateTime.now());
+        PrayerRequestComment prayerRequestComment = new PrayerRequestComment("Mock prayer request comment", prayerRequest, user, OffsetDateTime.now());
         prayerRequestCommentRepository.save(prayerRequestComment);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");

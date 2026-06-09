@@ -4,7 +4,7 @@ import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 public class PrayerRequestBookmark {
@@ -23,11 +23,11 @@ public class PrayerRequestBookmark {
     private User user;
 
     @NotNull
-    private LocalDateTime submittedDate;
+    private OffsetDateTime submittedDate;
 
     public PrayerRequestBookmark(){}
 
-    public PrayerRequestBookmark(PrayerRequest prayerRequest, User user, LocalDateTime submittedDate) {
+    public PrayerRequestBookmark(PrayerRequest prayerRequest, User user, OffsetDateTime submittedDate) {
         this.prayerRequest = prayerRequest;
         this.user = user;
         this.submittedDate = submittedDate;
@@ -57,11 +57,11 @@ public class PrayerRequestBookmark {
         this.user = user;
     }
 
-    public LocalDateTime getSubmittedDate() {
+    public OffsetDateTime getSubmittedDate() {
         return submittedDate;
     }
 
-    public void setSubmittedDate(LocalDateTime submittedDate) {
+    public void setSubmittedDate(OffsetDateTime submittedDate) {
         this.submittedDate = submittedDate;
     }
 }

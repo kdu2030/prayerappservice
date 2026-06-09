@@ -1,16 +1,16 @@
 package com.kevin.prayerappservice.request.models;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class PrayerRequestCommentModel {
     private int prayerRequestCommentId;
-    private LocalDateTime submittedDate;
+    private OffsetDateTime submittedDate;
     private String comment;
     private PrayerRequestUserSummary user;
 
     public PrayerRequestCommentModel(){}
 
-    public PrayerRequestCommentModel(int prayerRequestCommentId, LocalDateTime submittedDate, String comment, PrayerRequestUserSummary user) {
+    public PrayerRequestCommentModel(int prayerRequestCommentId, OffsetDateTime submittedDate, String comment, PrayerRequestUserSummary user) {
         this.prayerRequestCommentId = prayerRequestCommentId;
         this.submittedDate = submittedDate;
         this.comment = comment;
@@ -25,11 +25,11 @@ public class PrayerRequestCommentModel {
         this.prayerRequestCommentId = prayerRequestCommentId;
     }
 
-    public LocalDateTime getSubmittedDate() {
+    public OffsetDateTime getSubmittedDate() {
         return submittedDate;
     }
 
-    public void setSubmittedDate(LocalDateTime submittedDate) {
+    public void setSubmittedDate(OffsetDateTime submittedDate) {
         this.submittedDate = submittedDate;
     }
 

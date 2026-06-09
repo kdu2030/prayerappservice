@@ -1,14 +1,14 @@
 package com.kevin.prayerappservice.request.dtos;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class PrayerRequestCommentCreateParams {
     private int prayerRequestId;
     private int userId;
     private String comment;
-    private LocalDateTime submittedDate;
+    private OffsetDateTime submittedDate;
 
-    public PrayerRequestCommentCreateParams(int prayerRequestId, int userId, String comment, LocalDateTime submittedDate) {
+    public PrayerRequestCommentCreateParams(int prayerRequestId, int userId, String comment, OffsetDateTime submittedDate) {
         this.prayerRequestId = prayerRequestId;
         this.userId = userId;
         this.comment = comment;
@@ -39,11 +39,11 @@ public class PrayerRequestCommentCreateParams {
         this.comment = comment;
     }
 
-    public LocalDateTime getSubmittedDate() {
+    public OffsetDateTime getSubmittedDate() {
         return submittedDate;
     }
 
-    public void setSubmittedDate(LocalDateTime submittedDate) {
+    public void setSubmittedDate(OffsetDateTime submittedDate) {
         this.submittedDate = submittedDate;
     }
 }

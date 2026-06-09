@@ -3,7 +3,7 @@ package com.kevin.prayerappservice.request.models;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class PrayerRequestCreateRequest {
     private int userId;
@@ -16,13 +16,13 @@ public class PrayerRequestCreateRequest {
     @NotBlank
     private String requestDescription;
 
-    private LocalDateTime expirationDate;
+    private OffsetDateTime expirationDate;
 
-    private LocalDateTime createdDate;
+    private OffsetDateTime createdDate;
 
     public PrayerRequestCreateRequest(){}
 
-    public PrayerRequestCreateRequest(int userId, int prayerGroupId, String requestTitle, String requestDescription, LocalDateTime expirationDate, LocalDateTime createdDate) {
+    public PrayerRequestCreateRequest(int userId, int prayerGroupId, String requestTitle, String requestDescription, OffsetDateTime expirationDate, OffsetDateTime createdDate) {
         this.userId = userId;
         this.prayerGroupId = prayerGroupId;
         this.requestTitle = requestTitle;
@@ -55,19 +55,19 @@ public class PrayerRequestCreateRequest {
         this.requestDescription = requestDescription;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public OffsetDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(OffsetDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public OffsetDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(OffsetDateTime createdDate) {
         this.createdDate = createdDate;
     }
 

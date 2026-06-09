@@ -1,11 +1,11 @@
 package com.kevin.prayerappservice.join.dtos;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class JoinRequestDTO {
     private int joinRequestId;
     private int prayerGroupId;
-    private LocalDateTime submittedDate;
+    private OffsetDateTime submittedDate;
     private int userId;
     private String fullName;
     private String username;
@@ -16,7 +16,7 @@ public class JoinRequestDTO {
 
     public JoinRequestDTO(){}
 
-    public JoinRequestDTO(int joinRequestId, int prayerGroupId, LocalDateTime submittedDate, int userId, String fullName, String username, Integer mediaFileId, String fileName, String fileUrl, String fileType) {
+    public JoinRequestDTO(int joinRequestId, int prayerGroupId, OffsetDateTime submittedDate, int userId, String fullName, String username, Integer mediaFileId, String fileName, String fileUrl, String fileType) {
         this.joinRequestId = joinRequestId;
         this.prayerGroupId = prayerGroupId;
         this.submittedDate = submittedDate;
@@ -101,11 +101,11 @@ public class JoinRequestDTO {
         this.fileType = fileType;
     }
 
-    public LocalDateTime getSubmittedDate() {
+    public OffsetDateTime getSubmittedDate() {
         return submittedDate;
     }
 
-    public void setSubmittedDate(LocalDateTime submittedDate) {
+    public void setSubmittedDate(OffsetDateTime submittedDate) {
         this.submittedDate = submittedDate;
     }
 }

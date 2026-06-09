@@ -2,17 +2,17 @@ package com.kevin.prayerappservice.join.models;
 
 import com.kevin.prayerappservice.user.models.UserSummary;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class JoinRequestModel {
     private int joinRequestId;
     private int prayerGroupId;
     private UserSummary user;
-    private LocalDateTime submittedDate;
+    private OffsetDateTime submittedDate;
 
     public JoinRequestModel(){}
 
-    public JoinRequestModel(int joinRequestId, int prayerGroupId, UserSummary user, LocalDateTime submittedDate) {
+    public JoinRequestModel(int joinRequestId, int prayerGroupId, UserSummary user, OffsetDateTime submittedDate) {
         this.joinRequestId = joinRequestId;
         this.prayerGroupId = prayerGroupId;
         this.user = user;
@@ -43,11 +43,11 @@ public class JoinRequestModel {
         this.user = user;
     }
 
-    public LocalDateTime getSubmittedDate() {
+    public OffsetDateTime getSubmittedDate() {
         return submittedDate;
     }
 
-    public void setSubmittedDate(LocalDateTime submittedDate) {
+    public void setSubmittedDate(OffsetDateTime submittedDate) {
         this.submittedDate = submittedDate;
     }
 }

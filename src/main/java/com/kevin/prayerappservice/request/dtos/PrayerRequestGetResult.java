@@ -2,14 +2,14 @@ package com.kevin.prayerappservice.request.dtos;
 
 import com.kevin.prayerappservice.file.entities.FileType;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class PrayerRequestGetResult {
     private int prayerRequestId;
     private String requestTitle;
     private String requestDescription;
-    private LocalDateTime createdDate;
-    private LocalDateTime expirationDate;
+    private OffsetDateTime createdDate;
+    private OffsetDateTime expirationDate;
     private int likeCount;
     private int commentCount;
     private int prayedCount;
@@ -31,7 +31,7 @@ public class PrayerRequestGetResult {
 
     public PrayerRequestGetResult(){}
 
-    public PrayerRequestGetResult(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate) {
+    public PrayerRequestGetResult(int prayerRequestId, String requestTitle, String requestDescription, OffsetDateTime createdDate, OffsetDateTime expirationDate) {
         this.prayerRequestId = prayerRequestId;
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
@@ -39,7 +39,7 @@ public class PrayerRequestGetResult {
         this.expirationDate = expirationDate;
     }
 
-    public PrayerRequestGetResult(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, int likeCount, int commentCount, int prayedCount, Integer userLikeId, Integer userBookmarkId, int prayerGroupId, String groupName, Integer avatarFileId, String avatarFileName, String avatarFileUrl, FileType avatarFileType, int userId, String username, Integer userFileId, String userFileName, String userFileUrl, FileType userFileType) {
+    public PrayerRequestGetResult(int prayerRequestId, String requestTitle, String requestDescription, OffsetDateTime createdDate, OffsetDateTime expirationDate, int likeCount, int commentCount, int prayedCount, Integer userLikeId, Integer userBookmarkId, int prayerGroupId, String groupName, Integer avatarFileId, String avatarFileName, String avatarFileUrl, FileType avatarFileType, int userId, String username, Integer userFileId, String userFileName, String userFileUrl, FileType userFileType) {
         this.prayerRequestId = prayerRequestId;
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
@@ -88,19 +88,19 @@ public class PrayerRequestGetResult {
         this.requestDescription = requestDescription;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public OffsetDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(OffsetDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public OffsetDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(OffsetDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 

@@ -1,14 +1,14 @@
 package com.kevin.prayerappservice.request.models;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public class PrayerRequestModel {
     private int prayerRequestId;
     private String requestTitle;
     private String requestDescription;
-    private LocalDateTime createdDate;
-    private LocalDateTime expirationDate;
+    private OffsetDateTime createdDate;
+    private OffsetDateTime expirationDate;
     private PrayerRequestPrayerGroupSummary prayerGroup;
     private PrayerRequestUserSummary user;
     private int likeCount;
@@ -21,7 +21,7 @@ public class PrayerRequestModel {
 
     public PrayerRequestModel(){}
 
-    public PrayerRequestModel(int prayerRequestId, String requestTitle, String requestDescription, LocalDateTime createdDate, LocalDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, List<Integer> userCommentIds, Integer userBookmarkId, List<Integer> userPrayerSessionIds) {
+    public PrayerRequestModel(int prayerRequestId, String requestTitle, String requestDescription, OffsetDateTime createdDate, OffsetDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, List<Integer> userCommentIds, Integer userBookmarkId, List<Integer> userPrayerSessionIds) {
         this.prayerRequestId = prayerRequestId;
         this.requestTitle = requestTitle;
         this.requestDescription = requestDescription;
@@ -62,19 +62,19 @@ public class PrayerRequestModel {
         this.requestDescription = requestDescription;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public OffsetDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(OffsetDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public OffsetDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(OffsetDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 
