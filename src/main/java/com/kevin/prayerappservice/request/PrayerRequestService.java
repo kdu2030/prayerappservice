@@ -287,6 +287,12 @@ public class PrayerRequestService {
         prayerRequestRepository.deletePrayerRequestComment(prayerRequestCommentId);
     }
 
+    public PrayerRequestModel updatePrayerRequest(String authHeader, int prayerRequestId, PrayerRequestUpdateRequest updateRequest){
+        String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
+        int userId = jwtService.extractUserId(authToken);
+
+    }
+
     private HashMap<Integer, PrayerRequestUserAction> getPrayerRequestIdToActionIdsMap(int[] prayerRequestIds, int userId){
         PrayerRequestUserActionIdQuery actionIdQuery = new PrayerRequestUserActionIdQuery(prayerRequestIds, userId);
 
