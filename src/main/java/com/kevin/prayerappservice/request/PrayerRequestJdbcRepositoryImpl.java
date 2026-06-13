@@ -81,4 +81,8 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(sessionQuery);
         return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerRequestUserSessionResult.class));
     }
+
+    public PrayerRequestGetResult updatePrayerRequest(PrayerRequestUpdateQuery prayerRequestUpdateQuery){
+
+    }
 }
