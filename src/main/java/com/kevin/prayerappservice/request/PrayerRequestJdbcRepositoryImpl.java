@@ -83,6 +83,8 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
     }
 
     public PrayerRequestGetResult updatePrayerRequest(PrayerRequestUpdateQuery prayerRequestUpdateQuery){
-
+        String sql = "SELECT * FROM update_prayer_request(:userId, :prayerRequestId, :requestTitle, :requestDescription, :expirationDate);";
+        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(prayerRequestUpdateQuery);
+        return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(PrayerRequestGetResult.class));
     }
 }
