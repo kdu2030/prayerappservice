@@ -1,10 +1,15 @@
 package com.kevin.prayerappservice.request.models;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.time.OffsetDateTime;
 
 public class PrayerRequestUpdateRequest {
+    @NotNull
     private String requestTitle;
+    @NotNull
     private String requestDescription;
+
     private OffsetDateTime expirationDate;
 
     public PrayerRequestUpdateRequest(){}
