@@ -291,6 +291,29 @@ public class PrayerRequestService {
         String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(authToken);
 
+        PrayerRequestUpdateQuery updateQuery = new PrayerRequestUpdateQuery(userId, prayerRequestId, updateRequest.getRequestTitle(), updateRequest.getRequestDescription(), updateRequest.getExpirationDate());
+
+        try {
+            PrayerRequestGetResult updatedPrayerRequest = prayerRequestRepository.updatePrayerRequest(updateQuery);
+            PrayerRequestModel updatedPrayerRequestModel = prayerRequestMapper.prayerRequestGetResultToPrayerRequestModel(updatedPrayerRequest);
+
+            HashMap<Integer, PrayerRequestUserAction> prayerRequestUserActionHashMap = getPrayerRequestIdToActionIdsMap(new int[] { prayerRequestId }, userId);
+            PrayerRequestUserAction prayerRequestUserAction = prayerRequestUserActionHashMap.get(prayerRequestId);
+
+            updatedPrayerRequestModel.setUserCommentIds(prayerRequestUserAction.getUserCommentIds());
+            updatedPrayerRequestModel.setUserPrayerSessionIds(prayerRequestUserAction.getUserPrayerSessionIds());
+
+            return updatedPrayerRequestModel;
+        } catch (UncategorizedSQLException exception){
+            Throwable cause = exception.getCause();
+            String exceptionMessage = cause != null ? cause.getMessage() : null;
+
+            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.ONLY_SUBMITTED_CAN_UPDATE_REQUEST)){
+                throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_UPDATE_REQUEST);
+            }
+
+            throw exception;
+        }
     }
 
     private HashMap<Integer, PrayerRequestUserAction> getPrayerRequestIdToActionIdsMap(int[] prayerRequestIds, int userId){

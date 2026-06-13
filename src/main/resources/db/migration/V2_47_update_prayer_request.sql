@@ -85,7 +85,7 @@ BEGIN
             tpr.user_id = p_user_id
     )
     THEN
-        RAISE EXCEPTION 'Only the submitted user can update the prayer request';
+        RAISE EXCEPTION 'Only the submitted user can update the prayer request.';
     END IF;
 
     UPDATE
