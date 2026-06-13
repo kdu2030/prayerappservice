@@ -82,6 +82,7 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
         return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerRequestUserSessionResult.class));
     }
 
+    @Override
     public PrayerRequestGetResult updatePrayerRequest(PrayerRequestUpdateQuery prayerRequestUpdateQuery){
         String sql = "SELECT * FROM update_prayer_request(:userId, :prayerRequestId, :requestTitle, :requestDescription, :expirationDate);";
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(prayerRequestUpdateQuery);
