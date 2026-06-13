@@ -87,7 +87,7 @@ public class PrayerRequestService {
                 PrayerRequestModel prayerRequest = prayerRequests.get(i);
                 if(!userActionHashMap.containsKey(prayerRequest.getPrayerRequestId())){
                     prayerRequest.setUserCommentIds(new ArrayList<>());
-                    prayerRequest.setUserCommentIds(new ArrayList<>());
+                    prayerRequest.setUserPrayerSessionIds(new ArrayList<>());
                     continue;
                 }
 
