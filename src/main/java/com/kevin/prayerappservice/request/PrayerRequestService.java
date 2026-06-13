@@ -300,8 +300,10 @@ public class PrayerRequestService {
             HashMap<Integer, PrayerRequestUserAction> prayerRequestUserActionHashMap = getPrayerRequestIdToActionIdsMap(new int[] { prayerRequestId }, userId);
             PrayerRequestUserAction prayerRequestUserAction = prayerRequestUserActionHashMap.get(prayerRequestId);
 
-            updatedPrayerRequestModel.setUserCommentIds(prayerRequestUserAction.getUserCommentIds());
-            updatedPrayerRequestModel.setUserPrayerSessionIds(prayerRequestUserAction.getUserPrayerSessionIds());
+            if(prayerRequestUserAction != null){
+                updatedPrayerRequestModel.setUserCommentIds(prayerRequestUserAction.getUserCommentIds());
+                updatedPrayerRequestModel.setUserPrayerSessionIds(prayerRequestUserAction.getUserPrayerSessionIds());
+            }
 
             return updatedPrayerRequestModel;
         } catch (UncategorizedSQLException exception){
