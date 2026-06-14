@@ -88,4 +88,12 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(prayerRequestUpdateQuery);
         return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(PrayerRequestGetResult.class));
     }
+
+    @Override
+    public void deletePrayerRequest(int prayerRequestId){
+        String sql = "CALL delete_prayer_request(:prayerRequestId);";
+        PrayerRequestDeleteQuery deleteQuery = new PrayerRequestDeleteQuery(prayerRequestId);
+        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(deleteQuery);
+        jdbcTemplate.update(sql, params);
+    }
 }

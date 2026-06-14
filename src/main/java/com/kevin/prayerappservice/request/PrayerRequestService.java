@@ -337,6 +337,7 @@ public class PrayerRequestService {
             throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_OR_ADMIN_CAN_DELETE_REQUEST);
         }
 
+        prayerRequestRepository.deletePrayerRequest(prayerRequestToDelete.getPrayerRequestId());
     }
 
     private HashMap<Integer, PrayerRequestUserAction> getPrayerRequestIdToActionIdsMap(int[] prayerRequestIds, int userId){
