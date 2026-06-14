@@ -24,7 +24,7 @@ This is a backend API that is written to support the Prayer Requests App. Users 
 # How to Run
 1. Clone the repository
 2. Install the JDK for Java 21
-3. Set up a local Postgres database. Create a database with the name prayer_app. Create a user for the Prayer App Service. Make sure that you run GRANT ALL PRIVILEGES ON SCHEMA public TO [Prayer App Service user];
+3. Set up a local Postgres database. Create a database with the name prayer_app. Create a user for the Prayer App Service. Make sure that you run GRANT ALL PRIVILEGES ON SCHEMA public TO [Prayer App Service user]; for the prayer_app database.
 4. Set the environment variables DB_USERNAME to the username of the Prayer App Service User and DB_PASSWORD to the password of the Prayer App Service User
 5. Compile and run the Prayer App Service.
 6. See the Swagger page at http://localhost:8080/swagger-ui/index.html#/
