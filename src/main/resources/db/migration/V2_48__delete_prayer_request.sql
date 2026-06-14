@@ -28,12 +28,6 @@ BEGIN
         prayer_request pr
     WHERE
         pr.prayer_request_id = p_prayer_request_id;
-
-    COMMIT;
-EXCEPTION
-    WHEN OTHERS THEN
-        ROLLBACK;
-        RAISE;
 END;
 $$
 LANGUAGE plpgsql;
