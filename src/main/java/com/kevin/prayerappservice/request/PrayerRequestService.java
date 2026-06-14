@@ -88,8 +88,6 @@ public class PrayerRequestService {
             for(int i = 0; i < prayerRequests.size(); i++){
                 PrayerRequestModel prayerRequest = prayerRequests.get(i);
                 if(!userActionHashMap.containsKey(prayerRequest.getPrayerRequestId())){
-                    prayerRequest.setUserCommentIds(new ArrayList<>());
-                    prayerRequest.setUserPrayerSessionIds(new ArrayList<>());
                     continue;
                 }
 
@@ -307,9 +305,6 @@ public class PrayerRequestService {
             if(prayerRequestUserAction != null){
                 updatedPrayerRequestModel.setUserCommentIds(prayerRequestUserAction.getUserCommentIds());
                 updatedPrayerRequestModel.setUserPrayerSessionIds(prayerRequestUserAction.getUserPrayerSessionIds());
-            } else {
-                updatedPrayerRequestModel.setUserPrayerSessionIds(new ArrayList<>());
-                updatedPrayerRequestModel.setUserCommentIds(new ArrayList<>());
             }
 
             return updatedPrayerRequestModel;
