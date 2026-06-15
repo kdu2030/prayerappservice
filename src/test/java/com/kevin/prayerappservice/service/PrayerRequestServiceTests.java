@@ -763,4 +763,21 @@ public class PrayerRequestServiceTests {
         Integer calledId = prayerRequestCommentIdCaptor.getValue();
         Assertions.assertThat(calledId).isEqualTo(prayerRequestCommentId);
     }
+
+    @Test
+    public void updatePrayerRequest_whenNotCalledBySubmittedUser_throwsError(){
+        int mockUserId = 737;
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(mockUserId);
+
+        UncategorizedSQLException userDoesNotMatchException = new UncategorizedSQLException(null, null, new SQLException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_UPDATE_REQUEST));
+        Mockito.when(prayerRequestJdbcRepository.updatePrayerRequest(any())).thenThrow(userDoesNotMatchException);
+
+        OffsetDateTime expirationDate = OffsetDateTime.now();
+        expirationDate = expirationDate.plusDays(15);
+
+        PrayerRequestUpdateRequest updateRequest = new PrayerRequestUpdateRequest("Prayer request 1", "Prayer request description 1", expirationDate);
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.updatePrayerRequest("mockHeader", 747, updateRequest));
+    }
 }
