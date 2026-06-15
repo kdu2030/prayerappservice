@@ -1,5 +1,7 @@
 package com.kevin.prayerappservice.group.dtos;
 
+import com.kevin.prayerappservice.group.constants.JoinStatus;
+
 public class PrayerGroupSummaryDTO {
     private int prayerGroupId;
     private String groupName;
@@ -7,16 +9,18 @@ public class PrayerGroupSummaryDTO {
     private String fileName;
     private String fileUrl;
     private String fileType;
+    private JoinStatus joinStatus;
 
     public PrayerGroupSummaryDTO(){}
 
-    public PrayerGroupSummaryDTO(int prayerGroupId, String groupName, Integer mediaFileId, String fileName, String fileUrl, String fileType) {
+    public PrayerGroupSummaryDTO(int prayerGroupId, String groupName, Integer mediaFileId, String fileName, String fileUrl, String fileType, JoinStatus joinStatus) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.mediaFileId = mediaFileId;
         this.fileName = fileName;
         this.fileUrl = fileUrl;
         this.fileType = fileType;
+        this.joinStatus = joinStatus;
     }
 
     public int getPrayerGroupId() {
@@ -65,5 +69,13 @@ public class PrayerGroupSummaryDTO {
 
     public void setFileType(String fileType) {
         this.fileType = fileType;
+    }
+
+    public JoinStatus getJoinStatus(){
+        return joinStatus;
+    }
+
+    public void setJoinStatus(JoinStatus joinStatus){
+        this.joinStatus = joinStatus;
     }
 }

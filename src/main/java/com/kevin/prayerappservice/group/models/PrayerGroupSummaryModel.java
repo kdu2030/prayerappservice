@@ -1,18 +1,21 @@
 package com.kevin.prayerappservice.group.models;
 
 import com.kevin.prayerappservice.file.entities.MediaFile;
+import com.kevin.prayerappservice.group.constants.JoinStatus;
 
 public class PrayerGroupSummaryModel {
     private int prayerGroupId;
     private String groupName;
     private MediaFile avatarFile;
+    private JoinStatus joinStatus;
 
     public PrayerGroupSummaryModel(){}
 
-    public PrayerGroupSummaryModel(int prayerGroupId, String groupName, MediaFile avatarFile) {
+    public PrayerGroupSummaryModel(int prayerGroupId, String groupName, MediaFile avatarFile, JoinStatus joinStatus) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.avatarFile = avatarFile;
+        this.joinStatus = joinStatus;
     }
 
     public int getPrayerGroupId() {
@@ -37,5 +40,13 @@ public class PrayerGroupSummaryModel {
 
     public void setAvatarFile(MediaFile avatarFile) {
         this.avatarFile = avatarFile;
+    }
+
+    public JoinStatus getJoinStatus() {
+        return joinStatus;
+    }
+
+    public void setJoinStatus(JoinStatus joinStatus) {
+        this.joinStatus = joinStatus;
     }
 }
