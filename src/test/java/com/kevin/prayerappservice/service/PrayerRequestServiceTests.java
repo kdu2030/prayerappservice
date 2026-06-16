@@ -803,6 +803,36 @@ public class PrayerRequestServiceTests {
         Assertions.assertThat(updateQuery.getPrayerRequestId()).isEqualTo(prayerRequestId);
         Assertions.assertThat(updateQuery.getRequestTitle()).isEqualTo(updateRequest.getRequestTitle());
         Assertions.assertThat(updateQuery.getRequestDescription()).isEqualTo(updateRequest.getRequestDescription());
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequest_calledByNonAuthorAndAdmin_throwsError(){
+        User prayerRequestAuthor = new User("Thomas Jefferson", "tjefferson", "tjefferson@virgina.edu", "mockPasswordHash", Role.USER);
+        userRepository.save(prayerRequestAuthor);
+
+        User deletePrayerRequestCaller = new User("George Washington", "gwashington", "gwashington@whitehouse.gov", "mockPasswordHash", Role.USER);
+        userRepository.save(deletePrayerRequestCaller);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Founding Fathers", "Founders of the U.S.", null, VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        PrayerGroupUser prayerGroupUser1 = new PrayerGroupUser(prayerRequestAuthor, prayerGroup, PrayerGroupRole.MEMBER);
+        PrayerGroupUser prayerGroupUser2 = new PrayerGroupUser(deletePrayerRequestCaller, prayerGroup, PrayerGroupRole.MEMBER);
+
+        prayerGroupUserRepository.save(prayerGroupUser1);
+        prayerGroupUserRepository.save(prayerGroupUser2);
+
+        OffsetDateTime createdDate = OffsetDateTime.now();
+
+        PrayerRequest prayerRequest = new PrayerRequest("Prayer request 2", "Prayer request 2 description", createdDate, 0, 0, 0, null, prayerGroup, prayerRequestAuthor);
+        prayerRequestRepository.save(prayerRequest);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(deletePrayerRequestCaller.getUserId());
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.deletePrayerRequest("mockHeader", prayerRequest.getPrayerRequestId()));
 
 
     }

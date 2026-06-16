@@ -386,7 +386,6 @@ public class PrayerRequestService {
 
         Optional<PrayerGroupUser> prayerGroupUser = prayerGroupUserRepository.findByPrayerGroup_prayerGroupIdAndUser_userId(prayerRequestToDelete.getPrayerRequestId(), userId);
         return prayerGroupUser.filter(groupUser -> groupUser.getPrayerGroupRole() == PrayerGroupRole.ADMIN).isPresent();
-
     }
 
 }
