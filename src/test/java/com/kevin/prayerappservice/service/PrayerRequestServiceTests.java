@@ -763,4 +763,139 @@ public class PrayerRequestServiceTests {
         Integer calledId = prayerRequestCommentIdCaptor.getValue();
         Assertions.assertThat(calledId).isEqualTo(prayerRequestCommentId);
     }
+
+    @Test
+    public void updatePrayerRequest_whenNotCalledBySubmittedUser_throwsError(){
+        int mockUserId = 737;
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(mockUserId);
+
+        UncategorizedSQLException userDoesNotMatchException = new UncategorizedSQLException(null, null, new SQLException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_UPDATE_REQUEST));
+        Mockito.when(prayerRequestJdbcRepository.updatePrayerRequest(any())).thenThrow(userDoesNotMatchException);
+
+        OffsetDateTime expirationDate = OffsetDateTime.now();
+        expirationDate = expirationDate.plusDays(15);
+
+        PrayerRequestUpdateRequest updateRequest = new PrayerRequestUpdateRequest("Prayer request 1", "Prayer request description 1", expirationDate);
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.updatePrayerRequest("mockHeader", 747, updateRequest));
+    }
+
+    @Test
+    public void updatePrayerRequest_whenCalledWithValidArgs_returnsUpdatedPrayerRequest(){
+        int mockUserId = 737;
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(mockUserId);
+
+        OffsetDateTime expirationDate = OffsetDateTime.now();
+        expirationDate = expirationDate.plusDays(20);
+
+        int prayerRequestId = 747;
+        PrayerRequestUpdateRequest updateRequest = new PrayerRequestUpdateRequest("Prayer request 1", "Prayer request description 1", expirationDate);
+
+        prayerRequestService.updatePrayerRequest("mockHeader", prayerRequestId, updateRequest);
+
+        ArgumentCaptor<PrayerRequestUpdateQuery> updateRequestCaptor = ArgumentCaptor.forClass(PrayerRequestUpdateQuery.class);
+        Mockito.verify(prayerRequestJdbcRepository).updatePrayerRequest(updateRequestCaptor.capture());
+
+        PrayerRequestUpdateQuery updateQuery = updateRequestCaptor.getValue();
+
+        Assertions.assertThat(updateQuery.getPrayerRequestId()).isEqualTo(prayerRequestId);
+        Assertions.assertThat(updateQuery.getRequestTitle()).isEqualTo(updateRequest.getRequestTitle());
+        Assertions.assertThat(updateQuery.getRequestDescription()).isEqualTo(updateRequest.getRequestDescription());
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequest_calledByNonAuthorAndAdmin_throwsError(){
+        User prayerRequestAuthor = new User("Thomas Jefferson", "tjefferson", "tjefferson@virgina.edu", "mockPasswordHash", Role.USER);
+        userRepository.save(prayerRequestAuthor);
+
+        User deletePrayerRequestCaller = new User("George Washington", "gwashington", "gwashington@whitehouse.gov", "mockPasswordHash", Role.USER);
+        userRepository.save(deletePrayerRequestCaller);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Founding Fathers", "Founders of the U.S.", null, VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        PrayerGroupUser prayerGroupUser1 = new PrayerGroupUser(prayerRequestAuthor, prayerGroup, PrayerGroupRole.MEMBER);
+        PrayerGroupUser prayerGroupUser2 = new PrayerGroupUser(deletePrayerRequestCaller, prayerGroup, PrayerGroupRole.MEMBER);
+
+        prayerGroupUserRepository.save(prayerGroupUser1);
+        prayerGroupUserRepository.save(prayerGroupUser2);
+
+        OffsetDateTime createdDate = OffsetDateTime.now();
+
+        PrayerRequest prayerRequest = new PrayerRequest("Prayer request 2", "Prayer request 2 description", createdDate, 0, 0, 0, null, prayerGroup, prayerRequestAuthor);
+        prayerRequestRepository.save(prayerRequest);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(deletePrayerRequestCaller.getUserId());
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.deletePrayerRequest("mockHeader", prayerRequest.getPrayerRequestId()));
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequest_calledByAdmin_deletesPrayerRequest(){
+        User prayerRequestAuthor = new User("Thomas Jefferson", "tjefferson", "tjefferson@virgina.edu", "mockPasswordHash", Role.USER);
+        userRepository.save(prayerRequestAuthor);
+
+        User deletePrayerRequestCaller = new User("George Washington", "gwashington", "gwashington@whitehouse.gov", "mockPasswordHash", Role.USER);
+        userRepository.save(deletePrayerRequestCaller);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Founding Fathers", "Founders of the U.S.", null, VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        PrayerGroupUser prayerGroupUser1 = new PrayerGroupUser(prayerRequestAuthor, prayerGroup, PrayerGroupRole.MEMBER);
+        PrayerGroupUser prayerGroupUser2 = new PrayerGroupUser(deletePrayerRequestCaller, prayerGroup, PrayerGroupRole.ADMIN);
+
+        prayerGroupUserRepository.save(prayerGroupUser1);
+        prayerGroupUserRepository.save(prayerGroupUser2);
+
+        OffsetDateTime createdDate = OffsetDateTime.now();
+
+        PrayerRequest prayerRequest = new PrayerRequest("Prayer request 2", "Prayer request 2 description", createdDate, 0, 0, 0, null, prayerGroup, prayerRequestAuthor);
+        prayerRequestRepository.save(prayerRequest);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(deletePrayerRequestCaller.getUserId());
+
+        prayerRequestService.deletePrayerRequest("mockHeader", prayerRequest.getPrayerRequestId());
+
+        ArgumentCaptor<Integer> prayerRequestIdToDelete = ArgumentCaptor.forClass(Integer.class);
+        Mockito.verify(prayerRequestJdbcRepository).deletePrayerRequest(prayerRequestIdToDelete.capture());
+
+        Assertions.assertThat(prayerRequestIdToDelete.getValue()).isEqualTo(prayerRequest.getPrayerRequestId());
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    public void deletePrayerRequest_calledByAuthor_deletesPrayerRequest(){
+        User prayerRequestAuthor = new User("Thomas Jefferson", "tjefferson", "tjefferson@virgina.edu", "mockPasswordHash", Role.USER);
+        userRepository.save(prayerRequestAuthor);
+
+        PrayerGroup prayerGroup = new PrayerGroup("Founding Fathers", "Founders of the U.S.", null, VisibilityLevel.PRIVATE, null, null);
+        prayerGroupRepository.save(prayerGroup);
+
+        PrayerGroupUser prayerGroupUser1 = new PrayerGroupUser(prayerRequestAuthor, prayerGroup, PrayerGroupRole.MEMBER);
+        prayerGroupUserRepository.save(prayerGroupUser1);
+
+        OffsetDateTime createdDate = OffsetDateTime.now();
+
+        PrayerRequest prayerRequest = new PrayerRequest("Prayer request 2", "Prayer request 2 description", createdDate, 0, 0, 0, null, prayerGroup, prayerRequestAuthor);
+        prayerRequestRepository.save(prayerRequest);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(prayerRequestAuthor.getUserId());
+
+        prayerRequestService.deletePrayerRequest("mockHeader", prayerRequest.getPrayerRequestId());
+
+        ArgumentCaptor<Integer> prayerRequestIdToDelete = ArgumentCaptor.forClass(Integer.class);
+        Mockito.verify(prayerRequestJdbcRepository).deletePrayerRequest(prayerRequestIdToDelete.capture());
+
+        Assertions.assertThat(prayerRequestIdToDelete.getValue()).isEqualTo(prayerRequest.getPrayerRequestId());
+    }
 }

@@ -3,6 +3,8 @@ package com.kevin.prayerappservice.request;
 import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.group.PrayerGroupUserRepository;
+import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
+import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
 import com.kevin.prayerappservice.request.constants.PrayerRequestErrors;
 import com.kevin.prayerappservice.request.dtos.*;
 import com.kevin.prayerappservice.request.entities.PrayerRequest;
@@ -287,6 +289,52 @@ public class PrayerRequestService {
         prayerRequestRepository.deletePrayerRequestComment(prayerRequestCommentId);
     }
 
+    public PrayerRequestModel updatePrayerRequest(String authHeader, int prayerRequestId, PrayerRequestUpdateRequest updateRequest){
+        String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
+        int userId = jwtService.extractUserId(authToken);
+
+        PrayerRequestUpdateQuery updateQuery = new PrayerRequestUpdateQuery(userId, prayerRequestId, updateRequest.getRequestTitle(), updateRequest.getRequestDescription(), updateRequest.getExpirationDate());
+
+        try {
+            PrayerRequestGetResult updatedPrayerRequest = prayerRequestRepository.updatePrayerRequest(updateQuery);
+            PrayerRequestModel updatedPrayerRequestModel = prayerRequestMapper.prayerRequestGetResultToPrayerRequestModel(updatedPrayerRequest);
+
+            HashMap<Integer, PrayerRequestUserAction> prayerRequestUserActionHashMap = getPrayerRequestIdToActionIdsMap(new int[] { prayerRequestId }, userId);
+            PrayerRequestUserAction prayerRequestUserAction = prayerRequestUserActionHashMap.get(prayerRequestId);
+
+            if(prayerRequestUserAction != null){
+                updatedPrayerRequestModel.setUserCommentIds(prayerRequestUserAction.getUserCommentIds());
+                updatedPrayerRequestModel.setUserPrayerSessionIds(prayerRequestUserAction.getUserPrayerSessionIds());
+            }
+
+            return updatedPrayerRequestModel;
+        } catch (UncategorizedSQLException exception){
+            Throwable cause = exception.getCause();
+            String exceptionMessage = cause != null ? cause.getMessage() : null;
+
+            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.ONLY_SUBMITTED_CAN_UPDATE_REQUEST)){
+                throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_UPDATE_REQUEST);
+            }
+
+            throw exception;
+        }
+    }
+
+    public void deletePrayerRequest(String authHeader, int prayerRequestId){
+        String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
+        int userId = jwtService.extractUserId(authToken);
+
+        PrayerRequest prayerRequestToDelete = prayerRequestRepository
+            .findById(prayerRequestId)
+            .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST));
+
+        if(!canDeletePrayerRequest(userId, prayerRequestToDelete)){
+            throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_OR_ADMIN_CAN_DELETE_REQUEST);
+        }
+
+        prayerRequestRepository.deletePrayerRequest(prayerRequestToDelete.getPrayerRequestId());
+    }
+
     private HashMap<Integer, PrayerRequestUserAction> getPrayerRequestIdToActionIdsMap(int[] prayerRequestIds, int userId){
         PrayerRequestUserActionIdQuery actionIdQuery = new PrayerRequestUserActionIdQuery(prayerRequestIds, userId);
 
@@ -329,6 +377,15 @@ public class PrayerRequestService {
         }
 
         return actionsHashMap;
+    }
+
+    private boolean canDeletePrayerRequest(int userId, PrayerRequest prayerRequestToDelete){
+        if(prayerRequestToDelete.getUser().getUserId() == userId){
+            return true;
+        }
+
+        Optional<PrayerGroupUser> prayerGroupUser = prayerGroupUserRepository.findByPrayerGroup_prayerGroupIdAndUser_userId(prayerRequestToDelete.getPrayerRequestId(), userId);
+        return prayerGroupUser.filter(groupUser -> groupUser.getPrayerGroupRole() == PrayerGroupRole.ADMIN).isPresent();
     }
 
 }

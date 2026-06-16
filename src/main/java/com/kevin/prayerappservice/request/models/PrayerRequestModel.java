@@ -1,6 +1,7 @@
 package com.kevin.prayerappservice.request.models;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PrayerRequestModel {
@@ -19,7 +20,10 @@ public class PrayerRequestModel {
     private Integer userBookmarkId;
     private List<Integer> userPrayerSessionIds;
 
-    public PrayerRequestModel(){}
+    public PrayerRequestModel(){
+        this.userCommentIds = new ArrayList<>();
+        this.userPrayerSessionIds = new ArrayList<>();
+    }
 
     public PrayerRequestModel(int prayerRequestId, String requestTitle, String requestDescription, OffsetDateTime createdDate, OffsetDateTime expirationDate, PrayerRequestPrayerGroupSummary prayerGroup, PrayerRequestUserSummary user, int likeCount, int commentCount, int prayedCount, Integer userLikeId, List<Integer> userCommentIds, Integer userBookmarkId, List<Integer> userPrayerSessionIds) {
         this.prayerRequestId = prayerRequestId;

@@ -105,9 +105,9 @@ public class JoinRequestServiceTests {
 
     @Test
     public void getJoinRequests_sortByDateConfig_isSorted() {
-        JoinRequestDTO joinRequestDTO1 = new JoinRequestDTO(320, 350, OffsetDateTime.parse("2023-05-04T03:00:00"), 380, "Tom Haverford", "thaverford", 56, "tom_haverford.png", "https://fileservices.pythonanywhere.com/static/tom_haverford.png", FileType.IMAGE.toString());
-        JoinRequestDTO joinRequestDTO2 = new JoinRequestDTO(342, 122, OffsetDateTime.parse("2022-03-14T09:00:00"), 423, "Ann Perkins", "aperkins", null, null, null, null);
-        JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, OffsetDateTime.parse("2025-02-02T07:00:00"), 912, "Ron Swanson", "rswanson", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
+        JoinRequestDTO joinRequestDTO1 = new JoinRequestDTO(320, 350, OffsetDateTime.parse("2023-05-04T07:00:00.000Z"), 380, "Tom Haverford", "thaverford", 56, "tom_haverford.png", "https://fileservices.pythonanywhere.com/static/tom_haverford.png", FileType.IMAGE.toString());
+        JoinRequestDTO joinRequestDTO2 = new JoinRequestDTO(342, 122, OffsetDateTime.parse("2022-03-14T13:00:00.000Z"), 423, "Ann Perkins", "aperkins", null, null, null, null);
+        JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, OffsetDateTime.parse("2025-02-02T12:00:00.000Z"), 912, "Ron Swanson", "rswanson", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
 
         List<JoinRequestDTO> mockJoinRequests = List.of(joinRequestDTO1, joinRequestDTO2, joinRequestDTO3);
 
@@ -126,9 +126,9 @@ public class JoinRequestServiceTests {
 
     @Test
     public void getJoinRequests_sortByUsernameConfig_isSorted() {
-        JoinRequestDTO joinRequestDTO1 = new JoinRequestDTO(320, 350, OffsetDateTime.parse("2023-05-04T03:00:00"), 380, "mockFullName", "thaverford", 56, "tom_haverford.png", "https://fileservices.pythonanywhere.com/static/tom_haverford.png", FileType.IMAGE.toString());
-        JoinRequestDTO joinRequestDTO2 = new JoinRequestDTO(342, 122, OffsetDateTime.parse("2023-05-04T03:00:00"), 423, "mockFullName", "aperkins", null, null, null, null);
-        JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, OffsetDateTime.parse("2023-05-04T03:00:00"), 912, "mockFullName", "rswanson", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
+        JoinRequestDTO joinRequestDTO1 = new JoinRequestDTO(320, 350, OffsetDateTime.parse("2023-05-04T07:00:00.000Z"), 380, "mockFullName", "thaverford", 56, "tom_haverford.png", "https://fileservices.pythonanywhere.com/static/tom_haverford.png", FileType.IMAGE.toString());
+        JoinRequestDTO joinRequestDTO2 = new JoinRequestDTO(342, 122, OffsetDateTime.parse("2023-05-04T07:00:00.000Z"), 423, "mockFullName", "aperkins", null, null, null, null);
+        JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, OffsetDateTime.parse("2023-05-04T07:00:00.000Z"), 912, "mockFullName", "rswanson", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
 
         List<JoinRequestDTO> mockJoinRequests = List.of(joinRequestDTO1, joinRequestDTO2, joinRequestDTO3);
         Mockito.when(mockJoinRequestJdbcRepository.getJoinRequests(anyInt())).thenReturn(mockJoinRequests);
@@ -146,9 +146,9 @@ public class JoinRequestServiceTests {
 
     @Test
     public void getJoinRequests_sortByFullNameConfig_isSorted() {
-        JoinRequestDTO joinRequestDTO1 = new JoinRequestDTO(320, 350, OffsetDateTime.parse("2023-05-04T03:00:00"), 380, "Tom Haverford", "mockUsername", 56, "tom_haverford.png", "https://fileservices.pythonanywhere.com/static/tom_haverford.png", FileType.IMAGE.toString());
-        JoinRequestDTO joinRequestDTO2 = new JoinRequestDTO(342, 122, OffsetDateTime.parse("2023-05-04T03:00:00"), 423, "Ann Perkins", "mockUsername", null, null, null, null);
-        JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, OffsetDateTime.parse("2023-05-04T03:00:00"), 912, "Ron Swanson", "mockUsername", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
+        JoinRequestDTO joinRequestDTO1 = new JoinRequestDTO(320, 350, OffsetDateTime.parse("2023-05-04T07:00:00.000Z"), 380, "Tom Haverford", "mockUsername", 56, "tom_haverford.png", "https://fileservices.pythonanywhere.com/static/tom_haverford.png", FileType.IMAGE.toString());
+        JoinRequestDTO joinRequestDTO2 = new JoinRequestDTO(342, 122, OffsetDateTime.parse("2023-05-04T07:00:00.000Z"), 423, "Ann Perkins", "mockUsername", null, null, null, null);
+        JoinRequestDTO joinRequestDTO3 = new JoinRequestDTO(623, 123, OffsetDateTime.parse("2023-05-04T07:00:00.000Z"), 912, "Ron Swanson", "mockUsername", 442, "rswanson_profile.png", "https://prayerappfileservices.pythonanywhere.com/rswanson_profile.png", FileType.IMAGE.toString());
 
         List<JoinRequestDTO> mockJoinRequests = List.of(joinRequestDTO1, joinRequestDTO2, joinRequestDTO3);
         Mockito.when(mockJoinRequestJdbcRepository.getJoinRequests(anyInt())).thenReturn(mockJoinRequests);
