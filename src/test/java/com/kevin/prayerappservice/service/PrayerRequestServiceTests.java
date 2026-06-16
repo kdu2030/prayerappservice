@@ -780,4 +780,30 @@ public class PrayerRequestServiceTests {
 
         Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.updatePrayerRequest("mockHeader", 747, updateRequest));
     }
+
+    @Test
+    public void updatePrayerRequest_whenCalledWithValidArgs_returnsUpdatedPrayerRequest(){
+        int mockUserId = 737;
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(mockUserId);
+
+        OffsetDateTime expirationDate = OffsetDateTime.now();
+        expirationDate = expirationDate.plusDays(20);
+
+        int prayerRequestId = 747;
+        PrayerRequestUpdateRequest updateRequest = new PrayerRequestUpdateRequest("Prayer request 1", "Prayer request description 1", expirationDate);
+
+        prayerRequestService.updatePrayerRequest("mockHeader", prayerRequestId, updateRequest);
+
+        ArgumentCaptor<PrayerRequestUpdateQuery> updateRequestCaptor = ArgumentCaptor.forClass(PrayerRequestUpdateQuery.class);
+        Mockito.verify(prayerRequestJdbcRepository).updatePrayerRequest(updateRequestCaptor.capture());
+
+        PrayerRequestUpdateQuery updateQuery = updateRequestCaptor.getValue();
+
+        Assertions.assertThat(updateQuery.getPrayerRequestId()).isEqualTo(prayerRequestId);
+        Assertions.assertThat(updateQuery.getRequestTitle()).isEqualTo(updateRequest.getRequestTitle());
+        Assertions.assertThat(updateQuery.getRequestDescription()).isEqualTo(updateRequest.getRequestDescription());
+
+
+    }
 }
