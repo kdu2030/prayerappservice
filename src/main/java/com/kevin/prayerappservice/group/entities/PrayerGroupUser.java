@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.OffsetDateTime;
+
 @Entity
 public class PrayerGroupUser {
     @Id
@@ -26,12 +28,16 @@ public class PrayerGroupUser {
     @Enumerated(EnumType.STRING)
     private PrayerGroupRole prayerGroupRole;
 
+    @NotNull
+    private OffsetDateTime joinDate;
+
     public PrayerGroupUser(){}
 
-    public PrayerGroupUser(User user, PrayerGroup prayerGroup, PrayerGroupRole prayerGroupRole) {
+    public PrayerGroupUser(User user, PrayerGroup prayerGroup, PrayerGroupRole prayerGroupRole, OffsetDateTime joinDate) {
         this.user = user;
         this.prayerGroup = prayerGroup;
         this.prayerGroupRole = prayerGroupRole;
+        this.joinDate = joinDate;
     }
 
     public Integer getPrayerGroupUserId() {
@@ -64,5 +70,13 @@ public class PrayerGroupUser {
 
     public void setPrayerGroupRole(@NotNull PrayerGroupRole prayerGroupRole) {
         this.prayerGroupRole = prayerGroupRole;
+    }
+
+    public @NotNull OffsetDateTime getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(@NotNull OffsetDateTime joinDate) {
+        this.joinDate = joinDate;
     }
 }
