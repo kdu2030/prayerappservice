@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,15 +65,16 @@ public class PrayerGroupJdbcRepositoryImpl implements PrayerGroupJdbcRepository 
         return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerGroupUserDTO.class));
     }
 
-    public void updatePrayerGroupUsers(int prayerGroupId, PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems) throws SQLException {
+    public void updatePrayerGroupUsers(int prayerGroupId, PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems, OffsetDateTime updateDate) throws SQLException {
         Connection connection = dataSource.getConnection();
         Array updateItemsArray = connection.createArrayOf("prayer_group_user_update_item", prayerGroupUserUpdateItems);
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("prayer_group_id", prayerGroupId);
         params.addValue("updated_users", updateItemsArray);
+        params.addValue("update_date", updateDate);
 
-        String sql = "CALL update_prayer_group_users(:prayer_group_id, :updated_users);";
+        String sql = "CALL update_prayer_group_users(:prayer_group_id, :updated_users, :update_date);";
         jdbcTemplate.update(sql, params);
     }
 

@@ -4,6 +4,7 @@ import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.dtos.*;
 
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface PrayerGroupJdbcRepository {
@@ -11,6 +12,6 @@ public interface PrayerGroupJdbcRepository {
     List<PrayerGroupSummaryDTO> getPrayerGroupSummariesByUserId(int userId);
     PrayerGroupDTO getPrayerGroup(int prayerGroupId, int userId);
     List<PrayerGroupUserDTO> getPrayerGroupUsers(int prayerGroupId, List<PrayerGroupRole> prayerGroupRoles);
-    void updatePrayerGroupUsers(int prayerGroupId, PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems) throws SQLException;
+    void updatePrayerGroupUsers(int prayerGroupId, PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems, OffsetDateTime updateDate) throws SQLException;
     List<PrayerGroupSummaryDTO> searchPrayerGroups(String groupNameQuery, int maxNumResults);
 }

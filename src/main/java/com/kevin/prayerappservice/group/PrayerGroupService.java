@@ -204,8 +204,10 @@ public class PrayerGroupService {
             throw new DataValidationException(PrayerGroupErrorMessages.PRAYER_GROUP_MUST_HAVE_ADMIN);
         }
 
+        OffsetDateTime updateDate = Optional.ofNullable(prayerGroupUserUpdateRequest.getUpdateDate()).orElse(OffsetDateTime.now());
+
         PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems = mapPrayerGroupUserUpdateModelsToUpdateItems(prayerGroupId, prayerGroupUserUpdateModels);
-        prayerGroupRepository.updatePrayerGroupUsers(prayerGroupId, prayerGroupUserUpdateItems);
+        prayerGroupRepository.updatePrayerGroupUsers(prayerGroupId, prayerGroupUserUpdateItems, updateDate);
 
         SortConfig<PrayerGroupUserSortField> sortConfig = new SortConfig<>(PrayerGroupUserSortField.USERNAME, SortDirection.ASCENDING);
         List<PrayerGroupRole> prayerGroupRoles = List.of(new PrayerGroupRole[]{PrayerGroupRole.ADMIN, PrayerGroupRole.MEMBER});
