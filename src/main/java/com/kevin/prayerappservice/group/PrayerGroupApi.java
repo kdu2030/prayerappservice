@@ -30,7 +30,7 @@ public interface PrayerGroupApi {
 
     @PostMapping("/{prayerGroupId}/user/{userId}")
     @Operation(summary = "Adds prayer group user")
-    ResponseEntity<PrayerGroupUserModel> addPrayerGroupUser(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @PathVariable int userId);
+    ResponseEntity<PrayerGroupUserModel> addPrayerGroupUser(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int prayerGroupId, @PathVariable int userId, @Valid @RequestBody PrayerGroupUserCreateRequest createRequest);
 
     @DeleteMapping("/{prayerGroupId}/user/{userId}")
     @Operation(summary = "Removes a prayer group user")

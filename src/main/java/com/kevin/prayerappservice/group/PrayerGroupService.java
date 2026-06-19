@@ -21,6 +21,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -52,9 +53,11 @@ public class PrayerGroupService {
         VisibilityLevel visibilityLevel =
                 Optional.ofNullable(prayerGroupRequest.getVisibilityLevel()).orElse(VisibilityLevel.PUBLIC);
 
+        OffsetDateTime createdDate = Optional.ofNullable(prayerGroupRequest.getCreatedDate()).orElse(OffsetDateTime.now());
+
         CreatePrayerGroupRequestDTO createPrayerGroupRequestDTO = new CreatePrayerGroupRequestDTO(userId,
                 prayerGroupRequest.getGroupName(), prayerGroupRequest.getDescription(), prayerGroupRequest.getRules(),
-                visibilityLevel.toString(), prayerGroupRequest.getAvatarFileId(), prayerGroupRequest.getBannerFileId());
+                visibilityLevel.toString(), prayerGroupRequest.getAvatarFileId(), prayerGroupRequest.getBannerFileId(), createdDate);
 
         CreatedPrayerGroupDTO createdPrayerGroupDTO =
                 prayerGroupRepository.createPrayerGroup(createPrayerGroupRequestDTO);
@@ -133,7 +136,7 @@ public class PrayerGroupService {
         return getPrayerGroup(authorizationHeader, prayerGroupId);
     }
 
-    public PrayerGroupUserModel addPrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId) {
+    public PrayerGroupUserModel addPrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId, PrayerGroupUserCreateRequest createRequest) {
         PrayerGroup prayerGroup = prayerGroupRepository.findById(prayerGroupId)
                 .orElseThrow(() -> new DataValidationException(String.format(PrayerGroupErrorMessages.CANNOT_FIND_PRAYER_GROUP, prayerGroupId)));
 
@@ -150,8 +153,10 @@ public class PrayerGroupService {
             throw new DataValidationException(PrayerGroupErrorMessages.CANNOT_ADD_TO_PRIVATE_GROUP);
         }
 
+        OffsetDateTime joinDate = Optional.ofNullable(createRequest.getJoinDate()).orElse(OffsetDateTime.now());
+
         User user = entityManager.getReference(User.class, userId);
-        PrayerGroupUser newPrayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER);
+        PrayerGroupUser newPrayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER, joinDate);
 
         PrayerGroupUser createdPrayerGroupUser = prayerGroupUserRepository.save(newPrayerGroupUser);
         return prayerGroupMapper.prayerGroupUserToPrayerGroupUserModel(createdPrayerGroupUser);

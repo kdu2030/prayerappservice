@@ -42,8 +42,8 @@ public class PrayerGroupController implements PrayerGroupApi {
     }
 
     @Override
-    public ResponseEntity<PrayerGroupUserModel> addPrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId){
-        PrayerGroupUserModel prayerGroupUser = prayerGroupService.addPrayerGroupUser(authorizationHeader, prayerGroupId, userId);
+    public ResponseEntity<PrayerGroupUserModel> addPrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId, PrayerGroupUserCreateRequest createRequest){
+        PrayerGroupUserModel prayerGroupUser = prayerGroupService.addPrayerGroupUser(authorizationHeader, prayerGroupId, userId, createRequest);
         return new ResponseEntity<>(prayerGroupUser, HttpStatus.OK);
     }
 
