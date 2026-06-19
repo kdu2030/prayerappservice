@@ -28,7 +28,7 @@ public class PrayerGroupJdbcRepositoryImpl implements PrayerGroupJdbcRepository 
 
     public CreatedPrayerGroupDTO createPrayerGroup(CreatePrayerGroupRequestDTO createPrayerGroupRequest) {
         String sql = "SELECT * FROM create_prayer_group(:creatorUserId, :newGroupName, CAST(:groupDescription AS " +
-                "TEXT), CAST(:groupRules AS TEXT), :groupVisibility, :avatarFileId, :bannerFileId)";
+                "TEXT), CAST(:groupRules AS TEXT), :groupVisibility, :avatarFileId, :bannerFileId, :createdDate)";
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(createPrayerGroupRequest);
 
         return jdbcTemplate.queryForObject(

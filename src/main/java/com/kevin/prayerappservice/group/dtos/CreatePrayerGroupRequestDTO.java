@@ -12,7 +12,7 @@ public class CreatePrayerGroupRequestDTO {
     private Integer bannerFileId;
     private OffsetDateTime createdDate;
 
-    public CreatePrayerGroupRequestDTO(int creatorUserId, String newGroupName, String groupDescription, String groupRules, String groupVisibility, Integer avatarFileId, Integer bannerFileId, OffsetDateTime createdDates) {
+    public CreatePrayerGroupRequestDTO(int creatorUserId, String newGroupName, String groupDescription, String groupRules, String groupVisibility, Integer avatarFileId, Integer bannerFileId, OffsetDateTime createdDate) {
         this.creatorUserId = creatorUserId;
         this.newGroupName = newGroupName;
         this.groupDescription = groupDescription;
@@ -20,6 +20,7 @@ public class CreatePrayerGroupRequestDTO {
         this.groupVisibility = groupVisibility;
         this.avatarFileId = avatarFileId;
         this.bannerFileId = bannerFileId;
+        this.createdDate = createdDate;
     }
 
     public int getCreatorUserId() {
