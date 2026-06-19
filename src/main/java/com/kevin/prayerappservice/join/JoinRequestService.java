@@ -22,6 +22,7 @@ import com.kevin.prayerappservice.user.models.UserSummary;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,7 +94,9 @@ public class JoinRequestService {
             throw new DataValidationException(JoinRequestErrorMessages.NON_ADMIN_CANNOT_DELETE_JOIN_REQUEST);
         }
 
-        joinRequestRepository.approveJoinRequests(prayerGroupId, approveRequest.getJoinRequestIds());
+        OffsetDateTime approveDate = Optional.ofNullable(approveRequest.getApproveDate()).orElse(OffsetDateTime.now());
+
+        joinRequestRepository.approveJoinRequests(prayerGroupId, approveRequest.getJoinRequestIds(), approveDate);
     }
 
 

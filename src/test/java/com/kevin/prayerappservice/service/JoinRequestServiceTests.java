@@ -79,7 +79,7 @@ public class JoinRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Indiana State Government", "State government prayer group", "Rules", VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
-        PrayerGroupUser mockPrayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER);
+        PrayerGroupUser mockPrayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER, OffsetDateTime.now());
         prayerGroupUserRepository.save(mockPrayerGroupUser);
 
         JoinRequestCreateRequest createRequest = new JoinRequestCreateRequest(user.getUserId(), OffsetDateTime.now());
@@ -173,7 +173,7 @@ public class JoinRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Pawnee Prayer Group", "Pawnee prayer group", "Prayer group rules", VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
-        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER);
+        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER, OffsetDateTime.now());
         prayerGroupUserRepository.save(prayerGroupUser);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
@@ -202,7 +202,7 @@ public class JoinRequestServiceTests {
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(user.getUserId());
 
-        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.ADMIN);
+        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.ADMIN, OffsetDateTime.now());
         prayerGroupUserRepository.save(prayerGroupUser);
 
         JoinRequestDeleteRequest joinRequestDeleteRequest = new JoinRequestDeleteRequest(joinRequestIdsToDelete);
@@ -231,10 +231,10 @@ public class JoinRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Pawnee Today Prayer Group", "A prayer group for Pawnee's favorite talk show Pawnee Today", "Pawnee Today rules", VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
-        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER);
+        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER, OffsetDateTime.now());
         prayerGroupUserRepository.save(prayerGroupUser);
 
-        JoinRequestApproveRequest request = new JoinRequestApproveRequest(List.of(717, 727, 737));
+        JoinRequestApproveRequest request = new JoinRequestApproveRequest(List.of(717, 727, 737), OffsetDateTime.now());
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(user.getUserId());
@@ -252,21 +252,22 @@ public class JoinRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Pawnee Today Prayer Group", "A prayer group for Pawnee's favorite talk show Pawnee Today", "Pawnee Today rules", VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
-        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.ADMIN);
+        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.ADMIN, OffsetDateTime.now());
         prayerGroupUserRepository.save(prayerGroupUser);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(user.getUserId());
 
-        Mockito.doNothing().when(mockJoinRequestJdbcRepository).approveJoinRequests(anyInt(), Mockito.anyList());
+        Mockito.doNothing().when(mockJoinRequestJdbcRepository).approveJoinRequests(anyInt(), Mockito.anyList(), Mockito.any());
 
         ArgumentCaptor<Integer> targetPrayerGroupCaptor = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<List<Integer>> targetJoinRequestIds = ArgumentCaptor.forClass((Class) List.class);
+        ArgumentCaptor<OffsetDateTime> targetApproveDate = ArgumentCaptor.forClass(OffsetDateTime.class);
 
-        JoinRequestApproveRequest request = new JoinRequestApproveRequest(List.of(717, 727, 737));
+        JoinRequestApproveRequest request = new JoinRequestApproveRequest(List.of(717, 727, 737), OffsetDateTime.now());
         joinRequestService.approveJoinRequests("mockToken", prayerGroup.getPrayerGroupId(), request);
 
-        Mockito.verify(mockJoinRequestJdbcRepository).approveJoinRequests(targetPrayerGroupCaptor.capture(), targetJoinRequestIds.capture());
+        Mockito.verify(mockJoinRequestJdbcRepository).approveJoinRequests(targetPrayerGroupCaptor.capture(), targetJoinRequestIds.capture(), targetApproveDate.capture());
 
         Assertions.assertThat(targetPrayerGroupCaptor.getValue()).isEqualTo(prayerGroup.getPrayerGroupId());
         Assertions.assertThat(targetJoinRequestIds.getValue()).isEqualTo(request.getJoinRequestIds());

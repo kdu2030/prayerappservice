@@ -3,19 +3,23 @@ package com.kevin.prayerappservice.group.models;
 import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.constants.JoinStatus;
 
+import java.time.OffsetDateTime;
+
 public class PrayerGroupSummaryModel {
     private int prayerGroupId;
     private String groupName;
     private MediaFile avatarFile;
     private JoinStatus joinStatus;
+    private OffsetDateTime addedDate;
 
     public PrayerGroupSummaryModel(){}
 
-    public PrayerGroupSummaryModel(int prayerGroupId, String groupName, MediaFile avatarFile, JoinStatus joinStatus) {
+    public PrayerGroupSummaryModel(int prayerGroupId, String groupName, MediaFile avatarFile, JoinStatus joinStatus, OffsetDateTime addedDate) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.avatarFile = avatarFile;
         this.joinStatus = joinStatus;
+        this.addedDate = addedDate;
     }
 
     public int getPrayerGroupId() {
@@ -48,5 +52,13 @@ public class PrayerGroupSummaryModel {
 
     public void setJoinStatus(JoinStatus joinStatus) {
         this.joinStatus = joinStatus;
+    }
+
+    public OffsetDateTime getAddedDate() {
+        return addedDate;
+    }
+
+    public void setAddedDate(OffsetDateTime addedDate) {
+        this.addedDate = addedDate;
     }
 }

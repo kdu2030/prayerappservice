@@ -2,6 +2,8 @@ package com.kevin.prayerappservice.group.dtos;
 
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
 
+import java.time.OffsetDateTime;
+
 public class CreatedPrayerGroupDTO {
     private int prayerGroupId;
     private String groupName;
@@ -19,10 +21,11 @@ public class CreatedPrayerGroupDTO {
     private Integer adminImageFileId;
     private String adminImageFileName;
     private String adminImageFileUrl;
+    private OffsetDateTime adminJoinDate;
 
     public CreatedPrayerGroupDTO(){}
 
-    public CreatedPrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules, VisibilityLevel visibilityLevel, Integer avatarFileId, String groupAvatarFileName, String groupAvatarFileUrl, Integer bannerFileId, String groupBannerFileName, String groupBannerFileUrl, int adminUserId, String adminFullName, Integer adminImageFileId, String adminImageFileName, String adminImageFileUrl) {
+    public CreatedPrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules, VisibilityLevel visibilityLevel, Integer avatarFileId, String groupAvatarFileName, String groupAvatarFileUrl, Integer bannerFileId, String groupBannerFileName, String groupBannerFileUrl, int adminUserId, String adminFullName, Integer adminImageFileId, String adminImageFileName, String adminImageFileUrl, OffsetDateTime adminJoinDate) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.description = description;
@@ -39,6 +42,7 @@ public class CreatedPrayerGroupDTO {
         this.adminImageFileId = adminImageFileId;
         this.adminImageFileName = adminImageFileName;
         this.adminImageFileUrl = adminImageFileUrl;
+        this.adminJoinDate = adminJoinDate;
     }
 
     public int getPrayerGroupId() {
@@ -167,5 +171,13 @@ public class CreatedPrayerGroupDTO {
 
     public void setAdminImageFileUrl(String adminImageFileUrl) {
         this.adminImageFileUrl = adminImageFileUrl;
+    }
+
+    public OffsetDateTime getAdminJoinDate() {
+        return adminJoinDate;
+    }
+
+    public void setAdminJoinDate(OffsetDateTime adminJoinDate) {
+        this.adminJoinDate = adminJoinDate;
     }
 }

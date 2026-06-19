@@ -1,5 +1,7 @@
 package com.kevin.prayerappservice.group.dtos;
 
+import java.time.OffsetDateTime;
+
 public class CreatePrayerGroupRequestDTO {
     private int creatorUserId;
     private String newGroupName;
@@ -8,8 +10,9 @@ public class CreatePrayerGroupRequestDTO {
     private String groupVisibility;
     private Integer avatarFileId;
     private Integer bannerFileId;
+    private OffsetDateTime createdDate;
 
-    public CreatePrayerGroupRequestDTO(int creatorUserId, String newGroupName, String groupDescription, String groupRules, String groupVisibility, Integer avatarFileId, Integer bannerFileId) {
+    public CreatePrayerGroupRequestDTO(int creatorUserId, String newGroupName, String groupDescription, String groupRules, String groupVisibility, Integer avatarFileId, Integer bannerFileId, OffsetDateTime createdDate) {
         this.creatorUserId = creatorUserId;
         this.newGroupName = newGroupName;
         this.groupDescription = groupDescription;
@@ -17,6 +20,7 @@ public class CreatePrayerGroupRequestDTO {
         this.groupVisibility = groupVisibility;
         this.avatarFileId = avatarFileId;
         this.bannerFileId = bannerFileId;
+        this.createdDate = createdDate;
     }
 
     public int getCreatorUserId() {
@@ -73,5 +77,13 @@ public class CreatePrayerGroupRequestDTO {
 
     public void setBannerFileId(Integer bannerFileId) {
         this.bannerFileId = bannerFileId;
+    }
+
+    public OffsetDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(OffsetDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 }

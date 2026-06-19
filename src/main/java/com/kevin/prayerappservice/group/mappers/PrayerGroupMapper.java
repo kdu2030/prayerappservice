@@ -108,7 +108,7 @@ public interface PrayerGroupMapper {
 
         PrayerGroupUserModel[] prayerGroupUsers =
                 new PrayerGroupUserModel[]{new PrayerGroupUserModel(source.getAdminUserId(), null,
-                        null, source.getAdminFullName(), null, adminImage, PrayerGroupRole.ADMIN)};
+                        null, source.getAdminFullName(), null, adminImage, PrayerGroupRole.ADMIN, source.getAdminJoinDate())};
         return List.of(prayerGroupUsers);
     }
 

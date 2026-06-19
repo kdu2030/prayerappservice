@@ -5,10 +5,7 @@ import com.kevin.prayerappservice.common.SortConfig;
 import com.kevin.prayerappservice.common.SortDirection;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.file.entities.MediaFile;
-import com.kevin.prayerappservice.group.constants.PrayerGroupErrorMessages;
-import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
-import com.kevin.prayerappservice.group.constants.PrayerGroupUserSortField;
-import com.kevin.prayerappservice.group.constants.VisibilityLevel;
+import com.kevin.prayerappservice.group.constants.*;
 import com.kevin.prayerappservice.group.dtos.*;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
@@ -21,6 +18,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -52,9 +50,11 @@ public class PrayerGroupService {
         VisibilityLevel visibilityLevel =
                 Optional.ofNullable(prayerGroupRequest.getVisibilityLevel()).orElse(VisibilityLevel.PUBLIC);
 
+        OffsetDateTime createdDate = Optional.ofNullable(prayerGroupRequest.getCreatedDate()).orElse(OffsetDateTime.now());
+
         CreatePrayerGroupRequestDTO createPrayerGroupRequestDTO = new CreatePrayerGroupRequestDTO(userId,
                 prayerGroupRequest.getGroupName(), prayerGroupRequest.getDescription(), prayerGroupRequest.getRules(),
-                visibilityLevel.toString(), prayerGroupRequest.getAvatarFileId(), prayerGroupRequest.getBannerFileId());
+                visibilityLevel.toString(), prayerGroupRequest.getAvatarFileId(), prayerGroupRequest.getBannerFileId(), createdDate);
 
         CreatedPrayerGroupDTO createdPrayerGroupDTO =
                 prayerGroupRepository.createPrayerGroup(createPrayerGroupRequestDTO);
@@ -77,8 +77,10 @@ public class PrayerGroupService {
     public List<PrayerGroupSummaryModel> getPrayerGroupSummariesByUser(int userId) {
         List<PrayerGroupSummaryDTO> prayerGroupSummaries =
                 prayerGroupRepository.getPrayerGroupSummariesByUserId(userId);
+
         return prayerGroupSummaries.stream()
                 .map(prayerGroupMapper::prayerGroupSummaryDTOToPrayerGroupSummaryModel)
+                .sorted(this::comparePrayerGroupSummaries)
                 .toList();
     }
 
@@ -133,7 +135,7 @@ public class PrayerGroupService {
         return getPrayerGroup(authorizationHeader, prayerGroupId);
     }
 
-    public PrayerGroupUserModel addPrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId) {
+    public PrayerGroupUserModel addPrayerGroupUser(String authorizationHeader, int prayerGroupId, int userId, PrayerGroupUserCreateRequest createRequest) {
         PrayerGroup prayerGroup = prayerGroupRepository.findById(prayerGroupId)
                 .orElseThrow(() -> new DataValidationException(String.format(PrayerGroupErrorMessages.CANNOT_FIND_PRAYER_GROUP, prayerGroupId)));
 
@@ -150,8 +152,10 @@ public class PrayerGroupService {
             throw new DataValidationException(PrayerGroupErrorMessages.CANNOT_ADD_TO_PRIVATE_GROUP);
         }
 
+        OffsetDateTime joinDate = Optional.ofNullable(createRequest.getJoinDate()).orElse(OffsetDateTime.now());
+
         User user = entityManager.getReference(User.class, userId);
-        PrayerGroupUser newPrayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER);
+        PrayerGroupUser newPrayerGroupUser = new PrayerGroupUser(user, prayerGroup, PrayerGroupRole.MEMBER, joinDate);
 
         PrayerGroupUser createdPrayerGroupUser = prayerGroupUserRepository.save(newPrayerGroupUser);
         return prayerGroupMapper.prayerGroupUserToPrayerGroupUserModel(createdPrayerGroupUser);
@@ -199,8 +203,10 @@ public class PrayerGroupService {
             throw new DataValidationException(PrayerGroupErrorMessages.PRAYER_GROUP_MUST_HAVE_ADMIN);
         }
 
+        OffsetDateTime updateDate = Optional.ofNullable(prayerGroupUserUpdateRequest.getUpdateDate()).orElse(OffsetDateTime.now());
+
         PrayerGroupUserUpdateItem[] prayerGroupUserUpdateItems = mapPrayerGroupUserUpdateModelsToUpdateItems(prayerGroupId, prayerGroupUserUpdateModels);
-        prayerGroupRepository.updatePrayerGroupUsers(prayerGroupId, prayerGroupUserUpdateItems);
+        prayerGroupRepository.updatePrayerGroupUsers(prayerGroupId, prayerGroupUserUpdateItems, updateDate);
 
         SortConfig<PrayerGroupUserSortField> sortConfig = new SortConfig<>(PrayerGroupUserSortField.USERNAME, SortDirection.ASCENDING);
         List<PrayerGroupRole> prayerGroupRoles = List.of(new PrayerGroupRole[]{PrayerGroupRole.ADMIN, PrayerGroupRole.MEMBER});
@@ -247,5 +253,20 @@ public class PrayerGroupService {
             case PrayerGroupUserSortField.FULL_NAME ->
                     userModelA.getFullName().compareTo(userModelB.getFullName()) * sortCoefficient;
         };
+    }
+
+    private int comparePrayerGroupSummaries(PrayerGroupSummaryModel summaryModelA, PrayerGroupSummaryModel summaryModelB){
+        JoinStatus joinStatusA = summaryModelA.getJoinStatus();
+        JoinStatus joinStatusB = summaryModelB.getJoinStatus();
+
+        if(joinStatusA == JoinStatus.JOINED && joinStatusB != JoinStatus.JOINED){
+            return -1;
+        }
+
+        if(joinStatusB == JoinStatus.JOINED && joinStatusA != JoinStatus.JOINED){
+            return 1;
+        }
+
+        return summaryModelA.getAddedDate().compareTo(summaryModelB.getAddedDate());
     }
 }

@@ -1,5 +1,7 @@
 package com.kevin.prayerappservice.group.dtos;
 
+import java.time.OffsetDateTime;
+
 public class PrayerGroupUserDTO {
     private int userId;
     private String fullName;
@@ -9,10 +11,11 @@ public class PrayerGroupUserDTO {
     private String fileName;
     private String fileUrl;
     private String fileType;
+    private OffsetDateTime joinDate;
 
     public PrayerGroupUserDTO(){}
 
-    public PrayerGroupUserDTO(int userId, String fullName, String username, String prayerGroupRole, Integer imageFileId, String fileName, String fileUrl, String fileType) {
+    public PrayerGroupUserDTO(int userId, String fullName, String username, String prayerGroupRole, Integer imageFileId, String fileName, String fileUrl, String fileType, OffsetDateTime joinDate) {
         this.userId = userId;
         this.fullName = fullName;
         this.username = username;
@@ -21,6 +24,7 @@ public class PrayerGroupUserDTO {
         this.fileName = fileName;
         this.fileUrl = fileUrl;
         this.fileType = fileType;
+        this.joinDate = joinDate;
     }
 
     public int getUserId() {
@@ -85,5 +89,13 @@ public class PrayerGroupUserDTO {
 
     public void setFileType(String fileType) {
         this.fileType = fileType;
+    }
+
+    public OffsetDateTime getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(OffsetDateTime joinDate) {
+        this.joinDate = joinDate;
     }
 }
