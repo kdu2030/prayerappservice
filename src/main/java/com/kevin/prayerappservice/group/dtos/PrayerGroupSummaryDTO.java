@@ -2,6 +2,8 @@ package com.kevin.prayerappservice.group.dtos;
 
 import com.kevin.prayerappservice.group.constants.JoinStatus;
 
+import java.time.OffsetDateTime;
+
 public class PrayerGroupSummaryDTO {
     private int prayerGroupId;
     private String groupName;
@@ -10,10 +12,11 @@ public class PrayerGroupSummaryDTO {
     private String fileUrl;
     private String fileType;
     private JoinStatus joinStatus;
+    private OffsetDateTime addedDate;
 
     public PrayerGroupSummaryDTO(){}
 
-    public PrayerGroupSummaryDTO(int prayerGroupId, String groupName, Integer mediaFileId, String fileName, String fileUrl, String fileType, JoinStatus joinStatus) {
+    public PrayerGroupSummaryDTO(int prayerGroupId, String groupName, Integer mediaFileId, String fileName, String fileUrl, String fileType, JoinStatus joinStatus, OffsetDateTime addedDate) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.mediaFileId = mediaFileId;
@@ -21,6 +24,7 @@ public class PrayerGroupSummaryDTO {
         this.fileUrl = fileUrl;
         this.fileType = fileType;
         this.joinStatus = joinStatus;
+        this.addedDate = addedDate;
     }
 
     public int getPrayerGroupId() {
@@ -77,5 +81,13 @@ public class PrayerGroupSummaryDTO {
 
     public void setJoinStatus(JoinStatus joinStatus){
         this.joinStatus = joinStatus;
+    }
+
+    public OffsetDateTime getAddedDate() {
+        return addedDate;
+    }
+
+    public void setAddedDate(OffsetDateTime addedDate) {
+        this.addedDate = addedDate;
     }
 }
