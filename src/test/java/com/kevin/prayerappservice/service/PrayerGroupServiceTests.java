@@ -178,10 +178,10 @@ public class PrayerGroupServiceTests {
 
         PrayerGroupUserDTO[] prayerGroupUserDTOS = new PrayerGroupUserDTO[]{
                 new PrayerGroupUserDTO(320, "Padme Amidala", "pamidala", PrayerGroupRole.ADMIN.toString(), null, null
-                        , null, null),
+                        , null, null, OffsetDateTime.now()),
                 new PrayerGroupUserDTO(380, "Jar Jar Binks", "jbinks", PrayerGroupRole.ADMIN.toString(), 330,
                         "jarjar_binks.jpeg", "https://prayerappfileservices.pythonanywhere.com/45.png",
-                        FileType.IMAGE.toString())
+                        FileType.IMAGE.toString(), OffsetDateTime.now())
         };
 
         Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroup(anyInt(), anyInt())).thenReturn(mockPrayerGroup);
@@ -274,9 +274,9 @@ public class PrayerGroupServiceTests {
 
         PrayerGroupUserDTO[] prayerGroupUserDTOS = new PrayerGroupUserDTO[]{
                 new PrayerGroupUserDTO(320, "Padme Amidala", "pamidala", PrayerGroupRole.ADMIN.toString(), null, null
-                        , null, null),
+                        , null, null, OffsetDateTime.now()),
                 new PrayerGroupUserDTO(mockUser.getUserId(), "Larry Page", "jpage",
-                        PrayerGroupRole.ADMIN.toString(), null, null, null, null)
+                        PrayerGroupRole.ADMIN.toString(), null, null, null, null, OffsetDateTime.now())
         };
 
         Mockito.when(mockPrayerGroupJdbcRepository.getPrayerGroup(anyInt(), anyInt())).thenReturn(mockUpdatedPrayerGroup);
