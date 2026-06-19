@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
@@ -34,10 +35,10 @@ public class JoinRequestJdbcRepositoryImpl implements JoinRequestJdbcRepository 
         jdbcTemplate.update(sql, params);
     }
 
-    public void approveJoinRequests(int prayerGroupId, List<Integer> joinRequestIds){
-        String sql = "CALL approve_join_requests(:targetPrayerGroupId, :joinRequestIds);";
+    public void approveJoinRequests(int prayerGroupId, List<Integer> joinRequestIds, OffsetDateTime approveDate){
+        String sql = "CALL approve_join_requests(:targetPrayerGroupId, :joinRequestIds, :approveDate);";
         int[] joinRequestIdsArr = joinRequestIds.stream().mapToInt(Integer::intValue).toArray();
-        JoinRequestApproveQuery joinRequestApproveQuery = new JoinRequestApproveQuery(prayerGroupId, joinRequestIdsArr);
+        JoinRequestApproveQuery joinRequestApproveQuery = new JoinRequestApproveQuery(prayerGroupId, joinRequestIdsArr, approveDate);
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(joinRequestApproveQuery);
         jdbcTemplate.update(sql, params);
     }
