@@ -46,7 +46,7 @@ BEGIN
             LEFT JOIN
                 media_file f ON f.media_file_id = g.avatar_file_id
             WHERE user_id = p_user_id
-        )
+        );
 END;
 $$
 LANGUAGE plpgsql;
