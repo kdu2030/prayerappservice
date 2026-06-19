@@ -5,10 +5,7 @@ import com.kevin.prayerappservice.common.SortConfig;
 import com.kevin.prayerappservice.common.SortDirection;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.file.entities.MediaFile;
-import com.kevin.prayerappservice.group.constants.PrayerGroupErrorMessages;
-import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
-import com.kevin.prayerappservice.group.constants.PrayerGroupUserSortField;
-import com.kevin.prayerappservice.group.constants.VisibilityLevel;
+import com.kevin.prayerappservice.group.constants.*;
 import com.kevin.prayerappservice.group.dtos.*;
 import com.kevin.prayerappservice.group.entities.PrayerGroup;
 import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
@@ -80,8 +77,10 @@ public class PrayerGroupService {
     public List<PrayerGroupSummaryModel> getPrayerGroupSummariesByUser(int userId) {
         List<PrayerGroupSummaryDTO> prayerGroupSummaries =
                 prayerGroupRepository.getPrayerGroupSummariesByUserId(userId);
+
         return prayerGroupSummaries.stream()
                 .map(prayerGroupMapper::prayerGroupSummaryDTOToPrayerGroupSummaryModel)
+                .sorted(this::comparePrayerGroupSummaries)
                 .toList();
     }
 
@@ -254,5 +253,20 @@ public class PrayerGroupService {
             case PrayerGroupUserSortField.FULL_NAME ->
                     userModelA.getFullName().compareTo(userModelB.getFullName()) * sortCoefficient;
         };
+    }
+
+    private int comparePrayerGroupSummaries(PrayerGroupSummaryModel summaryModelA, PrayerGroupSummaryModel summaryModelB){
+        JoinStatus joinStatusA = summaryModelA.getJoinStatus();
+        JoinStatus joinStatusB = summaryModelB.getJoinStatus();
+
+        if(joinStatusA == JoinStatus.JOINED && joinStatusB != JoinStatus.JOINED){
+            return -1;
+        }
+
+        if(joinStatusB == JoinStatus.JOINED && joinStatusA != JoinStatus.JOINED){
+            return 1;
+        }
+
+        return summaryModelA.getAddedDate().compareTo(summaryModelB.getAddedDate());
     }
 }
