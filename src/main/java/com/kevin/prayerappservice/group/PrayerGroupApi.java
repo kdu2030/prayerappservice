@@ -3,6 +3,7 @@ package com.kevin.prayerappservice.group;
 import com.kevin.prayerappservice.group.models.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ import java.sql.SQLException;
 public interface PrayerGroupApi {
     @PostMapping(value = "", produces = {"application/json"}, consumes = { "application/json" })
     @Operation(summary = "Creates prayer group")
-    ResponseEntity<PrayerGroupModel> createPrayerGroup(@RequestHeader("Authorization") String authorizationHeader,  @RequestBody CreatePrayerGroupRequest createPrayerGroupRequest);
+    ResponseEntity<PrayerGroupModel> createPrayerGroup(@RequestHeader("Authorization") String authorizationHeader, @Valid @RequestBody CreatePrayerGroupRequest createPrayerGroupRequest);
 
     @GetMapping(value="validate-name")
     @Operation(summary = "Validates group name")

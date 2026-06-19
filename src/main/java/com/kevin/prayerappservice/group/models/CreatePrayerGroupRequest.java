@@ -1,22 +1,30 @@
 package com.kevin.prayerappservice.group.models;
 
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.OffsetDateTime;
 
 public class CreatePrayerGroupRequest {
+    @NotNull
     private String groupName;
+
+    @NotNull
     private String description;
     private String rules;
     private Integer avatarFileId;
     private Integer bannerFileId;
     private VisibilityLevel visibilityLevel;
+    private OffsetDateTime createdDate;
 
-    public CreatePrayerGroupRequest(String groupName, String description, String rules, Integer avatarFileId, Integer bannerFileId, VisibilityLevel visibilityLevel) {
+    public CreatePrayerGroupRequest(String groupName, String description, String rules, Integer avatarFileId, Integer bannerFileId, VisibilityLevel visibilityLevel, OffsetDateTime createdDate) {
         this.groupName = groupName;
         this.description = description;
         this.rules = rules;
         this.avatarFileId = avatarFileId;
         this.bannerFileId = bannerFileId;
         this.visibilityLevel = visibilityLevel;
+        this.createdDate = createdDate;
     }
 
     public String getGroupName() {
@@ -65,5 +73,13 @@ public class CreatePrayerGroupRequest {
 
     public void setVisibilityLevel(VisibilityLevel visibilityLevel) {
         this.visibilityLevel = visibilityLevel;
+    }
+
+    public OffsetDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(OffsetDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 }
