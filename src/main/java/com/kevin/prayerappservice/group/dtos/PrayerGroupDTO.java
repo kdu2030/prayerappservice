@@ -1,5 +1,7 @@
 package com.kevin.prayerappservice.group.dtos;
 
+import java.time.OffsetDateTime;
+
 public class PrayerGroupDTO {
     private int prayerGroupId;
     private String groupName;
@@ -17,11 +19,12 @@ public class PrayerGroupDTO {
     private String prayerGroupRole;
     private Integer joinRequestId;
     private Integer joinRequestCount;
+    private OffsetDateTime userJoinDate;
 
     public PrayerGroupDTO() {
     }
 
-    public PrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules, String visibilityLevel, Integer avatarFileId, String avatarFileName, String avatarFileUrl, String avatarFileType, Integer bannerFileId, String bannerFileName, String bannerFileUrl, String bannerFileType, String prayerGroupRole, Integer joinRequestId, Integer joinRequestCount) {
+    public PrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules, String visibilityLevel, Integer avatarFileId, String avatarFileName, String avatarFileUrl, String avatarFileType, Integer bannerFileId, String bannerFileName, String bannerFileUrl, String bannerFileType, String prayerGroupRole, Integer joinRequestId, Integer joinRequestCount, OffsetDateTime userJoinDate) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.description = description;
@@ -38,6 +41,7 @@ public class PrayerGroupDTO {
         this.prayerGroupRole = prayerGroupRole;
         this.joinRequestId = joinRequestId;
         this.joinRequestCount = joinRequestCount;
+        this.userJoinDate = userJoinDate;
     }
 
     public PrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules,
@@ -175,5 +179,13 @@ public class PrayerGroupDTO {
 
     public void setJoinRequestCount(Integer joinRequestCount) {
         this.joinRequestCount = joinRequestCount;
+    }
+
+    public OffsetDateTime getUserJoinDate() {
+        return userJoinDate;
+    }
+
+    public void setUserJoinDate(OffsetDateTime userJoinDate) {
+        this.userJoinDate = userJoinDate;
     }
 }
