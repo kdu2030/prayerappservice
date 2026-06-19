@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mockito.ArgumentMatchers.*;
 
@@ -107,7 +106,7 @@ public class PrayerRequestServiceTests {
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(user.getUserId());
 
-        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, mockPrayerGroup, PrayerGroupRole.ADMIN);
+        PrayerGroupUser prayerGroupUser = new PrayerGroupUser(user, mockPrayerGroup, PrayerGroupRole.ADMIN, OffsetDateTime.now());
         prayerGroupUserRepository.save(prayerGroupUser);
 
         PrayerRequestCreateRequest createRequest = new PrayerRequestCreateRequest(1,
@@ -818,8 +817,8 @@ public class PrayerRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Founding Fathers", "Founders of the U.S.", null, VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
-        PrayerGroupUser prayerGroupUser1 = new PrayerGroupUser(prayerRequestAuthor, prayerGroup, PrayerGroupRole.MEMBER);
-        PrayerGroupUser prayerGroupUser2 = new PrayerGroupUser(deletePrayerRequestCaller, prayerGroup, PrayerGroupRole.MEMBER);
+        PrayerGroupUser prayerGroupUser1 = new PrayerGroupUser(prayerRequestAuthor, prayerGroup, PrayerGroupRole.MEMBER, OffsetDateTime.now());
+        PrayerGroupUser prayerGroupUser2 = new PrayerGroupUser(deletePrayerRequestCaller, prayerGroup, PrayerGroupRole.MEMBER, OffsetDateTime.now());
 
         prayerGroupUserRepository.save(prayerGroupUser1);
         prayerGroupUserRepository.save(prayerGroupUser2);
@@ -848,8 +847,8 @@ public class PrayerRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Founding Fathers", "Founders of the U.S.", null, VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
-        PrayerGroupUser prayerGroupUser1 = new PrayerGroupUser(prayerRequestAuthor, prayerGroup, PrayerGroupRole.MEMBER);
-        PrayerGroupUser prayerGroupUser2 = new PrayerGroupUser(deletePrayerRequestCaller, prayerGroup, PrayerGroupRole.ADMIN);
+        PrayerGroupUser prayerGroupUser1 = new PrayerGroupUser(prayerRequestAuthor, prayerGroup, PrayerGroupRole.MEMBER, OffsetDateTime.now());
+        PrayerGroupUser prayerGroupUser2 = new PrayerGroupUser(deletePrayerRequestCaller, prayerGroup, PrayerGroupRole.ADMIN, OffsetDateTime.now());
 
         prayerGroupUserRepository.save(prayerGroupUser1);
         prayerGroupUserRepository.save(prayerGroupUser2);
@@ -880,7 +879,7 @@ public class PrayerRequestServiceTests {
         PrayerGroup prayerGroup = new PrayerGroup("Founding Fathers", "Founders of the U.S.", null, VisibilityLevel.PRIVATE, null, null);
         prayerGroupRepository.save(prayerGroup);
 
-        PrayerGroupUser prayerGroupUser1 = new PrayerGroupUser(prayerRequestAuthor, prayerGroup, PrayerGroupRole.MEMBER);
+        PrayerGroupUser prayerGroupUser1 = new PrayerGroupUser(prayerRequestAuthor, prayerGroup, PrayerGroupRole.MEMBER, OffsetDateTime.now());
         prayerGroupUserRepository.save(prayerGroupUser1);
 
         OffsetDateTime createdDate = OffsetDateTime.now();
