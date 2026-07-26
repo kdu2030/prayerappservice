@@ -23,10 +23,11 @@ public class PrayerGroupModel {
     private PrayerGroupRole prayerGroupRole;
     private Integer joinRequestCount;
     private OffsetDateTime userJoinDate;
+    private OffsetDateTime userRequestSubmittedDate;
 
     public PrayerGroupModel(){}
 
-    public PrayerGroupModel(Integer prayerGroupId, String groupName, String description, String rules, MediaFile avatarFile, MediaFile bannerFile, List<PrayerGroupUserModel> admins, VisibilityLevel visibilityLevel, JoinStatus userJoinStatus, PrayerGroupRole prayerGroupRole, Integer joinRequestCount, OffsetDateTime userJoinDate) {
+    public PrayerGroupModel(Integer prayerGroupId, String groupName, String description, String rules, MediaFile avatarFile, MediaFile bannerFile, List<PrayerGroupUserModel> admins, VisibilityLevel visibilityLevel, JoinStatus userJoinStatus, PrayerGroupRole prayerGroupRole, Integer joinRequestCount, OffsetDateTime userJoinDate, OffsetDateTime userRequestSubmittedDate) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.description = description;
@@ -39,6 +40,7 @@ public class PrayerGroupModel {
         this.prayerGroupRole = prayerGroupRole;
         this.joinRequestCount = joinRequestCount;
         this.userJoinDate = userJoinDate;
+        this.userRequestSubmittedDate = userRequestSubmittedDate;
     }
 
     public Integer getPrayerGroupId() {
@@ -135,5 +137,13 @@ public class PrayerGroupModel {
 
     public void setUserJoinDate(OffsetDateTime userJoinDate) {
         this.userJoinDate = userJoinDate;
+    }
+
+    public OffsetDateTime getUserRequestSubmittedDate() {
+        return userRequestSubmittedDate;
+    }
+
+    public void setUserRequestSubmittedDate(OffsetDateTime userRequestSubmittedDate) {
+        this.userRequestSubmittedDate = userRequestSubmittedDate;
     }
 }
