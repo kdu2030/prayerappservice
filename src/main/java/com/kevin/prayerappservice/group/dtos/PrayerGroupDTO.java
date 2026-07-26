@@ -20,11 +20,12 @@ public class PrayerGroupDTO {
     private Integer joinRequestId;
     private Integer joinRequestCount;
     private OffsetDateTime userJoinDate;
+    private OffsetDateTime userRequestSubmittedDate;
 
     public PrayerGroupDTO() {
     }
 
-    public PrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules, String visibilityLevel, Integer avatarFileId, String avatarFileName, String avatarFileUrl, String avatarFileType, Integer bannerFileId, String bannerFileName, String bannerFileUrl, String bannerFileType, String prayerGroupRole, Integer joinRequestId, Integer joinRequestCount, OffsetDateTime userJoinDate) {
+    public PrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules, String visibilityLevel, Integer avatarFileId, String avatarFileName, String avatarFileUrl, String avatarFileType, Integer bannerFileId, String bannerFileName, String bannerFileUrl, String bannerFileType, String prayerGroupRole, Integer joinRequestId, Integer joinRequestCount, OffsetDateTime userJoinDate, OffsetDateTime userRequestSubmittedDate) {
         this.prayerGroupId = prayerGroupId;
         this.groupName = groupName;
         this.description = description;
@@ -42,6 +43,7 @@ public class PrayerGroupDTO {
         this.joinRequestId = joinRequestId;
         this.joinRequestCount = joinRequestCount;
         this.userJoinDate = userJoinDate;
+        this.userRequestSubmittedDate = userRequestSubmittedDate;
     }
 
     public PrayerGroupDTO(int prayerGroupId, String groupName, String description, String rules,
@@ -187,5 +189,13 @@ public class PrayerGroupDTO {
 
     public void setUserJoinDate(OffsetDateTime userJoinDate) {
         this.userJoinDate = userJoinDate;
+    }
+
+    public OffsetDateTime getUserRequestSubmittedDate() {
+        return userRequestSubmittedDate;
+    }
+
+    public void setUserRequestSubmittedDate(OffsetDateTime userRequestSubmittedDate) {
+        this.userRequestSubmittedDate = userRequestSubmittedDate;
     }
 }

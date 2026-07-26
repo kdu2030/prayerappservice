@@ -4,8 +4,6 @@ import com.kevin.prayerappservice.file.entities.MediaFile;
 import com.kevin.prayerappservice.group.constants.JoinStatus;
 import com.kevin.prayerappservice.group.constants.PrayerGroupRole;
 import com.kevin.prayerappservice.group.constants.VisibilityLevel;
-import com.kevin.prayerappservice.group.entities.PrayerGroupUser;
-import com.kevin.prayerappservice.user.entities.User;
 
 import java.time.OffsetDateTime;
 import java.util.List;
