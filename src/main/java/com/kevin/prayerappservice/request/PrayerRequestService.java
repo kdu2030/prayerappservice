@@ -75,7 +75,6 @@ public class PrayerRequestService {
             int[] excludedCreatorUserIds = filterCriteria.getExcludedCreatorUserIds().stream().mapToInt(Integer::valueOf).toArray();
 
             PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(
-                    userId,
                     prayerGroupIds,
                     null,
                     null,

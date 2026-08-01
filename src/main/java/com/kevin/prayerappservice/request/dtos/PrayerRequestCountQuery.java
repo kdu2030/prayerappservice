@@ -1,28 +1,18 @@
 package com.kevin.prayerappservice.request.dtos;
 
 public class PrayerRequestCountQuery {
-    private int targetUserId;
     private int[] prayerGroupIds;
     private int[] creatorUserIds;
     private Integer bookmarkedUserId;
     private boolean includeExpired;
     private int[] excludedCreatorUserIds;
 
-    public PrayerRequestCountQuery(int targetUserId, int[] prayerGroupIds, int[] creatorUserIds, Integer bookmarkedUserId, boolean includeExpired, int[] excludedCreatorUserIds) {
-        this.targetUserId = targetUserId;
+    public PrayerRequestCountQuery(int[] prayerGroupIds, int[] creatorUserIds, Integer bookmarkedUserId, boolean includeExpired, int[] excludedCreatorUserIds) {
         this.prayerGroupIds = prayerGroupIds;
         this.creatorUserIds = creatorUserIds;
         this.bookmarkedUserId = bookmarkedUserId;
         this.includeExpired = includeExpired;
         this.excludedCreatorUserIds = excludedCreatorUserIds;
-    }
-
-    public int getTargetUserId() {
-        return targetUserId;
-    }
-
-    public void setTargetUserId(int targetUserId) {
-        this.targetUserId = targetUserId;
     }
 
     public int[] getPrayerGroupIds() {
