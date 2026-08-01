@@ -138,7 +138,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false);
+                sortConfig, false, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequests(any())).thenThrow(new UncategorizedSQLException(null, null, new SQLException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)));
@@ -156,7 +156,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false);
+                sortConfig, false, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
@@ -184,7 +184,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false);
+                sortConfig, false, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
@@ -221,7 +221,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false);
+                sortConfig, false, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
@@ -263,7 +263,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false);
+                sortConfig, false, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 

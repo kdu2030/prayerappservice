@@ -11,15 +11,17 @@ public class PrayerRequestFilterCriteria {
     private Integer pageSize;
     private SortConfig<PrayerRequestSortField> sortConfig;
     private boolean includeExpiredPrayerRequests = false;
+    private List<Integer> excludedCreatorUserIds;
 
     public PrayerRequestFilterCriteria(){}
 
-    public PrayerRequestFilterCriteria(List<Integer> prayerGroupIds, Integer pageIndex, Integer pageSize, SortConfig<PrayerRequestSortField> sortConfig, boolean includeExpiredPrayerRequests) {
+    public PrayerRequestFilterCriteria(List<Integer> prayerGroupIds, Integer pageIndex, Integer pageSize, SortConfig<PrayerRequestSortField> sortConfig, boolean includeExpiredPrayerRequests, List<Integer> excludedCreatorUserIds) {
         this.prayerGroupIds = prayerGroupIds;
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
         this.sortConfig = sortConfig;
         this.includeExpiredPrayerRequests = includeExpiredPrayerRequests;
+        this.excludedCreatorUserIds = excludedCreatorUserIds;
     }
 
     public List<Integer> getPrayerGroupIds() {
@@ -60,5 +62,13 @@ public class PrayerRequestFilterCriteria {
 
     public void setIncludeExpiredPrayerRequests(boolean includeExpiredPrayerRequests) {
         this.includeExpiredPrayerRequests = includeExpiredPrayerRequests;
+    }
+
+    public List<Integer> getExcludedCreatorUserIds() {
+        return excludedCreatorUserIds;
+    }
+
+    public void setExcludedCreatorUserIds(List<Integer> excludedCreatorUserIds) {
+        this.excludedCreatorUserIds = excludedCreatorUserIds;
     }
 }
