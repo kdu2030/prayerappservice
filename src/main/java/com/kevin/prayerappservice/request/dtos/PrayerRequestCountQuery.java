@@ -6,13 +6,15 @@ public class PrayerRequestCountQuery {
     private int[] creatorUserIds;
     private Integer bookmarkedUserId;
     private boolean includeExpired;
+    private int[] excludedCreatorUserIds;
 
-    public PrayerRequestCountQuery(int targetUserId, int[] prayerGroupIds, int[] creatorUserIds, Integer bookmarkedUserId, boolean includeExpired) {
+    public PrayerRequestCountQuery(int targetUserId, int[] prayerGroupIds, int[] creatorUserIds, Integer bookmarkedUserId, boolean includeExpired, int[] excludedCreatorUserIds) {
         this.targetUserId = targetUserId;
         this.prayerGroupIds = prayerGroupIds;
         this.creatorUserIds = creatorUserIds;
         this.bookmarkedUserId = bookmarkedUserId;
         this.includeExpired = includeExpired;
+        this.excludedCreatorUserIds = excludedCreatorUserIds;
     }
 
     public int getTargetUserId() {
@@ -53,5 +55,13 @@ public class PrayerRequestCountQuery {
 
     public void setIncludeExpired(boolean includeExpired) {
         this.includeExpired = includeExpired;
+    }
+
+    public int[] getExcludedCreatorUserIds() {
+        return excludedCreatorUserIds;
+    }
+
+    public void setExcludedCreatorUserIds(int[] excludedCreatorUserIds) {
+        this.excludedCreatorUserIds = excludedCreatorUserIds;
     }
 }

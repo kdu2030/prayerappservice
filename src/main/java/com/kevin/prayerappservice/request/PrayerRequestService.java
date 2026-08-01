@@ -72,11 +72,30 @@ public class PrayerRequestService {
             int pageSize = filterCriteria.getPageSize();
 
             int[] prayerGroupIds = filterCriteria.getPrayerGroupIds().stream().mapToInt(Integer::valueOf).toArray();
+            int[] excludedCreatorUserIds = filterCriteria.getExcludedCreatorUserIds().stream().mapToInt(Integer::valueOf).toArray();
 
-            PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests());
+            PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(
+                    userId,
+                    prayerGroupIds,
+                    null,
+                    null,
+                    filterCriteria.isIncludeExpiredPrayerRequests(),
+                    excludedCreatorUserIds
+            );
+
             PrayerRequestCountResult countResult = prayerRequestRepository.getPrayerRequestsCount(countQuery);
 
-            PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests(), filterCriteria.getSortConfig().getSortField().toString(), filterCriteria.getSortConfig().getSortDirection().toString(), pageIndex * pageSize, pageSize);
+            PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(
+                    userId,
+                    prayerGroupIds,
+                    null,
+                    null,
+                    filterCriteria.isIncludeExpiredPrayerRequests(),
+                    filterCriteria.getSortConfig().getSortField().toString(),
+                    filterCriteria.getSortConfig().getSortDirection().toString(),
+                    pageIndex * pageSize, pageSize,
+                    excludedCreatorUserIds
+            );
 
             List<PrayerRequestGetResult> getResults = prayerRequestRepository.getPrayerRequests(getQuery);
 

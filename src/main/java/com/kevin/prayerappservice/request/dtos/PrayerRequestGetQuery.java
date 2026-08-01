@@ -10,10 +10,11 @@ public class PrayerRequestGetQuery {
     private String sortDirection;
     private int skip;
     private int take;
+    private int[] excludedCreatorUserIds;
 
     public PrayerRequestGetQuery(){}
 
-    public PrayerRequestGetQuery(int targetUserId, int[] prayerGroupIds, int[] creatorUserIds, Integer bookmarkedUserId, boolean includeExpired, String sortField, String sortDirection, int skip, int take) {
+    public PrayerRequestGetQuery(int targetUserId, int[] prayerGroupIds, int[] creatorUserIds, Integer bookmarkedUserId, boolean includeExpired, String sortField, String sortDirection, int skip, int take, int[] excludedCreatorUserIds) {
         this.targetUserId = targetUserId;
         this.prayerGroupIds = prayerGroupIds;
         this.creatorUserIds = creatorUserIds;
@@ -23,6 +24,7 @@ public class PrayerRequestGetQuery {
         this.sortDirection = sortDirection;
         this.skip = skip;
         this.take = take;
+        this.excludedCreatorUserIds = excludedCreatorUserIds;
     }
 
     public int getTargetUserId() {
@@ -95,5 +97,13 @@ public class PrayerRequestGetQuery {
 
     public void setTake(int take) {
         this.take = take;
+    }
+
+    public int[] getExcludedCreatorUserIds() {
+        return excludedCreatorUserIds;
+    }
+
+    public void setExcludedCreatorUserIds(int[] excludedCreatorUserIds) {
+        this.excludedCreatorUserIds = excludedCreatorUserIds;
     }
 }
