@@ -1,15 +1,22 @@
 package com.kevin.prayerappservice.request.models;
 
 import com.kevin.prayerappservice.common.SortConfig;
+import com.kevin.prayerappservice.common.SortDirection;
 import com.kevin.prayerappservice.request.constants.PrayerRequestSortField;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
 public class PrayerRequestFilterCriteria {
     private List<Integer> prayerGroupIds;
-    private Integer pageIndex;
-    private Integer pageSize;
-    private SortConfig<PrayerRequestSortField> sortConfig;
+    @NotNull
+    private int pageIndex;
+
+    @NotNull
+    private int pageSize;
+
+    private SortConfig<PrayerRequestSortField> sortConfig = new SortConfig<>(PrayerRequestSortField.CREATED_DATE, SortDirection.DESCENDING);
+
     private boolean includeExpiredPrayerRequests = false;
     private List<Integer> excludedCreatorUserIds;
 
