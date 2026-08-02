@@ -25,7 +25,7 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
 
     @Override
     public List<PrayerRequestGetResult> getPrayerRequests(PrayerRequestGetQuery getQuery){
-        String sql = "SELECT * FROM get_prayer_requests(:targetUserId, :prayerGroupIds, :creatorUserIds, :bookmarkedUserId, :includeExpired, :sortField, :sortDirection, :skip, :take);";
+        String sql = "SELECT * FROM get_prayer_requests(:targetUserId, :prayerGroupIds, :creatorUserIds, :bookmarkedUserId, :includeExpired, :sortField, :sortDirection, :skip, :take, :excludedCreatorUserIds);";
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(getQuery);
         return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PrayerRequestGetResult.class));
     }
