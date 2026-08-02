@@ -10,10 +10,10 @@ import java.util.List;
 public class PrayerRequestFilterCriteria {
     private List<Integer> prayerGroupIds;
     @NotNull
-    private int pageIndex;
+    private Integer pageIndex;
 
     @NotNull
-    private int pageSize;
+    private Integer pageSize;
 
     private SortConfig<PrayerRequestSortField> sortConfig = new SortConfig<>(PrayerRequestSortField.CREATED_DATE, SortDirection.DESCENDING);
 
