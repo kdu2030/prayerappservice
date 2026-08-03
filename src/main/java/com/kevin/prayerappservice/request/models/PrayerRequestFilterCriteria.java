@@ -26,9 +26,12 @@ public class PrayerRequestFilterCriteria {
         this.prayerGroupIds = prayerGroupIds;
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
-        this.sortConfig = sortConfig;
         this.includeExpiredPrayerRequests = includeExpiredPrayerRequests;
         this.excludedCreatorUserIds = excludedCreatorUserIds;
+
+        if(sortConfig != null){
+            this.sortConfig = sortConfig;
+        }
     }
 
     public List<Integer> getPrayerGroupIds() {
