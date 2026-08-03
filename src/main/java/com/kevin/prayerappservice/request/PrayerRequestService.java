@@ -71,12 +71,33 @@ public class PrayerRequestService {
             int pageIndex = filterCriteria.getPageIndex();
             int pageSize = filterCriteria.getPageSize();
 
-            int[] prayerGroupIds = filterCriteria.getPrayerGroupIds().stream().mapToInt(Integer::valueOf).toArray();
+            List<Integer> requestPrayerGroupIds = Optional.ofNullable(filterCriteria.getPrayerGroupIds()).orElse(new ArrayList<>());
+            List<Integer> requestExcludedCreatorIds = Optional.ofNullable(filterCriteria.getExcludedCreatorUserIds()).orElse(new ArrayList<>());
 
-            PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests());
+            int[] prayerGroupIds = requestPrayerGroupIds.stream().mapToInt(Integer::valueOf).toArray();
+            int[] excludedCreatorUserIds =  requestExcludedCreatorIds.stream().mapToInt(Integer::valueOf).toArray();
+
+            PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(
+                    prayerGroupIds,
+                    null,
+                    null,
+                    filterCriteria.isIncludeExpiredPrayerRequests(),
+                    excludedCreatorUserIds
+            );
+
             PrayerRequestCountResult countResult = prayerRequestRepository.getPrayerRequestsCount(countQuery);
 
-            PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(userId, prayerGroupIds, null, null, filterCriteria.isIncludeExpiredPrayerRequests(), filterCriteria.getSortConfig().getSortField().toString(), filterCriteria.getSortConfig().getSortDirection().toString(), pageIndex * pageSize, pageSize);
+            PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(
+                    userId,
+                    prayerGroupIds,
+                    null,
+                    null,
+                    filterCriteria.isIncludeExpiredPrayerRequests(),
+                    filterCriteria.getSortConfig().getSortField().toString(),
+                    filterCriteria.getSortConfig().getSortDirection().toString(),
+                    pageIndex * pageSize, pageSize,
+                    excludedCreatorUserIds
+            );
 
             List<PrayerRequestGetResult> getResults = prayerRequestRepository.getPrayerRequests(getQuery);
 

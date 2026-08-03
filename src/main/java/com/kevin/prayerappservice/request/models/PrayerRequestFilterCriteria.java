@@ -1,25 +1,37 @@
 package com.kevin.prayerappservice.request.models;
 
 import com.kevin.prayerappservice.common.SortConfig;
+import com.kevin.prayerappservice.common.SortDirection;
 import com.kevin.prayerappservice.request.constants.PrayerRequestSortField;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
 public class PrayerRequestFilterCriteria {
     private List<Integer> prayerGroupIds;
+    @NotNull
     private Integer pageIndex;
+
+    @NotNull
     private Integer pageSize;
-    private SortConfig<PrayerRequestSortField> sortConfig;
+
+    private SortConfig<PrayerRequestSortField> sortConfig = new SortConfig<>(PrayerRequestSortField.CREATED_DATE, SortDirection.DESCENDING);
+
     private boolean includeExpiredPrayerRequests = false;
+    private List<Integer> excludedCreatorUserIds;
 
     public PrayerRequestFilterCriteria(){}
 
-    public PrayerRequestFilterCriteria(List<Integer> prayerGroupIds, Integer pageIndex, Integer pageSize, SortConfig<PrayerRequestSortField> sortConfig, boolean includeExpiredPrayerRequests) {
+    public PrayerRequestFilterCriteria(List<Integer> prayerGroupIds, Integer pageIndex, Integer pageSize, SortConfig<PrayerRequestSortField> sortConfig, boolean includeExpiredPrayerRequests, List<Integer> excludedCreatorUserIds) {
         this.prayerGroupIds = prayerGroupIds;
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
-        this.sortConfig = sortConfig;
         this.includeExpiredPrayerRequests = includeExpiredPrayerRequests;
+        this.excludedCreatorUserIds = excludedCreatorUserIds;
+
+        if(sortConfig != null){
+            this.sortConfig = sortConfig;
+        }
     }
 
     public List<Integer> getPrayerGroupIds() {
@@ -60,5 +72,13 @@ public class PrayerRequestFilterCriteria {
 
     public void setIncludeExpiredPrayerRequests(boolean includeExpiredPrayerRequests) {
         this.includeExpiredPrayerRequests = includeExpiredPrayerRequests;
+    }
+
+    public List<Integer> getExcludedCreatorUserIds() {
+        return excludedCreatorUserIds;
+    }
+
+    public void setExcludedCreatorUserIds(List<Integer> excludedCreatorUserIds) {
+        this.excludedCreatorUserIds = excludedCreatorUserIds;
     }
 }
