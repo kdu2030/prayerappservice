@@ -24,7 +24,7 @@ BEGIN
             AND (p_creator_user_ids IS NULL OR r.user_id = ANY(p_creator_user_ids))
             AND (p_bookmarked_user_id IS NULL OR b.user_id = p_bookmarked_user_id)
             AND (p_include_expired IS TRUE OR r.expiration_date IS NULL OR r.expiration_date > CURRENT_TIMESTAMP)
-            AND (p_excluded_creator_user_ids IS NULL OR r.user_id != ANY(p_excluded_creator_user_ids));
+            AND (p_excluded_creator_user_ids IS NULL OR r.user_id != ALL(p_excluded_creator_user_ids));
 END;
 $$
 LANGUAGE plpgsql;
