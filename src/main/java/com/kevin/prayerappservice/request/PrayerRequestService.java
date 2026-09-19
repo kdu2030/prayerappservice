@@ -71,8 +71,11 @@ public class PrayerRequestService {
             int pageIndex = filterCriteria.getPageIndex();
             int pageSize = filterCriteria.getPageSize();
 
-            int[] prayerGroupIds = filterCriteria.getPrayerGroupIds().stream().mapToInt(Integer::valueOf).toArray();
-            int[] excludedCreatorUserIds = filterCriteria.getExcludedCreatorUserIds().stream().mapToInt(Integer::valueOf).toArray();
+            List<Integer> requestPrayerGroupIds = Optional.ofNullable(filterCriteria.getPrayerGroupIds()).orElse(new ArrayList<>());
+            List<Integer> requestExcludedCreatorIds = Optional.ofNullable(filterCriteria.getExcludedCreatorUserIds()).orElse(new ArrayList<>());
+
+            int[] prayerGroupIds = requestPrayerGroupIds.stream().mapToInt(Integer::valueOf).toArray();
+            int[] excludedCreatorUserIds =  requestExcludedCreatorIds.stream().mapToInt(Integer::valueOf).toArray();
 
             PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(
                     prayerGroupIds,

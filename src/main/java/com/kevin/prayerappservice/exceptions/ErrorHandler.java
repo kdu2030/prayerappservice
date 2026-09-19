@@ -7,8 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.TransactionSystemException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -93,6 +95,24 @@ public class ErrorHandler {
                 .url(request.getRequestURL().toString())
                 .build();
         return new ResponseEntity<>(error, exception.getHttpStatus());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Error> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException exception){
+        logger.error("Method argument validation error occurred.", exception);
+
+        ProblemDetail problemDetail = exception.getBody();
+        String message = problemDetail.getDetail();
+
+        DataValidationError error = DataValidationError.dataValidationErrorBuilder()
+                .dataValidationErrors(new String[] { message })
+                .errorCode(ErrorCode.DATA_VALIDATION_ERROR.getErrCode())
+                .message(ErrorCode.DATA_VALIDATION_ERROR.getErrMessageKey())
+                .reqMethod(request.getMethod())
+                .url(request.getRequestURL().toString())
+                .build();
+
+        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
     }
 
 
