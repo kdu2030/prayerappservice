@@ -68,6 +68,7 @@ public class PrayerRequestService {
             String token = jwtService.extractTokenFromAuthHeader(authHeader);
             int userId = jwtService.extractUserId(token);
 
+
             int pageIndex = filterCriteria.getPageIndex();
             int pageSize = filterCriteria.getPageSize();
 
