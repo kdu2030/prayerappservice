@@ -14,6 +14,7 @@ public class PrayerRequestCountQuery {
         this.bookmarkedUserId = bookmarkedUserId;
         this.includeExpired = includeExpired;
         this.excludedCreatorUserIds = excludedCreatorUserIds;
+        this.userId = userId;
     }
 
     public int getUserId() {
