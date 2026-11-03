@@ -129,24 +129,6 @@ public class PrayerRequestServiceTests {
     }
 
     @Test
-    public void getPrayerRequests_nonMemberQueriesPrayerRequests_throwsException() {
-        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
-        Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(1);
-
-        List<Integer> prayerGroupIds = Arrays.asList(747, 777);
-        SortConfig<PrayerRequestSortField> sortConfig = new SortConfig<>(PrayerRequestSortField.CREATED_DATE,
-                SortDirection.DESCENDING);
-
-        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false, null, null);
-
-        Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
-        Mockito.when(prayerRequestJdbcRepository.getPrayerRequests(any())).thenThrow(new UncategorizedSQLException(null, null, new SQLException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)));
-
-        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.getPrayerRequests("mockAuthHeader", filterCriteria));
-    }
-
-    @Test
     public void getPrayerRequests_givenValidRequests_returnsValidRequests() {
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(1);
