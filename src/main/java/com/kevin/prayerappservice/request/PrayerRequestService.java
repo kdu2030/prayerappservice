@@ -68,6 +68,10 @@ public class PrayerRequestService {
             String token = jwtService.extractTokenFromAuthHeader(authHeader);
             int userId = jwtService.extractUserId(token);
 
+            Integer bookmarkedUserId = filterCriteria.getBookmarkedUserId();
+            if(userId != bookmarkedUserId){
+                throw new DataValidationException(PrayerRequestErrors.CANNOT_SEARCH_FOR_OTHER_USER_BOOKMARKS);
+            }
 
             int pageIndex = filterCriteria.getPageIndex();
             int pageSize = filterCriteria.getPageSize();
@@ -79,9 +83,10 @@ public class PrayerRequestService {
             int[] excludedCreatorUserIds =  requestExcludedCreatorIds.stream().mapToInt(Integer::valueOf).toArray();
 
             PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(
+                    userId,
                     prayerGroupIds,
                     null,
-                    null,
+                    bookmarkedUserId,
                     filterCriteria.isIncludeExpiredPrayerRequests(),
                     excludedCreatorUserIds
             );
@@ -92,7 +97,7 @@ public class PrayerRequestService {
                     userId,
                     prayerGroupIds,
                     null,
-                    null,
+                    bookmarkedUserId,
                     filterCriteria.isIncludeExpiredPrayerRequests(),
                     filterCriteria.getSortConfig().getSortField().toString(),
                     filterCriteria.getSortConfig().getSortDirection().toString(),
