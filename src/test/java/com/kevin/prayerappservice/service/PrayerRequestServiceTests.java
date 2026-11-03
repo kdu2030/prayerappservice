@@ -138,7 +138,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false, null, null);
+                sortConfig, false, null, null, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
@@ -166,7 +166,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false, null, null);
+                sortConfig, false, null, null, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
@@ -203,7 +203,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false, null, null);
+                sortConfig, false, null, null, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
@@ -245,7 +245,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false, null, null);
+                sortConfig, false, null, null, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
@@ -886,7 +886,7 @@ public class PrayerRequestServiceTests {
         List<Integer> prayerGroupIds = List.of(747);
         List<Integer> excludedCreatorUserIds = List.of(787);
 
-        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, sortConfig, false, excludedCreatorUserIds, null);
+        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, sortConfig, false, excludedCreatorUserIds, null, null);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(737);
@@ -915,7 +915,7 @@ public class PrayerRequestServiceTests {
         SortConfig<PrayerRequestSortField> sortConfig = new SortConfig<>(PrayerRequestSortField.CREATED_DATE, SortDirection.DESCENDING);
         List<Integer> prayerGroupIds = List.of(747);
 
-        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, sortConfig, false, null, null);
+        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, sortConfig, false, null, null, null);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(737);
@@ -943,7 +943,7 @@ public class PrayerRequestServiceTests {
     public void getPrayerRequests_withNullSort_usesDefaultSort(){
         List<Integer> prayerGroupIds = List.of(747);
 
-        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, null, false, null, null);
+        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, null, false, null, null, null);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(737);

@@ -19,12 +19,12 @@ public class PrayerRequestFilterCriteria {
 
     private boolean includeExpiredPrayerRequests = false;
     private List<Integer> excludedCreatorUserIds;
-
     private Integer bookmarkedUserId;
+    private List<Integer> creatorUserIds;
 
     public PrayerRequestFilterCriteria(){}
 
-    public PrayerRequestFilterCriteria(List<Integer> prayerGroupIds, Integer pageIndex, Integer pageSize, SortConfig<PrayerRequestSortField> sortConfig, boolean includeExpiredPrayerRequests, List<Integer> excludedCreatorUserIds, Integer bookmarkedUserId) {
+    public PrayerRequestFilterCriteria(List<Integer> prayerGroupIds, Integer pageIndex, Integer pageSize, SortConfig<PrayerRequestSortField> sortConfig, boolean includeExpiredPrayerRequests, List<Integer> excludedCreatorUserIds, Integer bookmarkedUserId, List<Integer> creatorUserIds) {
         this.prayerGroupIds = prayerGroupIds;
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
@@ -32,6 +32,7 @@ public class PrayerRequestFilterCriteria {
         this.excludedCreatorUserIds = excludedCreatorUserIds;
         this.bookmarkedUserId = bookmarkedUserId;
         this.sortConfig = sortConfig;
+        this.creatorUserIds = creatorUserIds;
     }
 
     public List<Integer> getPrayerGroupIds() {
@@ -88,5 +89,13 @@ public class PrayerRequestFilterCriteria {
 
     public void setBookmarkedUserId(Integer bookmarkedUserId) {
         this.bookmarkedUserId = bookmarkedUserId;
+    }
+
+    public List<Integer> getCreatorUserIds() {
+        return creatorUserIds;
+    }
+
+    public void setCreatorUserIds(List<Integer> creatorUserIds) {
+        this.creatorUserIds = creatorUserIds;
     }
 }

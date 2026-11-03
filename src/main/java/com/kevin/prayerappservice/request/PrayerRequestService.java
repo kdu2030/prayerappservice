@@ -77,14 +77,16 @@ public class PrayerRequestService {
 
         List<Integer> requestPrayerGroupIds = Optional.ofNullable(filterCriteria.getPrayerGroupIds()).orElse(new ArrayList<>());
         List<Integer> requestExcludedCreatorIds = Optional.ofNullable(filterCriteria.getExcludedCreatorUserIds()).orElse(new ArrayList<>());
+        List<Integer> requestCreatorUserIds = Optional.ofNullable(filterCriteria.getCreatorUserIds()).orElse(new ArrayList<>());
 
         int[] prayerGroupIds = requestPrayerGroupIds.stream().mapToInt(Integer::valueOf).toArray();
         int[] excludedCreatorUserIds = requestExcludedCreatorIds.stream().mapToInt(Integer::valueOf).toArray();
+        int[] creatorUserIds = requestCreatorUserIds.stream().mapToInt(Integer::valueOf).toArray();
 
         PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(
                 userId,
                 prayerGroupIds,
-                null,
+                creatorUserIds,
                 bookmarkedUserId,
                 filterCriteria.isIncludeExpiredPrayerRequests(),
                 excludedCreatorUserIds
@@ -95,7 +97,7 @@ public class PrayerRequestService {
         PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(
                 userId,
                 prayerGroupIds,
-                null,
+                creatorUserIds,
                 bookmarkedUserId,
                 filterCriteria.isIncludeExpiredPrayerRequests(),
                 filterCriteria.getSortConfig().getSortField().toString(),
