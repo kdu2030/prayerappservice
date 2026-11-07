@@ -16,13 +16,13 @@ import com.kevin.prayerappservice.request.models.*;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.UncategorizedSQLException;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @Service
@@ -35,8 +35,9 @@ public class PrayerRequestService {
     private final PrayerRequestLikeRepository prayerRequestLikeRepository;
     private final PrayerRequestBookmarkRepository prayerRequestBookmarkRepository;
     private final PrayerRequestCommentRepository prayerRequestCommentRepository;
+    private final ThreadPoolTaskExecutor executor;
 
-    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository, PrayerRequestBookmarkRepository prayerRequestBookmarkRepository, PrayerRequestCommentRepository prayerRequestCommentRepository) {
+    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository, PrayerRequestBookmarkRepository prayerRequestBookmarkRepository, PrayerRequestCommentRepository prayerRequestCommentRepository, ThreadPoolTaskExecutor executor) {
         this.jwtService = jwtService;
         this.prayerGroupUserRepository = prayerGroupUserRepository;
         this.prayerRequestRepository = prayerRequestRepository;
@@ -45,6 +46,7 @@ public class PrayerRequestService {
         this.prayerRequestLikeRepository = prayerRequestLikeRepository;
         this.prayerRequestBookmarkRepository = prayerRequestBookmarkRepository;
         this.prayerRequestCommentRepository = prayerRequestCommentRepository;
+        this.executor = executor;
     }
 
     public PrayerRequestModel createPrayerRequest(String authHeader, PrayerRequestCreateRequest createRequest) {
@@ -63,12 +65,13 @@ public class PrayerRequestService {
         return prayerRequestMapper.prayerRequestCreateResultToPrayerRequestModel(createResult);
     }
 
+
     public PrayerRequestGetResponse getPrayerRequests(String authHeader, PrayerRequestFilterCriteria filterCriteria) {
         String token = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(token);
 
         Integer bookmarkedUserId = filterCriteria.getBookmarkedUserId();
-        if (userId != bookmarkedUserId) {
+        if (!Objects.equals(bookmarkedUserId, userId)) {
             throw new DataValidationException(PrayerRequestErrors.CANNOT_SEARCH_FOR_OTHER_USER_BOOKMARKS);
         }
 
@@ -92,8 +95,6 @@ public class PrayerRequestService {
                 excludedCreatorUserIds
         );
 
-        PrayerRequestCountResult countResult = prayerRequestRepository.getPrayerRequestsCount(countQuery);
-
         PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(
                 userId,
                 prayerGroupIds,
@@ -106,7 +107,14 @@ public class PrayerRequestService {
                 excludedCreatorUserIds
         );
 
-        List<PrayerRequestGetResult> getResults = prayerRequestRepository.getPrayerRequests(getQuery);
+
+        CompletableFuture<PrayerRequestCountResult> countResultsFuture = CompletableFuture.supplyAsync(() -> prayerRequestRepository.getPrayerRequestsCount(countQuery), executor);
+        CompletableFuture<List<PrayerRequestGetResult>> getResultsFuture = CompletableFuture.supplyAsync(() -> prayerRequestRepository.getPrayerRequests(getQuery), executor);
+
+        CompletableFuture.allOf(countResultsFuture, getResultsFuture).join();
+
+        PrayerRequestCountResult countResult = countResultsFuture.join();
+        List<PrayerRequestGetResult> getResults = getResultsFuture.join();
 
         List<PrayerRequestModel> prayerRequests = new ArrayList<>(getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList());
 
