@@ -106,14 +106,10 @@ public class PrayerRequestService {
                 excludedCreatorUserIds
         );
 
+        PrayerRequestQueryResults prayerRequestQueryResult = fetchPrayerRequests(countQuery, getQuery).join();
 
-        CompletableFuture<PrayerRequestCountResult> countResultsFuture = CompletableFuture.supplyAsync(() -> prayerRequestRepository.getPrayerRequestsCount(countQuery), executor);
-        CompletableFuture<List<PrayerRequestGetResult>> getResultsFuture = CompletableFuture.supplyAsync(() -> prayerRequestRepository.getPrayerRequests(getQuery), executor);
-
-        CompletableFuture.allOf(countResultsFuture, getResultsFuture).join();
-
-        PrayerRequestCountResult countResult = countResultsFuture.join();
-        List<PrayerRequestGetResult> getResults = getResultsFuture.join();
+        List<PrayerRequestGetResult> getResults = prayerRequestQueryResult.prayerRequestResults;
+        PrayerRequestCountResult countResult = prayerRequestQueryResult.countResult;
 
         List<PrayerRequestModel> prayerRequests = new ArrayList<>(getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList());
 
@@ -356,6 +352,16 @@ public class PrayerRequestService {
         }
 
         prayerRequestRepository.deletePrayerRequest(prayerRequestToDelete.getPrayerRequestId());
+    }
+
+    private record PrayerRequestQueryResults(PrayerRequestCountResult countResult, List<PrayerRequestGetResult> prayerRequestResults){}
+
+    private CompletableFuture<PrayerRequestQueryResults> fetchPrayerRequests(PrayerRequestCountQuery countQuery, PrayerRequestGetQuery getQuery){
+        CompletableFuture<PrayerRequestCountResult> countResultFuture = CompletableFuture.supplyAsync(() -> prayerRequestRepository.getPrayerRequestsCount(countQuery), executor);
+        CompletableFuture<List<PrayerRequestGetResult>> getResultFuture = CompletableFuture.supplyAsync(() -> prayerRequestRepository.getPrayerRequests(getQuery), executor);
+
+        return CompletableFuture.allOf(countResultFuture, getResultFuture)
+                .thenApply(ignored -> new PrayerRequestQueryResults(countResultFuture.join(), getResultFuture.join()));
     }
 
     private HashMap<Integer, PrayerRequestUserAction> getPrayerRequestIdToActionIdsMap(int[] prayerRequestIds, int userId) {
