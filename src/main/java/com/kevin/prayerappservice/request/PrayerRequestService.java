@@ -121,8 +121,7 @@ public class PrayerRequestService {
         int[] prayerRequestIds = prayerRequests.stream().mapToInt(PrayerRequestModel::getPrayerRequestId).toArray();
         HashMap<Integer, PrayerRequestUserAction> userActionHashMap = getPrayerRequestIdToActionIdsMap(prayerRequestIds, userId);
 
-        for (int i = 0; i < prayerRequests.size(); i++) {
-            PrayerRequestModel prayerRequest = prayerRequests.get(i);
+        for (PrayerRequestModel prayerRequest: prayerRequests) {
             if (!userActionHashMap.containsKey(prayerRequest.getPrayerRequestId())) {
                 continue;
             }
@@ -130,8 +129,6 @@ public class PrayerRequestService {
             PrayerRequestUserAction userAction = userActionHashMap.get(prayerRequest.getPrayerRequestId());
             prayerRequest.setUserCommentIds(userAction.getUserCommentIds());
             prayerRequest.setUserPrayerSessionIds(userAction.getUserPrayerSessionIds());
-
-            prayerRequests.set(i, prayerRequest);
         }
 
 
