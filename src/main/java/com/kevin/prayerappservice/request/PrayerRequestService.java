@@ -16,7 +16,6 @@ import com.kevin.prayerappservice.request.models.*;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.UncategorizedSQLException;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -71,7 +70,7 @@ public class PrayerRequestService {
         int userId = jwtService.extractUserId(token);
 
         Integer bookmarkedUserId = filterCriteria.getBookmarkedUserId();
-        if (!Objects.equals(bookmarkedUserId, userId)) {
+        if (bookmarkedUserId != null && bookmarkedUserId != userId) {
             throw new DataValidationException(PrayerRequestErrors.CANNOT_SEARCH_FOR_OTHER_USER_BOOKMARKS);
         }
 
