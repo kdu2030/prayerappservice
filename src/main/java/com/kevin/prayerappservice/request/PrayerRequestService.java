@@ -15,14 +15,13 @@ import com.kevin.prayerappservice.request.mappers.PrayerRequestMapper;
 import com.kevin.prayerappservice.request.models.*;
 import com.kevin.prayerappservice.user.entities.User;
 import jakarta.persistence.EntityManager;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.jdbc.UncategorizedSQLException;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.stream.Stream;
 
 @Service
@@ -35,9 +34,9 @@ public class PrayerRequestService {
     private final PrayerRequestLikeRepository prayerRequestLikeRepository;
     private final PrayerRequestBookmarkRepository prayerRequestBookmarkRepository;
     private final PrayerRequestCommentRepository prayerRequestCommentRepository;
-    private final SimpleAsyncTaskExecutor executor;
+    private final Executor executor;
 
-    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository, PrayerRequestBookmarkRepository prayerRequestBookmarkRepository, PrayerRequestCommentRepository prayerRequestCommentRepository, SimpleAsyncTaskExecutor executor) {
+    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository, PrayerRequestBookmarkRepository prayerRequestBookmarkRepository, PrayerRequestCommentRepository prayerRequestCommentRepository, Executor executor) {
         this.jwtService = jwtService;
         this.prayerGroupUserRepository = prayerGroupUserRepository;
         this.prayerRequestRepository = prayerRequestRepository;

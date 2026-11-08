@@ -31,8 +31,11 @@ public class PrayerRequestFilterCriteria {
         this.includeExpiredPrayerRequests = includeExpiredPrayerRequests;
         this.excludedCreatorUserIds = excludedCreatorUserIds;
         this.bookmarkedUserId = bookmarkedUserId;
-        this.sortConfig = sortConfig;
         this.creatorUserIds = creatorUserIds;
+
+        if(sortConfig != null){
+            this.sortConfig = sortConfig;
+        }
     }
 
     public List<Integer> getPrayerGroupIds() {
