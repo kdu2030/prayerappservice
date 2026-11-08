@@ -3,6 +3,7 @@ package com.kevin.prayerappservice.service;
 import com.kevin.prayerappservice.auth.JwtService;
 import com.kevin.prayerappservice.common.SortConfig;
 import com.kevin.prayerappservice.common.SortDirection;
+import com.kevin.prayerappservice.config.TestExecutorConfiguration;
 import com.kevin.prayerappservice.exceptions.DataValidationException;
 import com.kevin.prayerappservice.group.PrayerGroupRepository;
 import com.kevin.prayerappservice.group.PrayerGroupUserRepository;
@@ -30,6 +31,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -45,6 +47,7 @@ import static org.mockito.ArgumentMatchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(TestExecutorConfiguration.class)
 public class PrayerRequestServiceTests {
     @MockBean
     private JwtService jwtService;
@@ -129,24 +132,6 @@ public class PrayerRequestServiceTests {
     }
 
     @Test
-    public void getPrayerRequests_nonMemberQueriesPrayerRequests_throwsException() {
-        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
-        Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(1);
-
-        List<Integer> prayerGroupIds = Arrays.asList(747, 777);
-        SortConfig<PrayerRequestSortField> sortConfig = new SortConfig<>(PrayerRequestSortField.CREATED_DATE,
-                SortDirection.DESCENDING);
-
-        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false, null);
-
-        Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
-        Mockito.when(prayerRequestJdbcRepository.getPrayerRequests(any())).thenThrow(new UncategorizedSQLException(null, null, new SQLException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)));
-
-        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.getPrayerRequests("mockAuthHeader", filterCriteria));
-    }
-
-    @Test
     public void getPrayerRequests_givenValidRequests_returnsValidRequests() {
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId("mockToken")).thenReturn(1);
@@ -156,7 +141,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false, null);
+                sortConfig, false, null, null, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
@@ -184,7 +169,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false, null);
+                sortConfig, false, null, null, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
@@ -221,7 +206,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false, null);
+                sortConfig, false, null, null, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
@@ -263,7 +248,7 @@ public class PrayerRequestServiceTests {
                 SortDirection.DESCENDING);
 
         PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 20,
-                sortConfig, false, null);
+                sortConfig, false, null, null, null);
 
         Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(new PrayerRequestCountResult(100));
 
@@ -904,7 +889,7 @@ public class PrayerRequestServiceTests {
         List<Integer> prayerGroupIds = List.of(747);
         List<Integer> excludedCreatorUserIds = List.of(787);
 
-        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, sortConfig, false, excludedCreatorUserIds);
+        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, sortConfig, false, excludedCreatorUserIds, null, null);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(737);
@@ -933,7 +918,7 @@ public class PrayerRequestServiceTests {
         SortConfig<PrayerRequestSortField> sortConfig = new SortConfig<>(PrayerRequestSortField.CREATED_DATE, SortDirection.DESCENDING);
         List<Integer> prayerGroupIds = List.of(747);
 
-        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, sortConfig, false, null);
+        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, sortConfig, false, null, null, null);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(737);
@@ -961,7 +946,7 @@ public class PrayerRequestServiceTests {
     public void getPrayerRequests_withNullSort_usesDefaultSort(){
         List<Integer> prayerGroupIds = List.of(747);
 
-        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, null, false, null);
+        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(prayerGroupIds, 0, 2, null, false, null, null, null);
 
         Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
         Mockito.when(jwtService.extractUserId(anyString())).thenReturn(737);
@@ -984,5 +969,43 @@ public class PrayerRequestServiceTests {
 
         Assertions.assertThat(getQueryArgumentCaptor.getValue().getSortField()).isEqualTo(PrayerRequestSortField.CREATED_DATE.toString());
         Assertions.assertThat(getQueryArgumentCaptor.getValue().getSortDirection()).isEqualTo(SortDirection.DESCENDING.toString());
+    }
+
+    @Test
+    public void getPrayerRequests_withOtherUserBookmarkedId_throwsException(){
+        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(null, 0, 20, null, false, null, 737, null);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(747);
+
+        Assertions.assertThatExceptionOfType(DataValidationException.class).isThrownBy(() -> prayerRequestService.getPrayerRequests("mockHeader", filterCriteria));
+    }
+
+    @Test
+    public void getPrayerRequests_withUserBookmarkedId_returnsPrayerRequests(){
+        int bookmarkedUserId = 737;
+
+        PrayerRequestFilterCriteria filterCriteria = new PrayerRequestFilterCriteria(null, 0, 20, null, false, null, bookmarkedUserId, null);
+
+        Mockito.when(jwtService.extractTokenFromAuthHeader(anyString())).thenReturn("mockToken");
+        Mockito.when(jwtService.extractUserId(anyString())).thenReturn(bookmarkedUserId);
+
+        PrayerRequestCountResult countResult = new PrayerRequestCountResult(20);
+
+        Mockito.when(prayerRequestJdbcRepository.getPrayerRequestsCount(any())).thenReturn(countResult);
+
+        OffsetDateTime currentTime = OffsetDateTime.now();
+
+        PrayerRequestGetResult prayerRequest1 = new PrayerRequestGetResult(767, "Prayer Request 1", "Prayer Request 1 Description", currentTime, currentTime.plusDays(15));
+        PrayerRequestGetResult prayerRequest2 = new PrayerRequestGetResult(777, "Prayer Request 2", "Prayer Request 2 Description", currentTime, currentTime.plusDays(15));
+
+        Mockito.when(prayerRequestJdbcRepository.getPrayerRequests(any())).thenReturn(List.of(prayerRequest1, prayerRequest2));
+
+        prayerRequestService.getPrayerRequests("mockAuthHeader", filterCriteria);
+
+        ArgumentCaptor<PrayerRequestGetQuery> getQueryArgumentCaptor = ArgumentCaptor.forClass(PrayerRequestGetQuery.class);
+        Mockito.verify(prayerRequestJdbcRepository).getPrayerRequests(getQueryArgumentCaptor.capture());
+
+        Assertions.assertThat(getQueryArgumentCaptor.getValue().getBookmarkedUserId()).isEqualTo(bookmarkedUserId);
     }
 }

@@ -17,4 +17,5 @@ public class PrayerRequestErrors {
     public static final String ONLY_SUBMITTED_CAN_DELETE_COMMENT = "Only the submited user can delete the comment";
     public static final String ONLY_SUBMITTED_CAN_UPDATE_REQUEST = "Only the submitted user can update the prayer request.";
     public static final String ONLY_SUBMITTED_OR_ADMIN_CAN_DELETE_REQUEST = "Only the submitted user or an admin can delete the prayer request.";
+    public static final String CANNOT_SEARCH_FOR_OTHER_USER_BOOKMARKS = "Cannot search for another user's bookmarks";
 }

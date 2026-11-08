@@ -19,10 +19,9 @@ import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.stream.Stream;
 
 @Service
@@ -35,8 +34,9 @@ public class PrayerRequestService {
     private final PrayerRequestLikeRepository prayerRequestLikeRepository;
     private final PrayerRequestBookmarkRepository prayerRequestBookmarkRepository;
     private final PrayerRequestCommentRepository prayerRequestCommentRepository;
+    private final Executor executor;
 
-    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository, PrayerRequestBookmarkRepository prayerRequestBookmarkRepository, PrayerRequestCommentRepository prayerRequestCommentRepository) {
+    public PrayerRequestService(JwtService jwtService, PrayerGroupUserRepository prayerGroupUserRepository, PrayerRequestRepository prayerRequestRepository, PrayerRequestMapper prayerRequestMapper, EntityManager entityManager, PrayerRequestLikeRepository prayerRequestLikeRepository, PrayerRequestBookmarkRepository prayerRequestBookmarkRepository, PrayerRequestCommentRepository prayerRequestCommentRepository, Executor executor) {
         this.jwtService = jwtService;
         this.prayerGroupUserRepository = prayerGroupUserRepository;
         this.prayerRequestRepository = prayerRequestRepository;
@@ -45,6 +45,7 @@ public class PrayerRequestService {
         this.prayerRequestLikeRepository = prayerRequestLikeRepository;
         this.prayerRequestBookmarkRepository = prayerRequestBookmarkRepository;
         this.prayerRequestCommentRepository = prayerRequestCommentRepository;
+        this.executor = executor;
     }
 
     public PrayerRequestModel createPrayerRequest(String authHeader, PrayerRequestCreateRequest createRequest) {
@@ -63,76 +64,73 @@ public class PrayerRequestService {
         return prayerRequestMapper.prayerRequestCreateResultToPrayerRequestModel(createResult);
     }
 
+
     public PrayerRequestGetResponse getPrayerRequests(String authHeader, PrayerRequestFilterCriteria filterCriteria) {
-        try {
-            String token = jwtService.extractTokenFromAuthHeader(authHeader);
-            int userId = jwtService.extractUserId(token);
+        String token = jwtService.extractTokenFromAuthHeader(authHeader);
+        int userId = jwtService.extractUserId(token);
 
-            int pageIndex = filterCriteria.getPageIndex();
-            int pageSize = filterCriteria.getPageSize();
-
-            List<Integer> requestPrayerGroupIds = Optional.ofNullable(filterCriteria.getPrayerGroupIds()).orElse(new ArrayList<>());
-            List<Integer> requestExcludedCreatorIds = Optional.ofNullable(filterCriteria.getExcludedCreatorUserIds()).orElse(new ArrayList<>());
-
-            int[] prayerGroupIds = requestPrayerGroupIds.stream().mapToInt(Integer::valueOf).toArray();
-            int[] excludedCreatorUserIds =  requestExcludedCreatorIds.stream().mapToInt(Integer::valueOf).toArray();
-
-            PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(
-                    prayerGroupIds,
-                    null,
-                    null,
-                    filterCriteria.isIncludeExpiredPrayerRequests(),
-                    excludedCreatorUserIds
-            );
-
-            PrayerRequestCountResult countResult = prayerRequestRepository.getPrayerRequestsCount(countQuery);
-
-            PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(
-                    userId,
-                    prayerGroupIds,
-                    null,
-                    null,
-                    filterCriteria.isIncludeExpiredPrayerRequests(),
-                    filterCriteria.getSortConfig().getSortField().toString(),
-                    filterCriteria.getSortConfig().getSortDirection().toString(),
-                    pageIndex * pageSize, pageSize,
-                    excludedCreatorUserIds
-            );
-
-            List<PrayerRequestGetResult> getResults = prayerRequestRepository.getPrayerRequests(getQuery);
-
-            List<PrayerRequestModel> prayerRequests = new ArrayList<>(getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList());
-
-            int[] prayerRequestIds = prayerRequests.stream().mapToInt(PrayerRequestModel::getPrayerRequestId).toArray();
-            HashMap<Integer, PrayerRequestUserAction> userActionHashMap = getPrayerRequestIdToActionIdsMap(prayerRequestIds, userId);
-
-            for(int i = 0; i < prayerRequests.size(); i++){
-                PrayerRequestModel prayerRequest = prayerRequests.get(i);
-                if(!userActionHashMap.containsKey(prayerRequest.getPrayerRequestId())){
-                    continue;
-                }
-
-                PrayerRequestUserAction userAction = userActionHashMap.get(prayerRequest.getPrayerRequestId());
-                prayerRequest.setUserCommentIds(userAction.getUserCommentIds());
-                prayerRequest.setUserPrayerSessionIds(userAction.getUserPrayerSessionIds());
-
-                prayerRequests.set(i, prayerRequest);
-            }
-
-
-            int prayerRequestsCount = countResult.getPrayerRequestCount();
-            int numberOfPages = (int) Math.ceil(prayerRequestsCount / (double) pageSize);
-
-            return new PrayerRequestGetResponse(prayerRequests, prayerRequestsCount, numberOfPages, pageIndex);
-        } catch (UncategorizedSQLException exception) {
-            Throwable cause = exception.getCause();
-            String exceptionMessage = cause != null ? cause.getMessage() : null;
-
-            if (exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW)) {
-                throw new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_VIEW);
-            }
-            throw exception;
+        Integer bookmarkedUserId = filterCriteria.getBookmarkedUserId();
+        if (bookmarkedUserId != null && bookmarkedUserId != userId) {
+            throw new DataValidationException(PrayerRequestErrors.CANNOT_SEARCH_FOR_OTHER_USER_BOOKMARKS);
         }
+
+        int pageIndex = filterCriteria.getPageIndex();
+        int pageSize = filterCriteria.getPageSize();
+
+        List<Integer> requestPrayerGroupIds = Optional.ofNullable(filterCriteria.getPrayerGroupIds()).orElse(new ArrayList<>());
+        List<Integer> requestExcludedCreatorIds = Optional.ofNullable(filterCriteria.getExcludedCreatorUserIds()).orElse(new ArrayList<>());
+        List<Integer> requestCreatorUserIds = Optional.ofNullable(filterCriteria.getCreatorUserIds()).orElse(new ArrayList<>());
+
+        int[] prayerGroupIds = requestPrayerGroupIds.stream().mapToInt(Integer::valueOf).toArray();
+        int[] excludedCreatorUserIds = requestExcludedCreatorIds.stream().mapToInt(Integer::valueOf).toArray();
+        int[] creatorUserIds = requestCreatorUserIds.stream().mapToInt(Integer::valueOf).toArray();
+
+        PrayerRequestCountQuery countQuery = new PrayerRequestCountQuery(
+                userId,
+                prayerGroupIds,
+                creatorUserIds,
+                bookmarkedUserId,
+                filterCriteria.isIncludeExpiredPrayerRequests(),
+                excludedCreatorUserIds
+        );
+
+        PrayerRequestGetQuery getQuery = new PrayerRequestGetQuery(
+                userId,
+                prayerGroupIds,
+                creatorUserIds,
+                bookmarkedUserId,
+                filterCriteria.isIncludeExpiredPrayerRequests(),
+                filterCriteria.getSortConfig().getSortField().toString(),
+                filterCriteria.getSortConfig().getSortDirection().toString(),
+                pageIndex * pageSize, pageSize,
+                excludedCreatorUserIds
+        );
+
+        PrayerRequestQueryResults prayerRequestQueryResult = fetchPrayerRequests(countQuery, getQuery).join();
+
+        List<PrayerRequestGetResult> getResults = prayerRequestQueryResult.prayerRequestResults;
+        PrayerRequestCountResult countResult = prayerRequestQueryResult.countResult;
+
+        List<PrayerRequestModel> prayerRequests = new ArrayList<>(getResults.stream().map(prayerRequestMapper::prayerRequestGetResultToPrayerRequestModel).toList());
+
+        int[] prayerRequestIds = prayerRequests.stream().mapToInt(PrayerRequestModel::getPrayerRequestId).toArray();
+        HashMap<Integer, PrayerRequestUserAction> userActionHashMap = getPrayerRequestIdToActionIdsMap(prayerRequestIds, userId);
+
+        for (PrayerRequestModel prayerRequest: prayerRequests) {
+            if (!userActionHashMap.containsKey(prayerRequest.getPrayerRequestId())) {
+                continue;
+            }
+
+            PrayerRequestUserAction userAction = userActionHashMap.get(prayerRequest.getPrayerRequestId());
+            prayerRequest.setUserCommentIds(userAction.getUserCommentIds());
+            prayerRequest.setUserPrayerSessionIds(userAction.getUserPrayerSessionIds());
+        }
+
+
+        int prayerRequestsCount = countResult.getPrayerRequestCount();
+        int numberOfPages = (int) Math.ceil(prayerRequestsCount / (double) pageSize);
+
+        return new PrayerRequestGetResponse(prayerRequests, prayerRequestsCount, numberOfPages, pageIndex);
     }
 
     public PrayerRequestLikeModel createPrayerRequestLike(int prayerRequestId, PrayerRequestActionCreateRequest createRequest) {
@@ -210,7 +208,7 @@ public class PrayerRequestService {
             PrayerRequestGetResult prayerRequestResult = prayerRequestRepository.getPrayerRequest(prayerRequestId, userId);
             List<PrayerRequestCommentResult> prayerRequestCommentsResult = prayerRequestRepository.getPrayerRequestComments(prayerRequestId);
 
-            List<PrayerRequestUserSessionResult> userSessionResults = prayerRequestRepository.getPrayerRequestUserSessionIds(new PrayerRequestUserActionIdQuery(new int[] { prayerRequestId }, userId));
+            List<PrayerRequestUserSessionResult> userSessionResults = prayerRequestRepository.getPrayerRequestUserSessionIds(new PrayerRequestUserActionIdQuery(new int[]{prayerRequestId}, userId));
 
             PrayerRequestModel prayerRequest = prayerRequestMapper.prayerRequestGetResultToPrayerRequestModel(prayerRequestResult);
 
@@ -239,7 +237,7 @@ public class PrayerRequestService {
             Throwable cause = exception.getCause();
             String exceptionMessage = cause != null ? cause.getMessage() : null;
 
-            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST)){
+            if (exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST)) {
                 throw new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST);
             }
 
@@ -255,7 +253,7 @@ public class PrayerRequestService {
         String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(authToken);
 
-        if(userId != createRequest.getUserId()){
+        if (userId != createRequest.getUserId()) {
             throw new DataValidationException(PrayerRequestErrors.USER_ID_DOES_NOT_MATCH);
         }
 
@@ -263,15 +261,15 @@ public class PrayerRequestService {
         try {
             PrayerRequestCommentResult createCommentResult = prayerRequestRepository.createPrayerRequestComment(createParams);
             return prayerRequestMapper.prayerRequestCommentToModel(createCommentResult);
-        } catch(UncategorizedSQLException exception){
+        } catch (UncategorizedSQLException exception) {
             Throwable cause = exception.getCause();
             String exceptionMessage = cause != null ? cause.getMessage() : null;
 
-            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST)){
+            if (exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST)) {
                 throw new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST);
             }
 
-            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_COMMENT)){
+            if (exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_COMMENT)) {
                 throw new DataValidationException(PrayerRequestErrors.USER_MUST_BE_JOINED_TO_COMMENT);
             }
 
@@ -279,13 +277,13 @@ public class PrayerRequestService {
         }
     }
 
-    public PrayerRequestCommentModel updatePrayerRequestComment(String authHeader, int prayerRequestCommentId, PrayerRequestCommentUpdateRequest updateRequest){
+    public PrayerRequestCommentModel updatePrayerRequestComment(String authHeader, int prayerRequestCommentId, PrayerRequestCommentUpdateRequest updateRequest) {
         String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(authToken);
 
         PrayerRequestComment comment = prayerRequestCommentRepository.findById(prayerRequestCommentId).orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST_COMMENT));
 
-        if(comment.getUser().getUserId() != userId){
+        if (comment.getUser().getUserId() != userId) {
             throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_UPDATE_COMMENT);
         }
 
@@ -295,7 +293,7 @@ public class PrayerRequestService {
         return prayerRequestMapper.prayerRequestCommentEntityToModel(comment);
     }
 
-    public void deletePrayerRequestComment(String authHeader, int prayerRequestCommentId){
+    public void deletePrayerRequestComment(String authHeader, int prayerRequestCommentId) {
         PrayerRequestComment comment = prayerRequestCommentRepository
                 .findById(prayerRequestCommentId)
                 .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST_COMMENT));
@@ -303,14 +301,14 @@ public class PrayerRequestService {
         String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(authToken);
 
-        if(comment.getUser().getUserId() != userId){
+        if (comment.getUser().getUserId() != userId) {
             throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_DELETE_COMMENT);
         }
 
         prayerRequestRepository.deletePrayerRequestComment(prayerRequestCommentId);
     }
 
-    public PrayerRequestModel updatePrayerRequest(String authHeader, int prayerRequestId, PrayerRequestUpdateRequest updateRequest){
+    public PrayerRequestModel updatePrayerRequest(String authHeader, int prayerRequestId, PrayerRequestUpdateRequest updateRequest) {
         String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(authToken);
 
@@ -320,20 +318,20 @@ public class PrayerRequestService {
             PrayerRequestGetResult updatedPrayerRequest = prayerRequestRepository.updatePrayerRequest(updateQuery);
             PrayerRequestModel updatedPrayerRequestModel = prayerRequestMapper.prayerRequestGetResultToPrayerRequestModel(updatedPrayerRequest);
 
-            HashMap<Integer, PrayerRequestUserAction> prayerRequestUserActionHashMap = getPrayerRequestIdToActionIdsMap(new int[] { prayerRequestId }, userId);
+            HashMap<Integer, PrayerRequestUserAction> prayerRequestUserActionHashMap = getPrayerRequestIdToActionIdsMap(new int[]{prayerRequestId}, userId);
             PrayerRequestUserAction prayerRequestUserAction = prayerRequestUserActionHashMap.get(prayerRequestId);
 
-            if(prayerRequestUserAction != null){
+            if (prayerRequestUserAction != null) {
                 updatedPrayerRequestModel.setUserCommentIds(prayerRequestUserAction.getUserCommentIds());
                 updatedPrayerRequestModel.setUserPrayerSessionIds(prayerRequestUserAction.getUserPrayerSessionIds());
             }
 
             return updatedPrayerRequestModel;
-        } catch (UncategorizedSQLException exception){
+        } catch (UncategorizedSQLException exception) {
             Throwable cause = exception.getCause();
             String exceptionMessage = cause != null ? cause.getMessage() : null;
 
-            if(exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.ONLY_SUBMITTED_CAN_UPDATE_REQUEST)){
+            if (exceptionMessage != null && exceptionMessage.contains(PrayerRequestErrors.ONLY_SUBMITTED_CAN_UPDATE_REQUEST)) {
                 throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_CAN_UPDATE_REQUEST);
             }
 
@@ -341,22 +339,32 @@ public class PrayerRequestService {
         }
     }
 
-    public void deletePrayerRequest(String authHeader, int prayerRequestId){
+    public void deletePrayerRequest(String authHeader, int prayerRequestId) {
         String authToken = jwtService.extractTokenFromAuthHeader(authHeader);
         int userId = jwtService.extractUserId(authToken);
 
         PrayerRequest prayerRequestToDelete = prayerRequestRepository
-            .findById(prayerRequestId)
-            .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST));
+                .findById(prayerRequestId)
+                .orElseThrow(() -> new DataValidationException(PrayerRequestErrors.CANNOT_FIND_PRAYER_REQUEST));
 
-        if(!canDeletePrayerRequest(userId, prayerRequestToDelete)){
+        if (!canDeletePrayerRequest(userId, prayerRequestToDelete)) {
             throw new DataValidationException(PrayerRequestErrors.ONLY_SUBMITTED_OR_ADMIN_CAN_DELETE_REQUEST);
         }
 
         prayerRequestRepository.deletePrayerRequest(prayerRequestToDelete.getPrayerRequestId());
     }
 
-    private HashMap<Integer, PrayerRequestUserAction> getPrayerRequestIdToActionIdsMap(int[] prayerRequestIds, int userId){
+    private record PrayerRequestQueryResults(PrayerRequestCountResult countResult, List<PrayerRequestGetResult> prayerRequestResults){}
+
+    private CompletableFuture<PrayerRequestQueryResults> fetchPrayerRequests(PrayerRequestCountQuery countQuery, PrayerRequestGetQuery getQuery){
+        CompletableFuture<PrayerRequestCountResult> countResultFuture = CompletableFuture.supplyAsync(() -> prayerRequestRepository.getPrayerRequestsCount(countQuery), executor);
+        CompletableFuture<List<PrayerRequestGetResult>> getResultFuture = CompletableFuture.supplyAsync(() -> prayerRequestRepository.getPrayerRequests(getQuery), executor);
+
+        return CompletableFuture.allOf(countResultFuture, getResultFuture)
+                .thenApply(ignored -> new PrayerRequestQueryResults(countResultFuture.join(), getResultFuture.join()));
+    }
+
+    private HashMap<Integer, PrayerRequestUserAction> getPrayerRequestIdToActionIdsMap(int[] prayerRequestIds, int userId) {
         PrayerRequestUserActionIdQuery actionIdQuery = new PrayerRequestUserActionIdQuery(prayerRequestIds, userId);
 
         HashMap<Integer, PrayerRequestUserAction> actionsHashMap = new HashMap<>();
@@ -364,11 +372,11 @@ public class PrayerRequestService {
         List<PrayerRequestUserCommentResult> userCommentResults = prayerRequestRepository.getPrayerRequestUserCommentIds(actionIdQuery);
         List<PrayerRequestUserSessionResult> userSessionResults = prayerRequestRepository.getPrayerRequestUserSessionIds(actionIdQuery);
 
-        for(PrayerRequestUserCommentResult userCommentResult: userCommentResults){
+        for (PrayerRequestUserCommentResult userCommentResult : userCommentResults) {
             int prayerRequestId = userCommentResult.getPrayerRequestId();
             int commentId = userCommentResult.getPrayerRequestCommentId();
 
-            if(actionsHashMap.containsKey(prayerRequestId)){
+            if (actionsHashMap.containsKey(prayerRequestId)) {
                 PrayerRequestUserAction action = actionsHashMap.get(prayerRequestId);
                 List<Integer> commentIds = action.getUserCommentIds();
 
@@ -381,11 +389,11 @@ public class PrayerRequestService {
         }
 
 
-        for(PrayerRequestUserSessionResult userSessionResult: userSessionResults){
+        for (PrayerRequestUserSessionResult userSessionResult : userSessionResults) {
             int prayerRequestId = userSessionResult.getPrayerRequestId();
             int sessionId = userSessionResult.getPrayerSessionId();
 
-            if(actionsHashMap.containsKey(prayerRequestId)){
+            if (actionsHashMap.containsKey(prayerRequestId)) {
                 PrayerRequestUserAction action = actionsHashMap.get(prayerRequestId);
                 List<Integer> sessionIds = action.getUserPrayerSessionIds();
 
@@ -400,8 +408,8 @@ public class PrayerRequestService {
         return actionsHashMap;
     }
 
-    private boolean canDeletePrayerRequest(int userId, PrayerRequest prayerRequestToDelete){
-        if(prayerRequestToDelete.getUser().getUserId() == userId){
+    private boolean canDeletePrayerRequest(int userId, PrayerRequest prayerRequestToDelete) {
+        if (prayerRequestToDelete.getUser().getUserId() == userId) {
             return true;
         }
 

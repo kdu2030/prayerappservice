@@ -32,7 +32,7 @@ public class PrayerRequestJdbcRepositoryImpl implements PrayerRequestJdbcReposit
 
     @Override
     public PrayerRequestCountResult getPrayerRequestsCount(PrayerRequestCountQuery countQuery){
-        String sql = "SELECT * FROM get_prayer_requests_count(:prayerGroupIds, :creatorUserIds, :bookmarkedUserId, :includeExpired, :excludedCreatorUserIds);";
+        String sql = "SELECT * FROM get_prayer_requests_count(:userId, :prayerGroupIds, :creatorUserIds, :bookmarkedUserId, :includeExpired, :excludedCreatorUserIds);";
         BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(countQuery);
         return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(PrayerRequestCountResult.class));
     }
